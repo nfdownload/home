@@ -620,6 +620,60 @@
         .company-section {
             display: contents;
         }
+        /* Ajustes específicos para a barra de busca */
+        .search-box {
+            max-width: 100% !important;
+        }
+        
+        #search-input {
+            padding: 14px 16px;
+            font-size: 16px; /* Tamanho de fonte aumentado para melhor legibilidade */
+        }
+        
+        #search-btn {
+            padding: 14px 20px;
+            white-space: nowrap;
+        }
+        
+        #company-filter {
+            padding: 14px 16px;
+            min-width: 180px;
+        }
+        
+        @media (max-width: 768px) {
+            .search-box .flex {
+                flex-direction: column;
+            }
+            
+            #company-filter {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            
+            #search-input {
+                width: 70%;
+            }
+            
+            #search-btn {
+                width: 30%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #search-btn span {
+                display: none;
+            }
+            
+            #search-btn {
+                width: 20%;
+                padding: 14px;
+            }
+            
+            #search-input {
+                width: 80%;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-gray-50">
@@ -817,7 +871,7 @@
                                     <i class="fas fa-shield-alt text-blue-600 text-lg"></i>
                                 </div>
                                 <h3 class="text-lg font-semibold text-gray-800 mb-1">Segurança de Dados</h3>
-                                <p class="text-gray-600 text-sm">Seus documentos fiscais protegidos com criptografia avançada e acesso restrito.</p>
+                                <p class="text-gray-600 text-sm">Seus documentos fiscais protegidos dengan criptografia avançada e acesso restrito.</p>
                             </div>
                             <!-- Feature 2 -->
                             <div class="feature-card bg-white rounded-xl shadow-md p-5 transition-all duration-300 hover:shadow-lg border border-gray-100">
@@ -894,18 +948,20 @@
                     <div class="max-w-6xl mx-auto">
                         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Downloads de Notas Fiscais</h1>
                         <p class="text-gray-600 mb-6">Selecione a empresa, ano e mês desejado para baixar todas as notas fiscais de determinado período.</p>
-                        <!-- Search Box -->
-                        <div class="search-box mb-8 max-w-lg bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:border-blue-500 transition-all duration-200">
-                            <div class="flex">
-                                <select id="company-filter" class="w-48 px-4 py-3 border-r border-gray-200 bg-white focus:outline-none flex items-center" disabled>
-                                    <option value="all"><i class="fas fa-building mr-2"></i><span class="hidden md:inline">Todas as empresas</span><span class="md:hidden"></span></option>
+                        <!-- Search Box - MODIFICADA -->
+                        <div class="search-box mb-8 w-full bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:border-blue-500 transition-all duration-200">
+                            <div class="flex flex-col sm:flex-row">
+                                <select id="company-filter" class="w-full sm:w-48 px-4 py-3 border-b sm:border-r sm:border-b-0 border-gray-200 bg-white focus:outline-none flex items-center text-sm md:text-base" disabled>
+                                    <option value="all"><i class="fas fa-building mr-2"></i><span class="hidden md:inline">Todas as empresas</span><span class="md:hidden">Todas</span></option>
                                     <!-- Empresas serão adicionadas dinamicamente aqui -->
                                 </select>
-                                <input type="text" placeholder="Buscar por mês ou ano (ex: 07/2025)..." id="search-input" class="flex-grow px-4 py-3 focus:outline-none">
-                                <button id="search-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 transition-colors flex items-center">
-                                    <i class="fas fa-search mr-2"></i>
-                                    <span class="hidden sm:inline">Buscar</span>
-                                </button>
+                                <div class="flex flex-1">
+                                    <input type="text" placeholder="Buscar por mês ou ano (ex: 07/2023)..." id="search-input" class="flex-grow px-4 py-3 focus:outline-none text-sm md:text-base">
+                                    <button id="search-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 transition-colors flex items-center justify-center text-sm md:text-base">
+                                        <i class="fas fa-search mr-2"></i>
+                                        <span>Buscar</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <!-- Folder Structure - Será preenchido dinamicamente pelo JavaScript -->
