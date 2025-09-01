@@ -1,70 +1,1767 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Jornal Bíblico - Acesso</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-      font-family: Arial, sans-serif;
-      background: #f0f0f0;
-    }
-    iframe {
-      width: 100%;
-      height: 100vh;
-      border: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-    }
-    .loading {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #333;
-      font-size: 18px;
-      text-align: center;
-      z-index: 2;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.2);
-      width: 80%;
-      max-width: 500px;
-    }
-    .error {
-      color: #d9534f;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFDownload - Portal de Notas Fiscais</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+        }
+        .bg-blue-600 {
+            background: #3b82f6 !important;
+        }
+        .bg-blue-600:hover {
+            background: #2563eb !important;
+        }
+        .bg-transparent.border-2 {
+            border: 2px solid white !important;
+            background: transparent !important;
+            color: white !important;
+        }
+        .bg-transparent.border-2:hover {
+            background: white !important;
+            color: #0f172a !important;
+        }
+        .bg-gray-50 {
+            background-color: #ffffff !important;
+        }
+        .bg-white.rounded-xl {
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+        }
+        header {
+            position: relative;
+            overflow: hidden;
+        }
+        header .smoke-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        header .smoke {
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: radial-gradient(
+                circle, 
+                rgba(59, 130, 246, 0.1) 0%,
+                rgba(59, 130, 246, 0.05) 40%,
+                transparent 70%
+            );
+            animation: smokeAnimation 15s infinite linear;
+            opacity: 0.5;
+        }
+        header .smoke:nth-child(2) {
+            animation-delay: 5s;
+            background: radial-gradient(
+                circle, 
+                rgba(59, 130, 246, 0.08) 0%,
+                rgba(59, 130, 246, 0.03) 40%,
+                transparent 70%
+            );
+        }
+        header .smoke:nth-child(3) {
+            animation-delay: 10s;
+            background: radial-gradient(
+                circle, 
+                rgba(59, 130, 246, 0.12) 0%,
+                rgba(59, 130, 246, 0.07) 40%,
+                transparent 70%
+            );
+        }
+        .hero-gradient {
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-gradient .smoke-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .hero-gradient .smoke {
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: radial-gradient(
+                circle, 
+                rgba(59, 130, 246, 0.1) 0%,
+                rgba(59, 130, 246, 0.05) 40%,
+                transparent 70%
+            );
+            animation: smokeAnimation 15s infinite linear;
+            opacity: 0.5;
+        }
+        .hero-gradient .smoke:nth-child(2) {
+            animation-delay: 5s;
+            background: radial-gradient(
+                circle, 
+                rgba(59, 130, 246, 0.08) 0%,
+                rgba(59, 130, 246, 0.03) 40%,
+                transparent 70%
+            );
+        }
+        .hero-gradient .smoke:nth-child(3) {
+            animation-delay: 10s;
+            background: radial-gradient(
+                circle, 
+                rgba(59, 130, 246, 0.12) 0%,
+                rgba(59, 130, 246, 0.07) 40%,
+                transparent 70%
+            );
+        }
+        header .container,
+        .hero-gradient .container {
+            position: relative;
+            z-index: 10;
+        }
+        @keyframes smokeAnimation {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(-25%, 25%) rotate(90deg);
+            }
+            50% {
+                transform: translate(-50%, 0) rotate(180deg);
+            }
+            75% {
+                transform: translate(-25%, -25%) rotate(270deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        .text-blue-100 {
+            color: rgba(219, 234, 254, 0.9) !important;
+        }
+        .bg-blue-700 {
+            background-color: #1d4ed8 !important;
+        }
+        .bg-blue-700:hover {
+            background-color: #1e40af !important;
+        }
+        .text-blue-500 {
+            color: #3b82f6 !important;
+        }
+        .text-blue-600:hover {
+            color: #2563eb !important;
+        }
+        .scale-wrapper {
+            transform: scale(0.8);
+            transform-origin: center;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-container {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 0 auto;
+            max-width: 1200px;
+            width: 100%;
+        }
+        .form-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .smoke-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .smoke {
+            position: absolute;
+            width: 300%;
+            height: 300%;
+            top: -100%;
+            left: -100%;
+            background: radial-gradient(
+                circle, 
+                rgba(59, 130, 246, 0.2) 0%, 
+                rgba(59, 130, 246, 0.1) 40%, 
+                transparent 70%
+            );
+            animation: smokeAnimation 15s infinite linear;
+            opacity: 0.8;
+        }
+        .smoke:nth-child(2) {
+            animation-delay: 5s;
+            background: radial-gradient(
+                circle, 
+                rgba(59, 130, 246, 0.15) 0%, 
+                rgba(59, 130, 246, 0.05) 40%, 
+                transparent 70%
+            );
+        }
+        .smoke:nth-child(3) {
+            animation-delay: 10s;
+            background: radial-gradient(
+                circle, 
+                rgba(59, 130, 246, 0.25) 0%, 
+                rgba(59, 130, 246, 0.1) 40%, 
+                transparent 70%
+            );
+        }
+        .input-group {
+            transition: all 0.3s ease;
+        }
+        .input-group:focus-within {
+            transform: translateY(-2px);
+        }
+        .input-group:focus-within i {
+            color: #3b82f6;
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+            border: none;
+        }
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+        }
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .divider:not(:empty)::before {
+            margin-right: 1em;
+        }
+        .divider:not(:empty)::after {
+            margin-left: 1em;
+        }
+        .social-btn {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .social-btn:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+        .wave svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 80px;
+        }
+        .wave .shape-fill {
+            fill: #1e293b;
+        }
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+            .graphic-section {
+                height: 200px;
+            }
+            .form-section {
+                padding: 1.5rem;
+            }
+            .scale-wrapper {
+                transform: scale(0.95);
+            }
+        }
+        @media (max-width: 480px) {
+            .scale-wrapper {
+                transform: scale(0.9);
+            }
+        }
+        .info-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #3b82f6;
+        }
+        .folder-transition {
+            transition: all 0.3s ease;
+        }
+        .folder-item:hover {
+            background-color: #f1f5f9;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .tab-underline {
+            position: relative;
+        }
+        .tab-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #3b82f6;
+            transition: width 0.3s ease;
+        }
+        .tab-underline:hover::after,
+        .tab-underline.active::after {
+            width: 100%;
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+        }
+        .search-box:focus-within {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .tab-content {
+            transition: opacity 0.3s ease;
+        }
+        .folder-contents {
+            transition: max-height 0.3s ease;
+            overflow: hidden;
+            max-height: 0;
+        }
+        .rotate-180 {
+            transform: rotate(180deg);
+            transition: transform 0.3s ease;
+        }
+        .folder-header {
+            cursor: pointer;
+        }
+        .folder-content-open {
+            max-height: 2000px;
+            padding-top: 8px;
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            color: white;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .toast.success {
+            background-color: #10b981;
+        }
+        .toast.error {
+            background-color: #ef4444;
+        }
+        .toast.info {
+            background-color: #3b82f6;
+        }
+        .login-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #3b82f6 100%);
+        }
+        .fixed {
+            position: fixed;
+        }
+        .inset-0 {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+        .bg-black {
+            background-color: #000;
+        }
+        .bg-opacity-70 {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .flex {
+            display: flex;
+        }
+        .items-center {
+            align-items: center;
+        }
+        .justify-center {
+            justify-content: center;
+        }
+        .z-50 {
+            z-index: 50;
+        }
+        .p-4 {
+            padding: 1rem;
+        }
+        .hidden {
+            display: none;
+        }
+        .max-w-md {
+            max-width: 28rem;
+        }
+        .w-full {
+            width: 100%;
+        }
+        .relative {
+            position: relative;
+        }
+        .absolute {
+            position: absolute;
+        }
+        .top-4 {
+            top: 1rem;
+        }
+        .right-4 {
+            right: 1rem;
+        }
+        .text-gray-400 {
+            color: #9ca3af;
+        }
+        .hover\:text-white:hover {
+            color: #fff;
+        }
+        .text-xl {
+            font-size: 1.25rem;
+        }
+        #login-modal {
+            z-index: 9999;
+        }
+        #login-modal .login-box {
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        #login-modal {
+            transition: opacity 0.3s ease;
+        }
+        #login-modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #login-modal:not(.hidden) {
+            opacity: 1;
+        }
+        .glass-container {
+            background: rgba(15, 23, 42, 0.7) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        .glass-container h1,
+        .glass-container p,
+        .glass-container label {
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        .glass-container input {
+            background: rgba(30, 41, 59, 0.6) !important;
+            border: 1px solid rgba(96, 165, 250, 0.3) !important;
+            color: white !important;
+        }
+        .glass-container input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3) !important;
+        }
+        .glass-container input::placeholder {
+            color: rgba(173, 216, 230, 0.7) !important;
+        }
+        .glass-container .social-btn {
+            background: rgba(30, 41, 59, 0.6) !important;
+            border: 1px solid rgba(96, 165, 250, 0.3) !important;
+            transition: all 0.3s ease;
+        }
+        .glass-container .social-btn:hover {
+            background: rgba(30, 41, 59, 0.8) !important;
+            border-color: rgba(96, 165, 250, 0.5) !important;
+        }
+        .glass-container .divider {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        .glass-container .divider::before,
+        .glass-container .divider::after {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+        #login-btn, #mobile-login-btn {
+            background-color: #3b82f6 !important;
+        }
+        #login-btn:hover, #mobile-login-btn:hover {
+            background-color: #1e40af !important;
+        }
+        /* Estilos para os botões de login/logout */
+        .auth-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .login-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3);
+        }
+        .login-btn:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
+        }
+        .logout-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+        }
+        .logout-btn:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(239, 68, 68, 0.4);
+        }
+        /* Melhorar a área do usuário */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-right: 0.5rem;
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        /* Ajustes para mobile */
+        @media (max-width: 768px) {
+            .auth-btn {
+                padding: 0.6rem 1rem;
+                width: 100%;
+                justify-content: center;
+            }
+            .user-info {
+                flex-direction: column;
+                text-align: center;
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+        /* Estilos para busca e destaque */
+        .month-highlight {
+            background-color: #e6f7ff !important;
+            border: 2px solid #1890ff !important;
+            box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.1) !important;
+        }
+        .year-highlight {
+            background-color: #f6ffed !important;
+            border: 2px solid #52c41a !important;
+        }
+        /* Estilos para expandir/colapsar empresas */
+        .company-contents {
+            transition: max-height 0.3s ease;
+            overflow: hidden;
+            max-height: 0;
+        }
+        
+        .company-content-open {
+            max-height: 2000px;
+            padding-top: 8px;
+        }
+        
+        .company-header {
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 8px;
+        }
+        
+        /* Remover estilos antigos da seção de empresa */
+        .company-section {
+            display: contents;
+        }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col bg-gray-50">
+    <!-- Main Content -->
+    <div id="main-content" class="min-h-screen flex flex-col">
+        <!-- Login Modal (hidden by default) -->
+        <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4 hidden">
+            <!-- Container com efeito de vidro -->
+            <div class="glass-container bg-blue-900 bg-opacity-30 backdrop-blur-md rounded-2xl border border-white border-opacity-20 p-8 max-w-md w-full relative">
+                <button id="close-login" class="absolute top-4 right-4 text-gray-300 hover:text-white transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="text-center mb-8">
+                    <div class="flex justify-center mb-4">
+                        <div class="bg-gradient-to-br from-blue-800 to-blue-600 p-1 rounded-full">
+                            <div class="bg-gray-900 p-1 rounded-full">
+                                <div class="bg-gradient-to-br from-blue-800 to-blue-600 w-16 h-16 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-file-invoice text-white text-2xl"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h1 class="text-2xl font-bold text-white mb-2">Acesso ao Sistema</h1>
+                    <p class="text-gray-300 text-sm">Informe suas credenciais para acessar the portal</p>
+                </div>
+                <form id="login-form-modal" class="space-y-4">
+                    <div class="input-group">
+                        <label class="text-gray-300 mb-2 block text-sm">E-mail Corporativo</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400 text-sm"></i>
+                            </div>
+                            <input type="email" id="email-modal" required
+                                class="w-full bg-blue-800 bg-opacity-40 border border-blue-700 border-opacity-50 rounded-lg py-3 pl-10 pr-4 text-white placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                placeholder="seu.email@empresa.com">
+                            <p id="email-error-modal" class="text-red-400 text-xs mt-1 hidden">Por favor, insira um e-mail válido</p>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-gray-300 text-sm">Senha</label>
+                            <a href="#" class="text-xs text-blue-300 hover:text-blue-200 transition">Esqueceu a senha?</a>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400 text-sm"></i>
+                            </div>
+                            <input type="password" id="password-modal" required
+                                class="w-full bg-blue-800 bg-opacity-40 border border-blue-700 border-opacity-50 rounded-lg py-3 pl-10 pr-4 text-white placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                placeholder="••••••••">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                <button type="button" id="password-toggle-modal" class="text-gray-400 hover:text-gray-200">
+                                    <i class="fas fa-eye text-sm"></i>
+                                </button>
+                            </div>
+                            <p id="password-error-modal" class="text-red-400 text-xs mt-1 hidden">A senha deve ter pelo menos 6 caracteres</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <input id="remember-modal" type="checkbox" class="h-4 w-4 text-blue-500 rounded bg-blue-800 bg-opacity-40 border-blue-700 focus:ring-blue-500">
+                        <label for="remember-modal" class="ml-2 text-gray-300 text-sm">Lembrar-me</label>
+                    </div>
+                    <button type="submit" id="login-button-modal" class="btn-login w-full py-3 px-4 rounded-lg text-white font-semibold text-md mt-4">
+                        <span id="login-button-text-modal">Entrar no Sistema</span>
+                        <div id="login-spinner-modal" class="hidden ml-2 inline">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                </form>
+                <div class="divider text-blue-300 my-6 text-xs">ou acesse com</div>
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="social-btn flex items-center justify-center py-2 rounded-lg text-white text-sm bg-blue-800 bg-opacity-40 border border-blue-700 border-opacity-50 hover:bg-opacity-60 transition">
+                        <i class="fas fa-key text-blue-300 mr-2 text-sm"></i> Código de Acesso
+                    </button>
+                    <button class="social-btn flex items-center justify-center py-2 rounded-lg text-white text-sm bg-blue-800 bg-opacity-40 border border-blue-700 border-opacity-50 hover:bg-opacity-60 transition">
+                        <i class="fas fa-key text-yellow-300 mr-2 text-sm"></i> Certificado
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Toast Notification -->
+        <div id="toast" class="toast hidden">
+            <div class="flex items-center">
+                <i id="toast-icon" class="fas fa-info-circle mr-2"></i>
+                <span id="toast-message"></span>
+            </div>
+        </div>
+        <!-- Header com botões de login/logout -->
+        <header class="bg-gradient-to-br from-[#0f172a] to-[#1e293b] text-white shadow-md sticky top-0 z-50 relative overflow-hidden">
+            <!-- Smoke animation container for header -->
+            <div class="smoke-container">
+                <div class="smoke"></div>
+            </div>
+            <div class="container mx-auto px-4 py-3 relative z-10">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <!-- Logo and User Info -->
+                <div class="flex items-center justify-between">
+                    <a href="#" class="flex items-center space-x-2 py-2">
+                        <i class="fas fa-file-invoice-dollar text-2xl text-blue-300"></i>
+                        <span class="text-xl font-bold">NFDownload</span>
+                    </a>
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="text-white focus:outline-none">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center justify-between w-full">
+                    <div class="flex space-x-1">
+                        <button class="tab-underline px-3 py-1.5 text-white font-medium active" data-tab="home">
+                            Início
+                        </button>
+                        <button class="tab-underline px-4 py-2 text-blue-100 hover:text-white font-medium" data-tab="downloads">
+                            Downloads
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="user-info hidden md:flex">
+                            <div class="user-avatar">
+                                <i class="fas fa-user text-sm"></i>
+                            </div>
+                            <span id="user-greeting" class="text-white text-sm">Olá, Visitante</span>
+                        </div>
+                        <button id="login-btn" class="auth-btn login-btn hidden">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Entrar</span>
+                        </button>
+                        <button id="logout-btn" class="auth-btn logout-btn hidden">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Sair</span>
+                        </button>
+                    </div>  
+                </div>
+                <!-- Mobile Navigation -->
+                <div id="mobile-menu" class="hidden md:hidden py-3 border-t border-blue-800 mt-2">
+                    <div class="flex flex-col space-y-2">
+                        <button class="tab-underline px-3 py-2 text-white font-medium active" data-tab="home">
+                            Início
+                        </button>
+                        <button class="tab-underline px-3 py-2 text-blue-100 hover:text-white font-medium" data-tab="downloads">
+                            Downloads
+                        </button>
+                    </div>
+                    <div class="flex flex-col space-y-2 mt-4 pt-4 border-t border-blue-800">
+                        <div class="user-info flex md:hidden mb-2">
+                            <div class="user-avatar">
+                                <i class="fas fa-user text-sm"></i>
+                            </div>
+                            <span id="mobile-user-greeting" class="text-white text-sm">Olá, Visitante</span>
+                        </div>
+                        <button id="mobile-login-btn" class="auth-btn login-btn w-full">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Entrar</span>
+                        </button>
+                        <button id="mobile-logout-btn" class="auth-btn logout-btn w-full hidden">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Sair</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="flex-grow">
+            <!-- Home Content -->
+            <div id="home-content" class="tab-content active">
+                <!-- Hero Section with Smoke Animation - REDUZIDO -->
+                <section class="bg-gradient-to-r from-[#0f172a] to-[#1e293b] text-white py-10 md:py-16 relative overflow-hidden">
+                    <!-- Smoke animation container for hero -->
+                    <div class="smoke-container absolute inset-0 overflow-hidden">
+                        <div class="smoke"></div>
+                    </div>
+                    <div class="container mx-auto px-4 relative z-10">
+                        <div class="max-w-3xl mx-auto text-center">
+                            <h1 class="text-xl md:text-2xl font-bold mb-2">Portal de Download de Notas Fiscais</h1>
+                            <p class="text-md text-blue-100 mb-4">Acesse e baixe suas notas fiscais de forma rápida, segura e organizada.</p>
+                            <div class="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4">
+                                <button id="access-downloads-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition-colors shadow-md text-sm">
+                                    Acessar Downloads
+                                </button>
+                                <button id="contact-btn" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-blue-900 px-5 py-2 rounded-lg font-medium transition-colors text-sm">
+                                    Fale Conosco
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Features Section - MAIS COMPACTA -->
+                <section class="pt-16 pb-12 bg-white">
+                    <div class="container mx-auto px-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Feature 1 -->
+                            <div class="feature-card bg-white rounded-xl shadow-md p-5 transition-all duration-300 hover:shadow-lg border border-gray-100">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                                    <i class="fas fa-shield-alt text-blue-600 text-lg"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-800 mb-1">Segurança de Dados</h3>
+                                <p class="text-gray-600 text-sm">Seus documentos fiscais protegidos com criptografia avançada e acesso restrito.</p>
+                            </div>
+                            <!-- Feature 2 -->
+                            <div class="feature-card bg-white rounded-xl shadow-md p-5 transition-all duration-300 hover:shadow-lg border border-gray-100">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                                    <i class="fas fa-network-wired text-blue-600 text-lg"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-800 mb-1">Organização Inteligente</h3>
+                                <p class="text-gray-600 text-sm">Sistema de pastas categorizadas por nome, ano, mes e dias.</p>
+                            </div>
+                            <!-- Feature 3 -->
+                            <div class="feature-card bg-white rounded-xl shadow-md p-5 transition-all duration-300 hover:shadow-lg border border-gray-100">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                                    <i class="fas fa-download text-blue-600 text-lg"></i>
+                                </div>
+                                <h3 class="text-lg font-semibold text-gray-800 mb-1">Download Rápido</h3>
+                                <p class="text-gray-600 text-sm">Baixe múltiplos arquivos simultaneamente em formato ZIP compactado.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- How It Works Section - MAIS COMPACTO -->
+                <section class="py-12 bg-white">
+                    <div class="container mx-auto px-4">
+                        <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-6 border border-gray-100">
+                            <h2 class="text-xl font-bold text-gray-800 mb-4">Como acessar suas notas fiscais</h2>
+                            <div class="flex flex-col lg:flex-row gap-6">
+                                <!-- Lista de passos -->
+                                <div class="space-y-3 mb-6 lg:mb-0 lg:w-1/2">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 bg-blue-100 text-blue-600 rounded-full w-7 h-7 flex items-center justify-center mr-3 mt-0.5">
+                                            <span class="font-medium text-sm">1</span>
+                                        </div>
+                                        <p class="text-gray-700 text-sm">Navegue até a aba "Downloads"</p>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 bg-blue-100 text-blue-600 rounded-full w-7 h-7 flex items-center justify-center mr-3 mt-0.5">
+                                            <span class="font-medium text-sm">2</span>
+                                        </div>
+                                        <p class="text-gray-700 text-sm">Selecione a empresa desejada</p>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 bg-blue-100 text-blue-600 rounded-full w-7 h-7 flex items-center justify-center mr-3 mt-0.5">
+                                            <span class="font-medium text-sm">3</span>
+                                        </div>
+                                        <p class="text-gray-700 text-sm">Selecione o ano e depois o mês desejado</p>
+                                    </div>
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 bg-blue-100 text-blue-600 rounded-full w-7 h-7 flex items-center justify-center mr-3 mt-0.5">
+                                            <span class="font-medium text-sm">4</span>
+                                        </div>
+                                        <p class="text-gray-700 text-sm">Clique no botão de download ao lado do mês desejado</p>
+                                    </div>
+                                </div>
+                                <!-- Tutorial ao lado do terceiro ponto -->
+                                <div class="lg:w-1/2 bg-blue-50 rounded-lg p-4 border border-blue-100">
+                                    <h3 class="text-md font-semibold text-blue-800 mb-2 flex items-center">
+                                        <i class="fas fa-info-circle mr-2 text-sm"></i> Dica Importante
+                                    </h3>
+                                    <div class="bg-white p-3 rounded border border-blue-200">
+                                        <p class="text-xs text-blue-600 flex items-start">
+                                            <i class="fas fa-lightbulb text-yellow-500 mr-2 mt-0.5"></i>
+                                            <span>Use a função de busca para encontrar rapidamente notas fiscais de um período específico.</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- Downloads Content -->
+            <div id="downloads-content" class="tab-content hidden">
+                <div class="container mx-auto px-4 py-8">
+                    <div class="max-w-6xl mx-auto">
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Downloads de Notas Fiscais</h1>
+                        <p class="text-gray-600 mb-6">Selecione a empresa, ano e mês desejado para baixar todas as notas fiscais de determinado período.</p>
+                        <!-- Search Box -->
+                        <div class="search-box mb-8 max-w-lg bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:border-blue-500 transition-all duration-200">
+                            <div class="flex">
+                                <select id="company-filter" class="w-48 px-4 py-3 border-r border-gray-200 bg-white focus:outline-none flex items-center" disabled>
+                                    <option value="all"><i class="fas fa-building mr-2"></i><span class="hidden md:inline">Todas as empresas</span><span class="md:hidden">Todas</span></option>
+                                    <!-- Empresas serão adicionadas dinamicamente aqui -->
+                                </select>
+                                <input type="text" placeholder="Buscar por mês ou ano (ex: 07/2025)..." id="search-input" class="flex-grow px-4 py-3 focus:outline-none">
+                                <button id="search-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 transition-colors flex items-center">
+                                    <i class="fas fa-search mr-2"></i>
+                                    <span class="hidden md:inline">Buscar</span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Folder Structure - Será preenchido dinamicamente pelo JavaScript -->
+                        <div id="folders-container" class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
+                            <!-- Os folders serão carregados aqui dinamicamente -->
+                        </div>
+                        <!-- Loading indicator -->
+                        <div id="loading-indicator" class="flex justify-center py-8 hidden">
+                            <div class="text-center">
+                                <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mx-auto mb-3"></div>
+                                <p class="text-gray-600">Carregando estrutura de pastas...</p>
+                            </div>
+                        </div>
+                        <!-- Empty state -->
+                        <div id="empty-state" class="text-center py-12 hidden">
+                            <i class="fas fa-folder-open text-gray-300 text-4xl mb-4"></i>
+                            <h3 class="text-xl font-medium text-gray-700 mb-2">Nenhuma pasta encontrada</h3>
+                            <p class="text-gray-500">Não foram encontradas notas fiscais para este cliente.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
-  <!-- Mensagem de carregamento -->
-  <div id="loading" class="loading">
-    <p>🌐 Conectando ao servidor...</p>
-    <p>Carregando interface de acesso...</p>
-  </div>
+    <script>
+        // Configuração da API - pode ser definida via variável de ambiente
+        const API_CONFIG = {
+            baseUrl: 'https://api.seusistema.com' // Altere para a URL da sua API
+        };
 
-  <!-- Iframe que tenta carregar o site original -->
-  <iframe 
-    src="https://21bb47216d35.ngrok-free.app" 
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen
-    onload="
-      document.getElementById('loading').style.display = 'none';
-    "
-    onerror="
-      document.getElementById('loading').innerHTML = '<p class=error>❌ Falha ao carregar o conteúdo</p><p>Verifique:</p><ul style=text-align:left><li>O servidor está online</li><li>Seu firewall permite conexão</li><li>A URL está acessível</li></ul>';
-      document.getElementById('loading').className += ' error';
-    ">
-  </iframe>
+        // Para desenvolvimento local, você pode detectar a URL automaticamente
+        // ou permitir configuração via parâmetro na URL
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar se há configuração na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('apiUrl')) {
+                API_CONFIG.baseUrl = urlParams.get('apiUrl');
+            }
+            
+            // Variável para controlar a aba que o usuário tentou acessar
+            let targetTabAfterLogin = null;
+            
+            // Verificar autenticação ao carregar a página
+            checkAuth();
+            
+            // Toggle password visibility
+            const passwordToggle = document.getElementById('password-toggle-modal');
+            if (passwordToggle) {
+                passwordToggle.addEventListener('click', function() {
+                    const passwordInput = document.getElementById('password-modal');
+                    const icon = this.querySelector('i');
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        passwordInput.type = 'password';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            }
+
+            // Função para verificar autenticação
+            async function checkAuth() {
+                try {
+                    const response = await fetch(`${API_CONFIG.baseUrl}/auth/check`, {
+                        credentials: 'include' // IMPORTANTE: para enviar cookies de sessão
+                    });
+                    const data = await response.json();
+                    
+                    if (data.authenticated) {
+                        // Usuário está autenticado
+                        document.getElementById('user-greeting').textContent = `Olá, ${data.user_name}`;
+                        document.getElementById('mobile-user-greeting').textContent = `Olá, ${data.user_name}`;
+                        
+                        // Atualizar avatar com iniciais
+                        const initials = data.user_name.split(' ').map(n => n[0]).join('').toUpperCase();
+                        document.querySelectorAll('.user-avatar').forEach(avatar => {
+                            avatar.innerHTML = `<span class="text-xs">${initials}</span>`;
+                        });
+                        
+                        // Mostrar/ocultar botões
+                        document.getElementById('login-btn').classList.add('hidden');
+                        document.getElementById('logout-btn').classList.remove('hidden');
+                        document.getElementById('mobile-login-btn').classList.add('hidden');
+                        document.getElementById('mobile-logout-btn').classList.remove('hidden');
+                        
+                        // Mostrar info do usuário
+                        document.querySelectorAll('.user-info').forEach(info => {
+                            info.classList.remove('hidden');
+                        });
+                        
+                        // Se estava tentando acessar downloads, carregar as pastas
+                        if (targetTabAfterLogin === 'downloads') {
+                            switchTab('downloads');
+                            loadFolders();
+                            targetTabAfterLogin = null;
+                        }
+                        
+                        // Se já está na aba de downloads, carregar as pastas
+                        if (document.getElementById('downloads-content') && 
+                            document.getElementById('downloads-content').classList.contains('active')) {
+                            loadFolders();
+                        }
+                    } else {
+                        // Usuário não está autenticado
+                        document.getElementById('user-greeting').textContent = 'Olá, Visitante';
+                        document.getElementById('mobile-user-greeting').textContent = 'Olá, Visitante';
+                        
+                        // Resetar avatar
+                        document.querySelectorAll('.user-avatar').forEach(avatar => {
+                            avatar.innerHTML = '<i class="fas fa-user text-sm"></i>';
+                        });
+                        
+                        // Mostrar/ocultar botões
+                        document.getElementById('login-btn').classList.remove('hidden');
+                        document.getElementById('logout-btn').classList.add('hidden');
+                        document.getElementById('mobile-login-btn').classList.remove('hidden');
+                        document.getElementById('mobile-logout-btn').classList.add('hidden');
+                        
+                        // Esconder info do usuário no desktop, mostrar no mobile
+                        document.querySelector('.user-info').classList.add('hidden');
+                        if (document.querySelectorAll('.user-info')[1]) {
+                            document.querySelectorAll('.user-info')[1].classList.remove('hidden');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar autenticação:', error);
+                    // Trate erros de conexão com a API
+                    showToast('Não foi possível conectar à API. Verifique sua conexão.', 'error');
+                }
+            }
+
+            // Login form submission
+            const loginForm = document.getElementById('login-form-modal');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('email-modal').value;
+                    const password = document.getElementById('password-modal').value;
+                    const loginButton = document.getElementById('login-button-modal');
+                    const loginButtonText = document.getElementById('login-button-text-modal');
+                    const loginSpinner = document.getElementById('login-spinner-modal');
+                    
+                    // Mostrar spinner e desativar botão
+                    loginButton.disabled = true;
+                    loginButtonText.textContent = 'Autenticando...';
+                    loginSpinner.classList.remove('hidden');
+                    
+                    try {
+                        const response = await fetch(`${API_CONFIG.baseUrl}/auth/login`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ email, password }),
+                            credentials: 'include' // IMPORTANTE: para receber cookies de sessão
+                        });
+                        
+                        const data = await response.json();
+                        if (data.success) {
+                            // Login bem-sucedido
+                            showToast('Login realizado com sucesso!', 'success');
+                            document.getElementById('login-modal').classList.add('hidden');
+                            // Atualizar a UI
+                            await checkAuth();
+                        } else {
+                            // Login falhou
+                            showToast(data.message || 'E-mail ou senha incorretos.', 'error');
+                        }
+                    } catch (error) {
+                        showToast('Erro de conexão com a API. Tente novamente.', 'error');
+                    } finally {
+                        // Reativar botão
+                        loginButton.disabled = false;
+                        loginButtonText.textContent = 'Entrar no Sistema';
+                        loginSpinner.classList.add('hidden');
+                    }
+                });
+            }
+
+            // Logout function
+            async function logout() {
+                try {
+                    const response = await fetch(`${API_CONFIG.baseUrl}/auth/logout`, {
+                        method: 'POST',
+                        credentials: 'include' // Para enviar o cookie de sessão
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        showToast('Logout realizado com sucesso!', 'success');
+                        // Atualizar a UI
+                        await checkAuth();
+                        // Voltar para a home
+                        switchTab('home');
+                    }
+                } catch (error) {
+                    showToast('Erro ao fazer logout.', 'error');
+                }
+            }
+
+            // Adicionar event listeners para logout
+            const logoutBtn = document.getElementById('logout-btn');
+            const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+            
+            if (logoutBtn) logoutBtn.addEventListener('click', logout);
+            if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', logout);
+
+            // Fechar modal de login
+            const closeLogin = document.getElementById('close-login');
+            if (closeLogin) {
+                closeLogin.addEventListener('click', function() {
+                    document.getElementById('login-modal').classList.add('hidden');
+                });
+            }
+            
+            const loginModal = document.getElementById('login-modal');
+            if (loginModal) {
+                loginModal.addEventListener('click', function(e) {
+                    if (e.target.id === 'login-modal') {
+                        document.getElementById('login-modal').classList.add('hidden');
+                    }
+                });
+            }
+
+            // Alternar entre abas
+            function switchTab(tabName) {
+                // Esconder todos os conteúdos de abas
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.add('hidden');
+                    tab.classList.remove('active');
+                });
+                // Mostrar a aba selecionada
+                const tabContent = document.getElementById(tabName + '-content');
+                if (tabContent) {
+                    tabContent.classList.remove('hidden');
+                    tabContent.classList.add('active');
+                }
+                
+                // Atualizar estado dos botões de aba
+                document.querySelectorAll('.tab-underline').forEach(button => {
+                    button.classList.remove('active');
+                });
+                document.querySelectorAll(`[data-tab="${tabName}"]`).forEach(button => {
+                    button.classList.add('active');
+                });
+            }
+
+            // Função para verificar autenticação antes de trocar de aba
+            async function checkAuthAndSwitchTab(tabName) {
+                try {
+                    const response = await fetch(`${API_CONFIG.baseUrl}/auth/check`, {
+                        credentials: 'include'
+                    });
+                    const authData = await response.json();
+                    if (authData.authenticated) {
+                        switchTab(tabName);
+                        if (tabName === 'downloads') {
+                            loadFolders();
+                        }
+                    } else {
+                        targetTabAfterLogin = tabName;
+                        document.getElementById('login-modal').classList.remove('hidden');
+                    }
+                } catch (error) {
+                    showToast('Não foi possível verificar autenticação. Tente novamente.', 'error');
+                }
+            }
+
+            // Adicionar event listeners para as abas
+            document.querySelectorAll('.tab-underline').forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    if (tabName === 'downloads') {
+                        checkAuthAndSwitchTab('downloads');
+                    } else {
+                        switchTab(tabName);
+                    }
+                });
+            });
+
+            // Botão "Acessar Downloads" na home
+            const accessDownloadsBtn = document.getElementById('access-downloads-btn');
+            if (accessDownloadsBtn) {
+                accessDownloadsBtn.addEventListener('click', function() {
+                    checkAuthAndSwitchTab('downloads');
+                });
+            }
+
+            // Alternar menu mobile
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            if (mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', function() {
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenu) mobileMenu.classList.toggle('hidden');
+                });
+            }
+
+            // Alternar visibilidade de pastas e empresas
+            document.addEventListener('click', function(e) {
+                // Para empresas
+                if (e.target.closest('.company-header')) {
+                    const companyItem = e.target.closest('.company-item');
+                    const companyContents = companyItem.querySelector('.company-contents');
+                    const companyIcon = companyItem.querySelector('.company-icon');
+                    if (companyContents && companyIcon) {
+                        companyContents.classList.toggle('company-content-open');
+                        companyIcon.classList.toggle('rotate-180');
+                    }
+                }
+                // Para anos
+                else if (e.target.closest('.folder-header')) {
+                    const folderItem = e.target.closest('.folder-item');
+                    const folderContents = folderItem.querySelector('.folder-contents');
+                    const folderIcon = folderItem.querySelector('.folder-icon');
+                    if (folderContents && folderIcon) {
+                        folderContents.classList.toggle('folder-content-open');
+                        folderIcon.classList.toggle('rotate-180');
+                    }
+                }
+            });
+
+            // Adicionar evento de clique para o botão de login (desktop)
+            const loginBtn = document.getElementById('login-btn');
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function() {
+                    document.getElementById('login-modal').classList.remove('hidden');
+                });
+            }
+
+            // Adicionar evento de clique para o botão de login (mobile)
+            const mobileLoginBtn = document.getElementById('mobile-login-btn');
+            if (mobileLoginBtn) {
+                mobileLoginBtn.addEventListener('click', function() {
+                    document.getElementById('login-modal').classList.remove('hidden');
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (mobileMenu) mobileMenu.classList.add('hidden');
+                });
+            }
+
+            // Botão de contato
+            const contactBtn = document.getElementById('contact-btn');
+            if (contactBtn) {
+                contactBtn.addEventListener('click', function() {
+                    showToast('Entre em contato pelo email: contato@nfdownload.com.br', 'info');
+                });
+            }
+
+            // Função para mostrar notificações toast
+            window.showToast = function(message, type = 'info') {
+                const toast = document.getElementById('toast');
+                if (!toast) return;
+                
+                const toastIcon = document.getElementById('toast-icon');
+                const toastMessage = document.getElementById('toast-message');
+                
+                // Configurar ícone e cor baseado no tipo
+                toast.className = 'toast';
+                switch(type) {
+                    case 'success':
+                        toast.classList.add('success');
+                        toastIcon.className = 'fas fa-check-circle mr-2';
+                        break;
+                    case 'error':
+                        toast.classList.add('error');
+                        toastIcon.className = 'fas fa-exclamation-circle mr-2';
+                        break;
+                    default:
+                        toast.classList.add('info');
+                        toastIcon.className = 'fas fa-info-circle mr-2';
+                }
+                
+                // Definir mensagem e mostrar
+                toastMessage.textContent = message;
+                toast.classList.remove('hidden');
+                toast.classList.add('show');
+                
+                // Esconder após 5 segundos
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        toast.classList.add('hidden');
+                    }, 300);
+                }, 5000);
+            };
+
+            // Carregar estrutura de pastas
+            async function loadFolders() {
+                return new Promise(async (resolve, reject) => {
+                    const foldersContainer = document.getElementById('folders-container');
+                    const loadingIndicator = document.getElementById('loading-indicator');
+                    const emptyState = document.getElementById('empty-state');
+                    
+                    // Mostrar indicador de carregamento
+                    if (loadingIndicator) loadingIndicator.classList.remove('hidden');
+                    if (foldersContainer) foldersContainer.innerHTML = '';
+                    
+                    try {
+                        const response = await fetch(`${API_CONFIG.baseUrl}/auth/folders`, {
+                            credentials: 'include' // Para enviar o cookie de sessão
+                        });
+                        
+                        if (response.status === 401) {
+                            // Não autenticado
+                            showToast('Sessão expirada. Faça login novamente.', 'error');
+                            document.getElementById('login-modal').classList.remove('hidden');
+                            if (loadingIndicator) loadingIndicator.classList.add('hidden');
+                            resolve();
+                            return;
+                        }
+                        
+                        if (!response.ok) {
+                            throw new Error(`Erro na API: ${response.status}`);
+                        }
+                        
+                        const data = await response.json();
+                        
+                        // Processar os dados recebidos da API
+                        if (data.companies && data.companies.length > 0) {
+                            // Preencher o seletor de empresas
+                            const companyFilter = document.getElementById('company-filter');
+                            if (companyFilter) {
+                                companyFilter.innerHTML = '<option value="all"><i class="fas fa-building mr-2"></i><span class="hidden md:inline">Todas as empresas</span><span class="md:hidden">Todas</span></option>';
+                                
+                                data.companies.forEach(company => {
+                                    const option = document.createElement('option');
+                                    option.value = company.name;
+                                    option.innerHTML = `<i class="fas fa-building mr-2"></i><span class="hidden md:inline">${company.name}</span><span class="md:hidden">${company.name.substring(0, 8)}${company.name.length > 8 ? '...' : ''}</span>`;
+                                    companyFilter.appendChild(option);
+                                });
+                                companyFilter.disabled = false;
+                            }
+                            
+                            // Construir HTML das pastas
+                            let foldersHTML = '';
+                            
+                            // Para cada empresa
+                            data.companies.forEach(company => {
+                                foldersHTML += `
+                                    <div class="company-item">
+                                        <div class="company-header flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors">
+                                            <div class="flex items-center">
+                                                <i class="company-icon fas fa-chevron-down text-gray-500 mr-3 transform transition-transform"></i>
+                                                <i class="fas fa-building text-blue-500 mr-2"></i>
+                                                <span class="font-medium">${company.name}</span>
+                                            </div>
+                                            <span class="text-sm text-gray-500">${company.folders ? company.folders.length : 0} anos</span>
+                                        </div>
+                                        <div class="company-contents pl-6">
+                                `;
+                                
+                                // Verificar se a empresa tem pastas
+                                if (company.folders && company.folders.length > 0) {
+                                    company.folders.forEach(folder => {
+                                        foldersHTML += `
+                                        <div class="company-folder">
+                                            <div class="folder-item">
+                                                <div class="folder-header flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors">
+                                                    <div class="flex items-center">
+                                                        <i class="folder-icon fas fa-chevron-down text-gray-500 mr-3 transform transition-transform"></i>
+                                                        <i class="fas fa-folder text-yellow-400 mr-2"></i>
+                                                        <span class="font-medium">Notas Fiscais ${folder.year}</span>
+                                                    </div>
+                                                    <span class="text-sm text-gray-500">${folder.months.length} meses</span>
+                                                </div>
+                                                <div class="folder-contents pl-9 pr-4">
+                                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 py-3">
+                                        `;
+                                        
+                                        // Adicionar meses
+                                        folder.months.forEach(month => {
+                                            foldersHTML += `
+                                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                                <div class="flex items-center">
+                                                    <i class="fas fa-file-pdf text-red-500 mr-2"></i>
+                                                    <div>
+                                                        <span class="text-sm block">${month.name}</span>
+                                                        <span class="text-xs text-gray-500">${month.files} arquivos, ${month.size}</span>
+                                                    </div>
+                                                </div>
+                                                <button class="download-btn bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs transition-colors" data-filename="${month.filename}">
+                                                    <i class="fas fa-download mr-1"></i> Baixar
+                                                </button>
+                                            </div>
+                                            `;
+                                        });
+                                        
+                                        foldersHTML += `
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        `;
+                                    });
+                                } else {
+                                    foldersHTML += `<p class="text-gray-500 text-center py-4 pl-9">Nenhuma pasta encontrada para esta empresa.</p>`;
+                                }
+                                
+                                foldersHTML += `
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                            
+                            // Inserir no DOM
+                            if (foldersContainer) {
+                                foldersContainer.innerHTML = foldersHTML;
+                                
+                                // Adicionar informações do cliente se disponíveis
+                                if (data.client) {
+                                    const title = document.querySelector('#downloads-content h1');
+                                    if (title && data.client.name) {
+                                        title.textContent = `Downloads de Notas Fiscais - ${data.client.name}`;
+                                    }
+                                    const subtitle = document.querySelector('#downloads-content p');
+                                    if (subtitle && data.client.company) {
+                                        subtitle.textContent = `Cliente: ${data.client.company}. Selecione a empresa, ano e mês desejado para baixar todas as notas fiscais de determinado período.`;
+                                    }
+                                }
+                            }
+                        } else {
+                            if (emptyState) emptyState.classList.remove('hidden');
+                        }
+                    } catch (error) {
+                        console.error('Erro ao carregar pastas:', error);
+                        showToast('Erro ao carregar estrutura de pastas.', 'error');
+                        if (emptyState) emptyState.classList.remove('hidden');
+                    } finally {
+                        if (loadingIndicator) loadingIndicator.classList.add('hidden');
+                        resolve();
+                    }
+                });
+            }
+
+            // Buscar pastas
+            const searchBtn = document.getElementById('search-btn');
+            if (searchBtn) {
+                searchBtn.addEventListener('click', function() {
+                    handleSearch();
+                });
+            }
+
+            // Permitir busca ao pressionar Enter
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        handleSearch();
+                    }
+                });
+            }
+
+            // Função principal de busca
+            async function handleSearch() {
+                const searchTerm = document.getElementById('search-input').value.trim();
+                const selectedCompany = document.getElementById('company-filter').value;
+                
+                if (!searchTerm) {
+                    loadFolders();
+                    return;
+                }
+                
+                // Verificar se é uma data no formato MM/AAAA ou MM-AAAA
+                const dateMatch = searchTerm.match(/^(\d{1,2})[\/\-](\d{4})$/);
+                if (dateMatch) {
+                    const month = parseInt(dateMatch[1]);
+                    const year = parseInt(dateMatch[2]);
+                    await searchByDate(month, year, selectedCompany);
+                    return;
+                }
+                
+                // Verificar se é apenas um ano (AAAA)
+                const yearMatch = searchTerm.match(/^(\d{4})$/);
+                if (yearMatch) {
+                    const year = parseInt(yearMatch[1]);
+                    await searchByYear(year, selectedCompany);
+                    return;
+                }
+                
+                // Se não for uma data, fazer busca textual normal
+                searchFoldersByText(searchTerm, selectedCompany);
+            }
+
+            // Buscar por data específica (MM/AAAA)
+            async function searchByDate(month, year, selectedCompany) {
+                // Primeiro carrega todas as pastas
+                await loadFolders();
+                
+                // Aguardar um pouco para o DOM ser atualizado
+                setTimeout(() => {
+                    let companyElements;
+                    // Determinar quais empresas considerar na busca
+                    if (selectedCompany === "all") {
+                        companyElements = document.querySelectorAll('.company-item');
+                    } else {
+                        // Encontrar apenas a seção da empresa selecionada
+                        companyElements = Array.from(document.querySelectorAll('.company-item')).filter(companyItem => {
+                            const companyName = companyItem.querySelector('.company-header .font-medium').textContent.trim();
+                            return companyName === selectedCompany;
+                        });
+                    }
+                    
+                    let yearFound = false;
+                    let monthFound = false;
+                    
+                    // Para cada empresa relevante
+                    companyElements.forEach(companyItem => {
+                        // Expandir a empresa para que possamos buscar dentro dela
+                        const companyContents = companyItem.querySelector('.company-contents');
+                        const companyIcon = companyItem.querySelector('.company-icon');
+                        if (companyContents && companyIcon) {
+                            companyContents.classList.add('company-content-open');
+                            companyIcon.classList.add('rotate-180');
+                            
+                            // Encontrar as pastas do ano dentro desta empresa
+                            const yearFolders = companyItem.querySelectorAll('.folder-item');
+                            yearFolders.forEach(folder => {
+                                const folderName = folder.querySelector('.font-medium').textContent;
+                                const folderYear = parseInt(folderName.replace('Notas Fiscais ', ''));
+                                if (folderYear === year) {
+                                    yearFound = true;
+                                    // Expandir a pasta do ano
+                                    const folderContents = folder.querySelector('.folder-contents');
+                                    const folderIcon = folder.querySelector('.folder-icon');
+                                    if (folderContents && folderIcon) {
+                                        folderContents.classList.add('folder-content-open');
+                                        folderIcon.classList.add('rotate-180');
+                                    }
+                                    // Destacar o ano
+                                    folder.classList.add('year-highlight');
+                                    
+                                    // Buscar o mês específico
+                                    const monthElements = folder.querySelectorAll('.folder-contents > div > div');
+                                    const monthNames = [
+                                        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                                        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                                    ];
+                                    const monthName = monthNames[month - 1];
+                                    
+                                    monthElements.forEach(monthElement => {
+                                        const monthText = monthElement.querySelector('.text-sm.block').textContent;
+                                        if (monthText === monthName) {
+                                            monthFound = true;
+                                            // Destacar o mês
+                                            monthElement.classList.add('month-highlight');
+                                            // Rolar até o mês
+                                            monthElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                    
+                    if (!yearFound) {
+                        showToast(`Nenhuma pasta encontrada para o ano ${year}`, 'info');
+                    } else if (!monthFound) {
+                        showToast(`Mês ${month} não encontrado no ano ${year}`, 'info');
+                    }
+                }, 300);
+            }
+
+            // Buscar apenas por ano (AAAA)
+            async function searchByYear(year, selectedCompany) {
+                // Primeiro carrega todas as pastas
+                await loadFolders();
+                
+                // Aguardar um pouco para o DOM ser atualizado
+                setTimeout(() => {
+                    let companyElements;
+                    // Determinar quais empresas considerar na busca
+                    if (selectedCompany === "all") {
+                        companyElements = document.querySelectorAll('.company-item');
+                    } else {
+                        // Encontrar apenas a seção da empresa selecionada
+                        companyElements = Array.from(document.querySelectorAll('.company-item')).filter(companyItem => {
+                            const companyName = companyItem.querySelector('.company-header .font-medium').textContent.trim();
+                            return companyName === selectedCompany;
+                        });
+                    }
+                    
+                    let found = false;
+                    
+                    // Para cada empresa relevante
+                    companyElements.forEach(companyItem => {
+                        // Expandir a empresa para que possamos buscar dentro dela
+                        const companyContents = companyItem.querySelector('.company-contents');
+                        const companyIcon = companyItem.querySelector('.company-icon');
+                        if (companyContents && companyIcon) {
+                            companyContents.classList.add('company-content-open');
+                            companyIcon.classList.add('rotate-180');
+                            
+                            // Encontrar as pastas do ano dentro desta empresa
+                            const yearFolders = companyItem.querySelectorAll('.folder-item');
+                            yearFolders.forEach(folder => {
+                                const folderName = folder.querySelector('.font-medium').textContent;
+                                const folderYear = parseInt(folderName.replace('Notas Fiscais ', ''));
+                                if (folderYear === year) {
+                                    found = true;
+                                    // Expandir a pasta do ano
+                                    const folderContents = folder.querySelector('.folder-contents');
+                                    const folderIcon = folder.querySelector('.folder-icon');
+                                    if (folderContents && folderIcon) {
+                                        folderContents.classList.add('folder-content-open');
+                                        folderIcon.classList.add('rotate-180');
+                                    }
+                                    // Destacar o ano
+                                    folder.classList.add('year-highlight');
+                                    // Rolar até a pasta
+                                    folder.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                }
+                            });
+                        }
+                    });
+                    
+                    if (!found) {
+                        showToast(`Nenhuma pasta encontrada para o ano ${year}`, 'info');
+                    }
+                }, 300);
+            }
+
+            // Busca textual
+            function searchFoldersByText(searchTerm, selectedCompany) {
+                const searchTermLower = searchTerm.toLowerCase();
+                const companyItems = document.querySelectorAll('.company-item');
+                let found = false;
+                
+                // Primeiro, remover todos os destaques anteriores
+                document.querySelectorAll('.year-highlight, .month-highlight').forEach(el => {
+                    el.classList.remove('year-highlight', 'month-highlight');
+                });
+                
+                // Determinar quais empresas considerar na busca
+                let companiesToSearch;
+                if (selectedCompany === "all") {
+                    companiesToSearch = companyItems;
+                } else {
+                    // Encontrar apenas a seção da empresa selecionada
+                    companiesToSearch = Array.from(companyItems).filter(companyItem => {
+                        const companyName = companyItem.querySelector('.company-header .font-medium').textContent.trim();
+                        return companyName === selectedCompany;
+                    });
+                }
+                
+                companiesToSearch.forEach(companyItem => {
+                    const companyName = companyItem.querySelector('.company-header .font-medium').textContent.toLowerCase();
+                    // Verificar se o nome da empresa corresponde à busca
+                    if (companyName.includes(searchTermLower)) {
+                        companyItem.classList.remove('hidden');
+                        found = true;
+                        // Expandir a empresa
+                        const companyContents = companyItem.querySelector('.company-contents');
+                        const companyIcon = companyItem.querySelector('.company-icon');
+                        if (companyContents && companyIcon) {
+                            companyContents.classList.add('company-content-open');
+                            companyIcon.classList.add('rotate-180');
+                        }
+                        // Expandir todas as pastas da empresa
+                        const folderItems = companyItem.querySelectorAll('.folder-item');
+                        folderItems.forEach(item => {
+                            const folderContents = item.querySelector('.folder-contents');
+                            const folderIcon = item.querySelector('.folder-icon');
+                            if (folderContents && folderIcon) {
+                                folderContents.classList.add('folder-content-open');
+                                folderIcon.classList.add('rotate-180');
+                            }
+                        });
+                        // Destacar a empresa
+                        companyItem.style.border = '2px solid #3b82f6';
+                        companyItem.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.3)';
+                        // Rolar até a empresa
+                        companyItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    } else {
+                        // Verificar se alguma pasta dentro desta empresa corresponde à busca
+                        const folderItems = companyItem.querySelectorAll('.folder-item');
+                        let folderFound = false;
+                        folderItems.forEach(item => {
+                            const folderName = item.querySelector('.font-medium').textContent.toLowerCase();
+                            if (folderName.includes(searchTermLower)) {
+                                folderFound = true;
+                                found = true;
+                                companyItem.classList.remove('hidden');
+                                // Expandir a empresa
+                                const companyContents = companyItem.querySelector('.company-contents');
+                                const companyIcon = companyItem.querySelector('.company-icon');
+                                if (companyContents && companyIcon) {
+                                    companyContents.classList.add('company-content-open');
+                                    companyIcon.classList.add('rotate-180');
+                                }
+                                // Expandir a pasta
+                                const folderContents = item.querySelector('.folder-contents');
+                                const folderIcon = item.querySelector('.folder-icon');
+                                if (folderContents && folderIcon) {
+                                    folderContents.classList.add('folder-content-open');
+                                    folderIcon.classList.add('rotate-180');
+                                }
+                                // Destacar a pasta
+                                item.classList.add('year-highlight');
+                                // Rolar até a pasta
+                                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            } else {
+                                // Verificar se algum mês dentro desta pasta corresponde à busca
+                                const monthElements = item.querySelectorAll('.folder-contents > div > div');
+                                let monthFound = false;
+                                monthElements.forEach(monthElement => {
+                                    const monthText = monthElement.querySelector('.text-sm.block').textContent.toLowerCase();
+                                    if (monthText.includes(searchTermLower)) {
+                                        monthFound = true;
+                                        folderFound = true;
+                                        found = true;
+                                        companyItem.classList.remove('hidden');
+                                        // Expandir a empresa
+                                        const companyContents = companyItem.querySelector('.company-contents');
+                                        const companyIcon = companyItem.querySelector('.company-icon');
+                                        if (companyContents && companyIcon) {
+                                            companyContents.classList.add('company-content-open');
+                                            companyIcon.classList.add('rotate-180');
+                                        }
+                                        // Expandir a pasta
+                                        const folderContents = item.querySelector('.folder-contents');
+                                        const folderIcon = item.querySelector('.folder-icon');
+                                        if (folderContents && folderIcon) {
+                                            folderContents.classList.add('folder-content-open');
+                                            folderIcon.classList.add('rotate-180');
+                                        }
+                                        // Destacar o mês
+                                        monthElement.classList.add('month-highlight');
+                                        // Rolar até o mês
+                                        monthElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                    }
+                                });
+                                if (!monthFound) {
+                                    // Se nenhum mês foi encontrado, ocultar a pasta
+                                    item.classList.add('hidden');
+                                }
+                            }
+                        });
+                        if (folderFound) {
+                            companyItem.classList.remove('hidden');
+                        } else {
+                            companyItem.classList.add('hidden');
+                        }
+                    }
+                });
+                
+                if (!found) {
+                    showToast('Nenhuma empresa ou pasta encontrada para a busca realizada.', 'info');
+                }
+            }
+
+            // Inicializar a aba ativa
+            switchTab('home');
+        });
+    </script>
 
 </body>
 </html>
