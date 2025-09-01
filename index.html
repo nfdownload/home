@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jornal Bíblico - Acesso</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+    }
+    iframe {
+      width: 100%;
+      height: 100vh;
+      border: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+    .loading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #333;
+      font-size: 18px;
+      text-align: center;
+      z-index: 2;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      width: 80%;
+      max-width: 500px;
+    }
+    .error {
+      color: #d9534f;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mensagem de carregamento -->
+  <div id="loading" class="loading">
+    <p>🌐 Conectando ao servidor...</p>
+    <p>Carregando interface de acesso...</p>
+  </div>
+
+  <!-- Iframe que tenta carregar o site original -->
+  <iframe 
+    src="http://islands-persons.gl.at.ply.gg:57769/" 
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen
+    onload="
+      document.getElementById('loading').style.display = 'none';
+    "
+    onerror="
+      document.getElementById('loading').innerHTML = '<p class=error>❌ Falha ao carregar o conteúdo</p><p>Verifique:</p><ul style=text-align:left><li>O servidor está online</li><li>Seu firewall permite conexão</li><li>A URL está acessível</li></ul>';
+      document.getElementById('loading').className += ' error';
+    ">
+  </iframe>
+
+</body>
+</html>
