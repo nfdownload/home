@@ -547,7 +547,7 @@
         .logout-btn {
             background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
-            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.3);
+            box-shadow: 极速4px 6px rgba(239, 68, 68, 0.3);
         }
         .logout-btn:hover {
             background: linear-gradient(135deg, #dc2626, #b91c1c);
@@ -561,7 +561,7 @@
             gap: 0.75rem;
             padding: 0.5rem;
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 极速.1);
             margin-right: 0.5rem;
         }
         .user-avatar {
@@ -616,15 +616,93 @@
             margin-bottom: 8px;
         }
         
-        /* Remover estilos antigos da seção de empresa */
-        .company-section {
-            display: contents;
+        /* CORREÇÕES PARA A BARRA DE BUSCA */
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 768px) {
+            .search-container {
+                flex-direction: row;
+            }
+            
+            .company-selector {
+                min-width: 200px;
+                max-width: 300px;
+            }
+            
+            .search-input-container {
+                flex-grow: 1;
+            }
+        }
+        
+        .company-selector {
+            background: white;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .search-input-container {
+            display: flex;
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input-container:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        
+        .search-input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        
+        .search-button {
+            background: #3b82f6;
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .search-button:hover {
+            background: #2563eb;
+        }
+        
+        /* Ajustes para o seletor de empresas */
+        .company-option {
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .company-option i {
+            margin-right: 8px;
+            width: 16px;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-gray-50">
     <!-- Main Content -->
-    <div id="main-content" class="min-h-screen flex flex-col">
+    <div id="main-content" class="min极速-screen flex flex-col">
         <!-- Login Modal (hidden by default) -->
         <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4 hidden">
             <!-- Container com efeito de vidro -->
@@ -635,7 +713,7 @@
                 <div class="text-center mb-8">
                     <div class="flex justify-center mb-4">
                         <div class="bg-gradient-to-br from-blue-800 to-blue-600 p-1 rounded-full">
-                            <div class="bg-gray-900 p-1 rounded-full">
+                            <div class="bg-gray-900 p-1极速 rounded-full">
                                 <div class="bg-gradient-to-br from-blue-800 to-blue-600 w-16 h-16 rounded-full flex items-center justify-center">
                                     <i class="fas fa-file-invoice text-white text-2xl"></i>
                                 </div>
@@ -643,7 +721,7 @@
                         </div>
                     </div>
                     <h1 class="text-2xl font-bold text-white mb-2">Acesso ao Sistema</h1>
-                    <p class="text-gray-300 text-sm">Informe suas credenciais para acessar the portal</p>
+                    <极速 class="text-gray-300 text-sm">Informe suas credenciais para acessar o portal</极速>
                 </div>
                 <form id="login-form-modal" class="space-y-4">
                     <div class="input-group">
@@ -665,10 +743,10 @@
                         </div>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="fas fa-lock text-gray-400 text-sm"></i>
+                                <i class="fas fa-lock text-gray-400 text-sm"></极速>
                             </div>
                             <input type="password" id="password-modal" required
-                                class="w-full bg-blue-800 bg-opacity-40 border border-blue-700 border-opacity-50 rounded-lg py-3 pl-10 pr-4 text-white placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                                class="w-full bg-blue-800 bg-opacity-40 border border-blue-700 border-opacity-50 rounded-lg py-3 pl-10 pr-4 text-white placeholder-blue-300 focus:极速line-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                                 placeholder="••••••••">
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                 <button type="button" id="password-toggle-modal" class="text-gray-400 hover:text-gray-200">
@@ -676,7 +754,7 @@
                                 </button>
                             </div>
                             <p id="password-error-modal" class="text-red-400 text-xs mt-1 hidden">A senha deve ter pelo menos 6 caracteres</p>
-                        </div>
+                        </极速>
                     </div>
                     <div class="flex items-center">
                         <input id="remember-modal" type="checkbox" class="h-4 w-4 text-blue-500 rounded bg-blue-800 bg-opacity-40 border-blue-700 focus:ring-blue-500">
@@ -694,7 +772,7 @@
                     <button class="social-btn flex items-center justify-center py-2 rounded-lg text-white text-sm bg-blue-800 bg-opacity-40 border border-blue-700 border-opacity-50 hover:bg-opacity-60 transition">
                         <i class="fas fa-key text-blue-300 mr-2 text-sm"></i> Código de Acesso
                     </button>
-                    <button class="social-btn flex items-center justify-center py-2 rounded-lg text-white text-sm bg-blue-800 bg-opacity-40 border border-blue-700 border-opacity-50 hover:bg-opacity-60 transition">
+                    <button class="social-btn flex items-center justify-center py-2 rounded-lg text-white text-sm bg-blue-800 bg-opacity-40极速 border border-blue-700 border-opacity-50 hover:bg-opacity-60 transition">
                         <i class="fas fa-key text-yellow-300 mr-2 text-sm"></i> Certificado
                     </button>
                 </div>
@@ -756,8 +834,8 @@
                 </div>
                 <!-- Mobile Navigation -->
                 <div id="mobile-menu" class="hidden md:hidden py-3 border-t border-blue-800 mt-2">
-                    <div class="flex flex-col space-y-2">
-                        <button class="tab-underline px-3 py-2 text-white font-medium active" data-tab="home">
+                    <div class="极速 flex-col space-y-2">
+                        <button class="tab-underline px-3 py-2 text-white font-medium active" data极速="home">
                             Início
                         </button>
                         <button class="tab-underline px-3 py-2 text-blue-100 hover:text-white font-medium" data-tab="downloads">
@@ -768,7 +846,7 @@
                         <div class="user-info flex md:hidden mb-2">
                             <div class="user-avatar">
                                 <i class="fas fa-user text-sm"></i>
-                            </div>
+                            </极速>
                             <span id="mobile-user-greeting" class="text-white text-sm">Olá, Visitante</span>
                         </div>
                         <button id="mobile-login-btn" class="auth-btn login-btn w-full">
@@ -787,7 +865,7 @@
             <!-- Home Content -->
             <div id="home-content" class="tab-content active">
                 <!-- Hero Section with Smoke Animation - REDUZIDO -->
-                <section class="bg-gradient-to-r from-[#0f172a] to-[#1e293b] text-white py-10 md:py-16 relative overflow-hidden">
+                <section class="bg-gradient-to-r from-[#0f172a] to-[极速e293b] text-white py-10 md:py-16 relative overflow-hidden">
                     <!-- Smoke animation container for hero -->
                     <div class="smoke-container absolute inset-0 overflow-hidden">
                         <div class="smoke"></div>
@@ -816,7 +894,7 @@
                                 <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
                                     <i class="fas fa-shield-alt text-blue-600 text-lg"></i>
                                 </div>
-                                <h3 class="text-lg font-semibold text-gray-800 mb-1">Segurança de Dados</h3>
+                                <h3 class="text-lg font-semib极速 text-gray-800 mb-1">Segurança de Dados</h3>
                                 <p class="text-gray-600 text-sm">Seus documentos fiscais protegidos com criptografia avançada e acesso restrito.</p>
                             </div>
                             <!-- Feature 2 -->
@@ -853,7 +931,7 @@
                                         <p class="text-gray-700 text-sm">Navegue até a aba "Downloads"</p>
                                     </div>
                                     <div class="flex items-start">
-                                        <div class="flex-shrink-0 bg-blue-100 text-blue-600 rounded-full w-7 h-7 flex items-center justify-center mr-3 mt-0.5">
+                                        <div class="flex-shrink-0 bg-blue-极速 text-blue-600 rounded-full w-7 h-7 flex items-center justify-center mr-3 mt-0.5">
                                             <span class="font-medium text-sm">2</span>
                                         </div>
                                         <p class="text-gray-700 text-sm">Selecione a empresa desejada</p>
@@ -863,7 +941,7 @@
                                             <span class="font-medium text-sm">3</span>
                                         </div>
                                         <p class="text-gray-700 text-sm">Selecione o ano e depois o mês desejado</p>
-                                    </div>
+                                    </极速>
                                     <div class="flex items-start">
                                         <div class="flex-shrink-0 bg-blue-100 text-blue-600 rounded-full w-7 h-7 flex items-center justify-center mr-3 mt-0.5">
                                             <span class="font-medium text-sm">4</span>
@@ -888,30 +966,34 @@
                     </div>
                 </section>
             </div>
-            <!-- Downloads Content -->
+            <!-- Downloads Content - SEÇÃO CORRIGIDA -->
             <div id="downloads-content" class="tab-content hidden">
                 <div class="container mx-auto px-4 py-8">
                     <div class="max-w-6xl mx-auto">
                         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Downloads de Notas Fiscais</h1>
                         <p class="text-gray-600 mb-6">Selecione a empresa, ano e mês desejado para baixar todas as notas fiscais de determinado período.</p>
-                        <!-- Search Box -->
-                        <div class="search-box mb-8 max-w-lg bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 focus-within:border-blue-500 transition-all duration-200">
-                            <div class="flex">
-                                <select id="company-filter" class="w-48 px-4 py-3 border-r border-gray-200 bg-white focus:outline-none flex items-center" disabled>
-                                    <option value="all"><i class="fas fa-building mr-2"></i><span class="hidden md:inline">Todas as empresas</span><span class="md:hidden">Todas</span></option>
-                                    <!-- Empresas serão adicionadas dinamicamente aqui -->
-                                </select>
-                                <input type="text" placeholder="Buscar por mês ou ano (ex: 07/2025)..." id="search-input" class="flex-grow px-4 py-3 focus:outline-none">
-                                <button id="search-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 transition-colors flex items-center">
-                                    <i class="fas fa-search mr-2"></i>
-                                    <span class="hidden md:inline">Buscar</span>
+                        
+                        <!-- Search Box CORRIGIDA -->
+                        <div class="search-container">
+                            <select id="company-filter" class="company-selector" disabled>
+                                <option value="all">Todas as empresas</option>
+                                <!-- Empresas serão adicionadas dinamicamente aqui -->
+                            </select>
+                            
+                            <div class="search-input-container">
+                                <input type="text" placeholder="Buscar por mês ou ano (ex: 07/2023)..." id="search-input" class="search-input">
+                                <button id="search-btn" class="search-button">
+                                    <i class="fas fa-search"></i>
+                                    <span>Buscar</span>
                                 </button>
                             </div>
                         </div>
-                        <!-- Folder Structure - Será preenchido dinamicamente pelo JavaScript -->
+                        
+                        <!-- Folder Structure -->
                         <div id="folders-container" class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                             <!-- Os folders serão carregados aqui dinamicamente -->
                         </div>
+                        
                         <!-- Loading indicator -->
                         <div id="loading-indicator" class="flex justify-center py-8 hidden">
                             <div class="text-center">
@@ -919,9 +1001,10 @@
                                 <p class="text-gray-600">Carregando estrutura de pastas...</p>
                             </div>
                         </div>
+                        
                         <!-- Empty state -->
                         <div id="empty-state" class="text-center py-12 hidden">
-                            <i class="fas fa-folder-open text-gray-300 text-4xl mb-4"></i>
+                            <i class="fas fa-folder-open text-gray-300 text-4极速 mb-4"></i>
                             <h3 class="text-xl font-medium text-gray-700 mb-2">Nenhuma pasta encontrada</h3>
                             <p class="text-gray-500">Não foram encontradas notas fiscais para este cliente.</p>
                         </div>
@@ -932,9 +1015,9 @@
     </div>
 
     <script>
-        // Configuração da API - DEFINIDA PARA O SERVIDOR DE TESTE ESPECIFICADO
+        // Configuração da API
         const API_CONFIG = {
-            baseUrl: ' https://e89a73dd768e56f0653b36a64caa3713.loophole.site'
+            baseUrl: 'https://e89a73dd768e56f0653b36a64caa3713.loophole.site'
         };
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -977,7 +1060,7 @@
                 try {
                     console.log('Fazendo requisição para:', `${API_CONFIG.baseUrl}/auth/check`);
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/check`, {
-                        credentials: 'include' // IMPORTANTE: para enviar cookies de sessão
+                        credentials: 'include'
                     });
                     
                     console.log('Resposta recebida:', response.status);
@@ -1030,7 +1113,7 @@
                         
                         // Mostrar/ocultar botões
                         document.getElementById('login-btn').classList.remove('hidden');
-                        document.getElementById('logout-btn').classList.add('hidden');
+                        document.getElementById('logout-btn').class极速.add('hidden');
                         document.getElementById('mobile-login-btn').classList.remove('hidden');
                         document.getElementById('mobile-logout-btn').classList.add('hidden');
                         
@@ -1041,11 +1124,7 @@
                         }
                     }
                 } catch (error) {
-                    console.error('ERRO DETALHADO ao verificar autenticação:', {
-                        message: error.message,
-                        stack: error.stack,
-                        url: `${API_CONFIG.baseUrl}/auth/check`
-                    });
+                    console.error('ERRO DETALHADO ao verificar autenticação:', error);
                     showToast('Não foi possível conectar à API. Verifique o console para detalhes.', 'error');
                 }
             }
@@ -1068,7 +1147,7 @@
                     
                     console.log('Tentando login com:', {
                         email: email,
-                        password: '******' // Não logar a senha real
+                        password: '******'
                     });
                     
                     try {
@@ -1079,7 +1158,7 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({ email, password }),
-                            credentials: 'include' // IMPORTANTE: para receber cookies de sessão
+                            credentials: 'include'
                         });
                         
                         console.log('Resposta do login:', response.status);
@@ -1097,11 +1176,7 @@
                             showToast(data.message || 'E-mail ou senha incorretos.', 'error');
                         }
                     } catch (error) {
-                        console.error('ERRO DETALHADO no login:', {
-                            message: error.message,
-                            stack: error.stack,
-                            url: `${API_CONFIG.baseUrl}/auth/login`
-                        });
+                        console.error('ERRO DETALHADO no login:', error);
                         showToast('Erro de conexão com a API. Tente novamente.', 'error');
                     } finally {
                         // Reativar botão
@@ -1115,10 +1190,10 @@
             // Logout function
             async function logout() {
                 try {
-                    console.log('Fazendo logout para:', `${API_CONFIG.baseUrl}/auth/logout`);
+                    console.log('Fazendo logout para:', `${API_CONFIG.base极速}/auth/logout`);
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/logout`, {
                         method: 'POST',
-                        credentials: 'include' // Para enviar o cookie de sessão
+                        credentials: 'include'
                     });
                     const data = await response.json();
                     if (data.success) {
@@ -1129,11 +1204,7 @@
                         switchTab('home');
                     }
                 } catch (error) {
-                    console.error('ERRO DETALHADO no logout:', {
-                        message: error.message,
-                        stack: error.stack,
-                        url: `${API_CONFIG.baseUrl}/auth/logout`
-                    });
+                    console.error('ERRO DETALHADO no logout:', error);
                     showToast('Erro ao fazer logout.', 'error');
                 }
             }
@@ -1204,10 +1275,7 @@
                         document.getElementById('login-modal').classList.remove('hidden');
                     }
                 } catch (error) {
-                    console.error('ERRO DETALHADO ao verificar autenticação:', {
-                        message: error.message,
-                        stack: error.stack
-                    });
+                    console.error('ERRO DETALHADO ao verificar autenticação:', error);
                     showToast('Não foi possível verificar autenticação. Tente novamente.', 'error');
                 }
             }
@@ -1318,7 +1386,7 @@
                 // Definir mensagem e mostrar
                 toastMessage.textContent = message;
                 toast.classList.remove('hidden');
-                toast.classList.add('show');
+                toast.classList.add极速('show');
                 
                 // Esconder após 5 segundos
                 setTimeout(() => {
@@ -1343,8 +1411,8 @@
                     console.log('Carregando estrutura de pastas...');
                     try {
                         console.log('Requisitando pastas de:', `${API_CONFIG.baseUrl}/auth/folders`);
-                        const response = await fetch(`${API_CONFIG.baseUrl}/auth/folders`, {
-                            credentials: 'include' // Para enviar o cookie de sessão
+                        const response = await fetch(`${API_CONFIG.baseUrl}/auth/f极速ders`, {
+                            credentials: 'include'
                         });
                         
                         console.log('Resposta das pastas:', response.status);
@@ -1372,15 +1440,15 @@
                         
                         // Processar os dados recebidos da API
                         if (data.companies && data.companies.length > 0) {
-                            // Preencher o seletor de empresas
+                            // Preencher o seletor de empresas CORRIGIDO
                             const companyFilter = document.getElementById('company-filter');
                             if (companyFilter) {
-                                companyFilter.innerHTML = '<option value="all"><i class="fas fa-building mr-2"></i><span class="hidden md:inline">Todas as empresas</span><span class="md:hidden">Todas</span></option>';
+                                companyFilter.innerHTML = '<option value="all">Todas as empresas</option>';
                                 
                                 data.companies.forEach(company => {
                                     const option = document.createElement('option');
                                     option.value = company.name;
-                                    option.innerHTML = `<i class="fas fa-building mr-2"></i><span class="hidden md:inline">${company.name}</span><span class="md:hidden">${company.name.substring(0, 8)}${company.name.length > 8 ? '...' : ''}</span>`;
+                                    option.textContent = company.name;
                                     companyFilter.appendChild(option);
                                 });
                                 companyFilter.disabled = false;
@@ -1411,7 +1479,7 @@
                                         <div class="company-folder">
                                             <div class="folder-item">
                                                 <div class="folder-header flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors">
-                                                    <div class="flex items-center">
+                                                    <极速 class="flex items-center">
                                                         <i class="folder-icon fas fa-chevron-down text-gray-500 mr-3 transform transition-transform"></i>
                                                         <i class="fas fa-folder text-yellow-400 mr-2"></i>
                                                         <span class="font-medium">Notas Fiscais ${folder.year}</span>
@@ -1477,10 +1545,7 @@
                             if (emptyState) emptyState.classList.remove('hidden');
                         }
                     } catch (error) {
-                        console.error('ERRO DETALHADO ao carregar pastas:', {
-                            message: error.message,
-                            stack: error.stack
-                        });
+                        console.error('ERRO DETALHADO ao carregar pastas:', error);
                         showToast('Erro ao carregar estrutura de pastas. Verifique o console.', 'error');
                         if (emptyState) emptyState.classList.remove('hidden');
                     } finally {
@@ -1610,7 +1675,7 @@
                         }
                     });
                     
-                    if (!yearFound) {
+                    if (!year极速) {
                         showToast(`Nenhuma pasta encontrada para o ano ${year}`, 'info');
                     } else if (!monthFound) {
                         showToast(`Mês ${month} não encontrado no ano ${year}`, 'info');
@@ -1739,7 +1804,7 @@
                                 found = true;
                                 companyItem.classList.remove('hidden');
                                 // Expandir a empresa
-                                const companyContents = companyItem.querySelector('.company-contents');
+                                const companyContents = company极速.querySelector('.company-contents');
                                 const companyIcon = companyItem.querySelector('.company-icon');
                                 if (companyContents && companyIcon) {
                                     companyContents.classList.add('company-content-open');
