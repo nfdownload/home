@@ -1284,13 +1284,19 @@
 
             // Alternar menu mobile
             const mobileMenuButton = document.getElementById('mobile-menu-button');
-            if (mobileMenuButton) {
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenuButton && mobileMenu) {
                 mobileMenuButton.addEventListener('click', function() {
-                    const mobileMenu = document.getElementById('mobile-menu');
-                    if (mobileMenu) mobileMenu.classList.toggle('hidden');
+                    mobileMenu.classList.toggle('hidden');
+                });
+                
+                // Fechar o menu móvel automaticamente ao clicar em um link
+                document.querySelectorAll('#mobile-menu .tab-underline').forEach(button => {
+                    button.addEventListener('click', function() {
+                        mobileMenu.classList.add('hidden');
+                    });
                 });
             }
-
             // Alternar visibilidade de pastas e empresas
             document.addEventListener('click', function(e) {
                 // Para empresas
