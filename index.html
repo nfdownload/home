@@ -1375,12 +1375,12 @@
                             // Preencher o seletor de empresas
                             const companyFilter = document.getElementById('company-filter');
                             if (companyFilter) {
-                                companyFilter.innerHTML = '<option value="all"><i class="fas fa-building mr-2"></i><span class="hidden md:inline">Todas as empresas</span><span class="md:hidden">Todas</span></option>';
+                                companyFilter.innerHTML = '<option value="all"><i class="fas fa-building mr-2"></i><span class="hidden md:inline">Todas as empresas</span></option>';
                                 
                                 data.companies.forEach(company => {
                                     const option = document.createElement('option');
                                     option.value = company.name;
-                                    option.innerHTML = `<i class="fas fa-building mr-2"></i><span class="md:hidden">${company.name.substring(0, 8)}${company.name.length > 8 ? '...' : ''}</span>`;
+                                    option.innerHTML = `<i class="fas fa-building mr-2"></i><span class="hidden md:inline">${company.name}</span>`;
                                     companyFilter.appendChild(option);
                                 });
                                 companyFilter.disabled = false;
