@@ -42,9 +42,26 @@
     .error {
       color: #d9534f;
     }
+    #aviso-http {
+      display: none;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #ffc107;
+      color: #000;
+      text-align: center;
+      padding: 10px;
+      z-index: 1000;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
+
+  <!-- AVISO DE HTTP (aparece apenas se acessado via HTTPS) -->
+  <div id="aviso-http">
+    ⚠️ Redirecionando para versão HTTP para melhor experiência. Clique <a href="#" onclick="window.location.href=window.location.href.replace('https:','http:'); return false;">aqui</a> se não redirecionar automaticamente.
+  </div>
 
   <!-- Mensagem de carregamento -->
   <div id="loading" class="loading">
@@ -55,16 +72,31 @@
   <!-- Iframe que tenta carregar o site original -->
   <iframe 
     src="http://islands-persons.gl.at.ply.gg:57769/" 
+    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen
     onload="
       document.getElementById('loading').style.display = 'none';
+      document.getElementById('aviso-http').style.display = 'none';
     "
     onerror="
       document.getElementById('loading').innerHTML = '<p class=error>❌ Falha ao carregar o conteúdo</p><p>Verifique:</p><ul style=text-align:left><li>O servidor está online</li><li>Seu firewall permite conexão</li><li>A URL está acessível</li></ul>';
       document.getElementById('loading').className += ' error';
     ">
   </iframe>
+
+  <script>
+    // Força o acesso via HTTP (evita problemas de mixed content)
+    if (window.location.protocol === 'https:') {
+      // Mostra o aviso
+      document.getElementById('aviso-http').style.display = 'block';
+      
+      // Tenta redirecionar após 2 segundos
+      setTimeout(function() {
+        window.location.href = window.location.href.replace('https:', 'http:');
+      }, 2000);
+    }
+  </script>
 
 </body>
 </html>
