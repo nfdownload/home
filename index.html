@@ -938,10 +938,13 @@
         };
 
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('Página carregada. Configuração da API:', API_CONFIG);
+            
             // Verificar se há configuração na URL (para flexibilidade)
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('apiUrl')) {
                 API_CONFIG.baseUrl = urlParams.get('apiUrl');
+                console.log('URL da API sobrescrita:', API_CONFIG.baseUrl);
             }
             
             // Variável para controlar a aba que o usuário tentou acessar
@@ -970,11 +973,16 @@
 
             // Função para verificar autenticação
             async function checkAuth() {
+                console.log('Verificando autenticação...');
                 try {
+                    console.log('Fazendo requisição para:', `${API_CONFIG.baseUrl}/auth/check`);
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/check`, {
                         credentials: 'include' // IMPORTANTE: para enviar cookies de sessão
                     });
+                    
+                    console.log('Resposta recebida:', response.status);
                     const data = await response.json();
+                    console.log('Dados de autenticação:', data);
                     
                     if (data.authenticated) {
                         // Usuário está autenticado
@@ -1033,8 +1041,12 @@
                         }
                     }
                 } catch (error) {
-                    console.error('Erro ao verificar autenticação:', error);
-                    showToast('Não foi possível conectar à API. Verifique sua conexão.', 'error');
+                    console.error('ERRO DETALHADO ao verificar autenticação:', {
+                        message: error.message,
+                        stack: error.stack,
+                        url: `${API_CONFIG.baseUrl}/auth/check`
+                    });
+                    showToast('Não foi possível conectar à API. Verifique o console para detalhes.', 'error');
                 }
             }
 
@@ -1054,7 +1066,13 @@
                     loginButtonText.textContent = 'Autenticando...';
                     loginSpinner.classList.remove('hidden');
                     
+                    console.log('Tentando login com:', {
+                        email: email,
+                        password: '******' // Não logar a senha real
+                    });
+                    
                     try {
+                        console.log('Enviando credenciais para:', `${API_CONFIG.baseUrl}/auth/login`);
                         const response = await fetch(`${API_CONFIG.baseUrl}/auth/login`, {
                             method: 'POST',
                             headers: {
@@ -1064,7 +1082,10 @@
                             credentials: 'include' // IMPORTANTE: para receber cookies de sessão
                         });
                         
+                        console.log('Resposta do login:', response.status);
                         const data = await response.json();
+                        console.log('Resposta do login:', data);
+                        
                         if (data.success) {
                             // Login bem-sucedido
                             showToast('Login realizado com sucesso!', 'success');
@@ -1076,6 +1097,11 @@
                             showToast(data.message || 'E-mail ou senha incorretos.', 'error');
                         }
                     } catch (error) {
+                        console.error('ERRO DETALHADO no login:', {
+                            message: error.message,
+                            stack: error.stack,
+                            url: `${API_CONFIG.baseUrl}/auth/login`
+                        });
                         showToast('Erro de conexão com a API. Tente novamente.', 'error');
                     } finally {
                         // Reativar botão
@@ -1089,6 +1115,7 @@
             // Logout function
             async function logout() {
                 try {
+                    console.log('Fazendo logout para:', `${API_CONFIG.baseUrl}/auth/logout`);
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/logout`, {
                         method: 'POST',
                         credentials: 'include' // Para enviar o cookie de sessão
@@ -1102,6 +1129,11 @@
                         switchTab('home');
                     }
                 } catch (error) {
+                    console.error('ERRO DETALHADO no logout:', {
+                        message: error.message,
+                        stack: error.stack,
+                        url: `${API_CONFIG.baseUrl}/auth/logout`
+                    });
                     showToast('Erro ao fazer logout.', 'error');
                 }
             }
@@ -1156,10 +1188,12 @@
             // Função para verificar autenticação antes de trocar de aba
             async function checkAuthAndSwitchTab(tabName) {
                 try {
+                    console.log('Verificando autenticação antes de trocar para aba:', tabName);
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/check`, {
                         credentials: 'include'
                     });
                     const authData = await response.json();
+                    console.log('Resultado da verificação:', authData);
                     if (authData.authenticated) {
                         switchTab(tabName);
                         if (tabName === 'downloads') {
@@ -1170,6 +1204,10 @@
                         document.getElementById('login-modal').classList.remove('hidden');
                     }
                 } catch (error) {
+                    console.error('ERRO DETALHADO ao verificar autenticação:', {
+                        message: error.message,
+                        stack: error.stack
+                    });
                     showToast('Não foi possível verificar autenticação. Tente novamente.', 'error');
                 }
             }
@@ -1302,13 +1340,18 @@
                     if (loadingIndicator) loadingIndicator.classList.remove('hidden');
                     if (foldersContainer) foldersContainer.innerHTML = '';
                     
+                    console.log('Carregando estrutura de pastas...');
                     try {
+                        console.log('Requisitando pastas de:', `${API_CONFIG.baseUrl}/auth/folders`);
                         const response = await fetch(`${API_CONFIG.baseUrl}/auth/folders`, {
                             credentials: 'include' // Para enviar o cookie de sessão
                         });
                         
+                        console.log('Resposta das pastas:', response.status);
+                        
                         if (response.status === 401) {
                             // Não autenticado
+                            console.log('Sessão não autenticada');
                             showToast('Sessão expirada. Faça login novamente.', 'error');
                             document.getElementById('login-modal').classList.remove('hidden');
                             if (loadingIndicator) loadingIndicator.classList.add('hidden');
@@ -1317,10 +1360,15 @@
                         }
                         
                         if (!response.ok) {
+                            console.error('Resposta não OK:', {
+                                status: response.status,
+                                statusText: response.statusText
+                            });
                             throw new Error(`Erro na API: ${response.status}`);
                         }
                         
                         const data = await response.json();
+                        console.log('Estrutura de pastas recebida:', data);
                         
                         // Processar os dados recebidos da API
                         if (data.companies && data.companies.length > 0) {
@@ -1429,8 +1477,11 @@
                             if (emptyState) emptyState.classList.remove('hidden');
                         }
                     } catch (error) {
-                        console.error('Erro ao carregar pastas:', error);
-                        showToast('Erro ao carregar estrutura de pastas.', 'error');
+                        console.error('ERRO DETALHADO ao carregar pastas:', {
+                            message: error.message,
+                            stack: error.stack
+                        });
+                        showToast('Erro ao carregar estrutura de pastas. Verifique o console.', 'error');
                         if (emptyState) emptyState.classList.remove('hidden');
                     } finally {
                         if (loadingIndicator) loadingIndicator.classList.add('hidden');
@@ -1759,5 +1810,6 @@
             switchTab('home');
         });
     </script>
+
 </body>
 </html>
