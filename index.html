@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NFDownload - Portal de Notas Fiscais</title>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' https://api.nfdownload.com.br;">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -606,14 +605,17 @@
             overflow: hidden;
             max-height: 0;
         }
+        
         .company-content-open {
             max-height: 2000px;
             padding-top: 8px;
         }
+        
         .company-header {
             border-bottom: 1px solid #e2e8f0;
             margin-bottom: 8px;
         }
+        
         /* Remover estilos antigos da seção de empresa */
         .company-section {
             display: contents;
@@ -928,55 +930,21 @@
             </div>
         </main>
     </div>
+
     <script>
-        // Configuração da API - DEFINIDA PARA O SERVIDOR DE PRODUÇÃO
-        // NOTA: O uso de tunelamento (loophole.site) deve ser substituído por um domínio de produção real
+        // Configuração da API - DEFINIDA PARA O SERVIDOR DE TESTE ESPECIFICADO
         const API_CONFIG = {
-            baseUrl: 'https://e89a73dd768e56f0653b36a64caa3713.loophole.site'
+            baseUrl: ' https://e89a73dd768e56f0653b36a64caa3713.loophole.site'
         };
-        
-        // Domínios confiáveis para a API
-        const TRUSTED_API_DOMAINS = [
-            'https://e89a73dd768e56f0653b36a64caa3713.loophole.site'
-        ];
-        
-        // Função para sanitizar strings para prevenir XSS
-        function sanitizeHTML(str) {
-            if (typeof str !== 'string') return '';
-            return str
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '<')
-                .replace(/>/g, '>')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-        
-        // Função para verificar se um domínio é confiável
-        function isTrustedDomain(url) {
-            try {
-                const domain = new URL(url).hostname;
-                return TRUSTED_API_DOMAINS.includes(domain);
-            } catch (e) {
-                return false;
-            }
-        }
-        
-        // Função para validar números de mês
-        function isValidMonth(month) {
-            return month >= 1 && month <= 12;
-        }
-        
-        // Função para validar anos
-        function isValidYear(year) {
-            return year >= 1900 && year <= new Date().getFullYear() + 1;
-        }
-        
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Verificar se a URL da API é de um domínio confiável
-            if (!isTrustedDomain(API_CONFIG.baseUrl)) {
-                console.error('Domínio da API não confiável. Abortando operações.');
-                showToast('Erro de configuração. Contate o administrador do sistema.', 'error');
-                return;
+            console.log('Página carregada. Configuração da API:', API_CONFIG);
+            
+            // Verificar se há configuração na URL (para flexibilidade)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('apiUrl')) {
+                API_CONFIG.baseUrl = urlParams.get('apiUrl');
+                console.log('URL da API sobrescrita:', API_CONFIG.baseUrl);
             }
             
             // Variável para controlar a aba que o usuário tentou acessar
@@ -1002,38 +970,29 @@
                     }
                 });
             }
-            
+
             // Função para verificar autenticação
             async function checkAuth() {
+                console.log('Verificando autenticação...');
                 try {
+                    console.log('Fazendo requisição para:', `${API_CONFIG.baseUrl}/auth/check`);
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/check`, {
-                        credentials: 'include'
+                        credentials: 'include' // IMPORTANTE: para enviar cookies de sessão
                     });
                     
-                    // Verificar se a resposta é válida
-                    if (!response.ok) {
-                        throw new Error(`Erro na API: ${response.status}`);
-                    }
-                    
+                    console.log('Resposta recebida:', response.status);
                     const data = await response.json();
+                    console.log('Dados de autenticação:', data);
                     
                     if (data.authenticated) {
                         // Usuário está autenticado
-                        document.getElementById('user-greeting').textContent = `Olá, ${sanitizeHTML(data.user_name)}`;
-                        document.getElementById('mobile-user-greeting').textContent = `Olá, ${sanitizeHTML(data.user_name)}`;
+                        document.getElementById('user-greeting').textContent = `Olá, ${data.user_name}`;
+                        document.getElementById('mobile-user-greeting').textContent = `Olá, ${data.user_name}`;
                         
                         // Atualizar avatar com iniciais
-                        const initials = data.user_name.split(' ')
-                            .filter(name => name.length > 0)
-                            .map(n => n[0])
-                            .join('')
-                            .toUpperCase();
-                        
-                        // Garantir que as iniciais tenham no máximo 2 caracteres
-                        const displayInitials = initials.substring(0, 2);
-                        
+                        const initials = data.user_name.split(' ').map(n => n[0]).join('').toUpperCase();
                         document.querySelectorAll('.user-avatar').forEach(avatar => {
-                            avatar.innerHTML = `<span class="text-xs">${sanitizeHTML(displayInitials)}</span>`;
+                            avatar.innerHTML = `<span class="text-xs">${initials}</span>`;
                         });
                         
                         // Mostrar/ocultar botões
@@ -1082,14 +1041,15 @@
                         }
                     }
                 } catch (error) {
-                    console.error('Erro ao verificar autenticação:', {
+                    console.error('ERRO DETALHADO ao verificar autenticação:', {
                         message: error.message,
-                        url: 'API endpoint'
+                        stack: error.stack,
+                        url: `${API_CONFIG.baseUrl}/auth/check`
                     });
-                    showToast('Não foi possível conectar à API. Tente novamente mais tarde.', 'error');
+                    showToast('Não foi possível conectar à API. Verifique o console para detalhes.', 'error');
                 }
             }
-            
+
             // Login form submission
             const loginForm = document.getElementById('login-form-modal');
             if (loginForm) {
@@ -1106,30 +1066,30 @@
                     loginButtonText.textContent = 'Autenticando...';
                     loginSpinner.classList.remove('hidden');
                     
+                    console.log('Tentando login com:', {
+                        email: email,
+                        password: '******' // Não logar a senha real
+                    });
+                    
                     try {
+                        console.log('Enviando credenciais para:', `${API_CONFIG.baseUrl}/auth/login`);
                         const response = await fetch(`${API_CONFIG.baseUrl}/auth/login`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ 
-                                email: email, 
-                                password: password 
-                            }),
-                            credentials: 'include'
+                            body: JSON.stringify({ email, password }),
+                            credentials: 'include' // IMPORTANTE: para receber cookies de sessão
                         });
                         
+                        console.log('Resposta do login:', response.status);
                         const data = await response.json();
+                        console.log('Resposta do login:', data);
                         
-                        if (response.ok && data.success) {
+                        if (data.success) {
                             // Login bem-sucedido
                             showToast('Login realizado com sucesso!', 'success');
                             document.getElementById('login-modal').classList.add('hidden');
-                            
-                            // Limpar campos do formulário
-                            document.getElementById('email-modal').value = '';
-                            document.getElementById('password-modal').value = '';
-                            
                             // Atualizar a UI
                             await checkAuth();
                         } else {
@@ -1137,9 +1097,10 @@
                             showToast(data.message || 'E-mail ou senha incorretos.', 'error');
                         }
                     } catch (error) {
-                        console.error('Erro no login:', {
+                        console.error('ERRO DETALHADO no login:', {
                             message: error.message,
-                            url: 'API endpoint'
+                            stack: error.stack,
+                            url: `${API_CONFIG.baseUrl}/auth/login`
                         });
                         showToast('Erro de conexão com a API. Tente novamente.', 'error');
                     } finally {
@@ -1150,57 +1111,40 @@
                     }
                 });
             }
-            
+
             // Logout function
             async function logout() {
                 try {
-                    // Primeiro obter um token CSRF seguro
-                    const csrfResponse = await fetch(`${API_CONFIG.baseUrl}/auth/csrf-token`, {
-                        credentials: 'include'
-                    });
-                    
-                    if (!csrfResponse.ok) {
-                        throw new Error('Falha ao obter token CSRF');
-                    }
-                    
-                    const { csrfToken } = await csrfResponse.json();
-                    
-                    // Agora fazer logout com o token CSRF
+                    console.log('Fazendo logout para:', `${API_CONFIG.baseUrl}/auth/logout`);
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/logout`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        credentials: 'include'
+                        credentials: 'include' // Para enviar o cookie de sessão
                     });
-                    
                     const data = await response.json();
-                    
-                    if (response.ok && data.success) {
+                    if (data.success) {
                         showToast('Logout realizado com sucesso!', 'success');
                         // Atualizar a UI
                         await checkAuth();
                         // Voltar para a home
                         switchTab('home');
-                    } else {
-                        throw new Error(data.message || 'Falha ao fazer logout');
                     }
                 } catch (error) {
-                    console.error('Erro no logout:', {
+                    console.error('ERRO DETALHADO no logout:', {
                         message: error.message,
-                        url: 'API endpoint'
+                        stack: error.stack,
+                        url: `${API_CONFIG.baseUrl}/auth/logout`
                     });
-                    showToast('Erro ao fazer logout. Tente novamente.', 'error');
+                    showToast('Erro ao fazer logout.', 'error');
                 }
             }
-            
+
             // Adicionar event listeners para logout
             const logoutBtn = document.getElementById('logout-btn');
             const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+            
             if (logoutBtn) logoutBtn.addEventListener('click', logout);
             if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', logout);
-            
+
             // Fechar modal de login
             const closeLogin = document.getElementById('close-login');
             if (closeLogin) {
@@ -1217,7 +1161,7 @@
                     }
                 });
             }
-            
+
             // Alternar entre abas
             function switchTab(tabName) {
                 // Esconder todos os conteúdos de abas
@@ -1225,7 +1169,6 @@
                     tab.classList.add('hidden');
                     tab.classList.remove('active');
                 });
-                
                 // Mostrar a aba selecionada
                 const tabContent = document.getElementById(tabName + '-content');
                 if (tabContent) {
@@ -1237,25 +1180,20 @@
                 document.querySelectorAll('.tab-underline').forEach(button => {
                     button.classList.remove('active');
                 });
-                
                 document.querySelectorAll(`[data-tab="${tabName}"]`).forEach(button => {
                     button.classList.add('active');
                 });
             }
-            
+
             // Função para verificar autenticação antes de trocar de aba
             async function checkAuthAndSwitchTab(tabName) {
                 try {
+                    console.log('Verificando autenticação antes de trocar para aba:', tabName);
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/check`, {
                         credentials: 'include'
                     });
-                    
-                    if (!response.ok) {
-                        throw new Error('Verificação de autenticação falhou');
-                    }
-                    
                     const authData = await response.json();
-                    
+                    console.log('Resultado da verificação:', authData);
                     if (authData.authenticated) {
                         switchTab(tabName);
                         if (tabName === 'downloads') {
@@ -1266,14 +1204,14 @@
                         document.getElementById('login-modal').classList.remove('hidden');
                     }
                 } catch (error) {
-                    console.error('Erro ao verificar autenticação:', {
+                    console.error('ERRO DETALHADO ao verificar autenticação:', {
                         message: error.message,
-                        url: 'API endpoint'
+                        stack: error.stack
                     });
                     showToast('Não foi possível verificar autenticação. Tente novamente.', 'error');
                 }
             }
-            
+
             // Adicionar event listeners para as abas
             document.querySelectorAll('.tab-underline').forEach(button => {
                 button.addEventListener('click', function() {
@@ -1285,7 +1223,7 @@
                     }
                 });
             });
-            
+
             // Botão "Acessar Downloads" na home
             const accessDownloadsBtn = document.getElementById('access-downloads-btn');
             if (accessDownloadsBtn) {
@@ -1293,7 +1231,7 @@
                     checkAuthAndSwitchTab('downloads');
                 });
             }
-            
+
             // Alternar menu mobile
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             if (mobileMenuButton) {
@@ -1302,7 +1240,7 @@
                     if (mobileMenu) mobileMenu.classList.toggle('hidden');
                 });
             }
-            
+
             // Alternar visibilidade de pastas e empresas
             document.addEventListener('click', function(e) {
                 // Para empresas
@@ -1326,7 +1264,7 @@
                     }
                 }
             });
-            
+
             // Adicionar evento de clique para o botão de login (desktop)
             const loginBtn = document.getElementById('login-btn');
             if (loginBtn) {
@@ -1334,7 +1272,7 @@
                     document.getElementById('login-modal').classList.remove('hidden');
                 });
             }
-            
+
             // Adicionar evento de clique para o botão de login (mobile)
             const mobileLoginBtn = document.getElementById('mobile-login-btn');
             if (mobileLoginBtn) {
@@ -1344,7 +1282,7 @@
                     if (mobileMenu) mobileMenu.classList.add('hidden');
                 });
             }
-            
+
             // Botão de contato
             const contactBtn = document.getElementById('contact-btn');
             if (contactBtn) {
@@ -1352,7 +1290,7 @@
                     showToast('Entre em contato pelo email: contato@nfdownload.com.br', 'info');
                 });
             }
-            
+
             // Função para mostrar notificações toast
             window.showToast = function(message, type = 'info') {
                 const toast = document.getElementById('toast');
@@ -1390,7 +1328,7 @@
                     }, 300);
                 }, 5000);
             };
-            
+
             // Carregar estrutura de pastas
             async function loadFolders() {
                 return new Promise(async (resolve, reject) => {
@@ -1402,13 +1340,18 @@
                     if (loadingIndicator) loadingIndicator.classList.remove('hidden');
                     if (foldersContainer) foldersContainer.innerHTML = '';
                     
+                    console.log('Carregando estrutura de pastas...');
                     try {
+                        console.log('Requisitando pastas de:', `${API_CONFIG.baseUrl}/auth/folders`);
                         const response = await fetch(`${API_CONFIG.baseUrl}/auth/folders`, {
-                            credentials: 'include'
+                            credentials: 'include' // Para enviar o cookie de sessão
                         });
+                        
+                        console.log('Resposta das pastas:', response.status);
                         
                         if (response.status === 401) {
                             // Não autenticado
+                            console.log('Sessão não autenticada');
                             showToast('Sessão expirada. Faça login novamente.', 'error');
                             document.getElementById('login-modal').classList.remove('hidden');
                             if (loadingIndicator) loadingIndicator.classList.add('hidden');
@@ -1417,10 +1360,15 @@
                         }
                         
                         if (!response.ok) {
+                            console.error('Resposta não OK:', {
+                                status: response.status,
+                                statusText: response.statusText
+                            });
                             throw new Error(`Erro na API: ${response.status}`);
                         }
                         
                         const data = await response.json();
+                        console.log('Estrutura de pastas recebida:', data);
                         
                         // Processar os dados recebidos da API
                         if (data.companies && data.companies.length > 0) {
@@ -1430,15 +1378,11 @@
                                 companyFilter.innerHTML = '<option value="all"><i class="fas fa-building mr-2"></i><span class="hidden md:inline">Todas as empresas</span><span class="md:hidden">Todas</span></option>';
                                 
                                 data.companies.forEach(company => {
-                                    // Sanitizar o nome da empresa para prevenir XSS
-                                    const safeCompanyName = sanitizeHTML(company.name);
-                                    
                                     const option = document.createElement('option');
-                                    option.value = safeCompanyName;
-                                    option.innerHTML = `<i class="fas fa-building mr-2"></i><span class="hidden md:inline">${safeCompanyName}</span><span class="md:hidden">${safeCompanyName.substring(0, 8)}${safeCompanyName.length > 8 ? '...' : ''}</span>`;
+                                    option.value = company.name;
+                                    option.innerHTML = `<i class="fas fa-building mr-2"></i><span class="hidden md:inline">${company.name}</span><span class="md:hidden">${company.name.substring(0, 8)}${company.name.length > 8 ? '...' : ''}</span>`;
                                     companyFilter.appendChild(option);
                                 });
-                                
                                 companyFilter.disabled = false;
                             }
                             
@@ -1447,16 +1391,13 @@
                             
                             // Para cada empresa
                             data.companies.forEach(company => {
-                                // Sanitizar o nome da empresa
-                                const safeCompanyName = sanitizeHTML(company.name);
-                                
                                 foldersHTML += `
                                     <div class="company-item">
                                         <div class="company-header flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition-colors">
                                             <div class="flex items-center">
                                                 <i class="company-icon fas fa-chevron-down text-gray-500 mr-3 transform transition-transform"></i>
                                                 <i class="fas fa-building text-blue-500 mr-2"></i>
-                                                <span class="font-medium">${safeCompanyName}</span>
+                                                <span class="font-medium">${company.name}</span>
                                             </div>
                                             <span class="text-sm text-gray-500">${company.folders ? company.folders.length : 0} anos</span>
                                         </div>
@@ -1466,9 +1407,6 @@
                                 // Verificar se a empresa tem pastas
                                 if (company.folders && company.folders.length > 0) {
                                     company.folders.forEach(folder => {
-                                        // Sanitizar o ano
-                                        const safeYear = sanitizeHTML(folder.year);
-                                        
                                         foldersHTML += `
                                         <div class="company-folder">
                                             <div class="folder-item">
@@ -1476,7 +1414,7 @@
                                                     <div class="flex items-center">
                                                         <i class="folder-icon fas fa-chevron-down text-gray-500 mr-3 transform transition-transform"></i>
                                                         <i class="fas fa-folder text-yellow-400 mr-2"></i>
-                                                        <span class="font-medium">Notas Fiscais ${safeYear}</span>
+                                                        <span class="font-medium">Notas Fiscais ${folder.year}</span>
                                                     </div>
                                                     <span class="text-sm text-gray-500">${folder.months.length} meses</span>
                                                 </div>
@@ -1486,27 +1424,16 @@
                                         
                                         // Adicionar meses
                                         folder.months.forEach(month => {
-                                            // Sanitizar os dados do mês
-                                            const safeMonthName = sanitizeHTML(month.name);
-                                            const safeSize = sanitizeHTML(month.size);
-                                            
-                                            // Validar o número do mês
-                                            const monthNumber = parseInt(month.name.split(' ')[1]);
-                                            if (!isValidMonth(monthNumber)) {
-                                                console.warn(`Mês inválido encontrado: ${monthNumber}`);
-                                                return;
-                                            }
-                                            
                                             foldersHTML += `
                                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                                 <div class="flex items-center">
                                                     <i class="fas fa-file-pdf text-red-500 mr-2"></i>
                                                     <div>
-                                                        <span class="text-sm block">${safeMonthName}</span>
-                                                        <span class="text-xs text-gray-500">${month.files} arquivos, ${safeSize}</span>
+                                                        <span class="text-sm block">${month.name}</span>
+                                                        <span class="text-xs text-gray-500">${month.files} arquivos, ${month.size}</span>
                                                     </div>
                                                 </div>
-                                                <button class="download-btn bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs transition-colors" data-filename="${sanitizeHTML(month.filename)}">
+                                                <button class="download-btn bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs transition-colors" data-filename="${month.filename}">
                                                     <i class="fas fa-download mr-1"></i> Baixar
                                                 </button>
                                             </div>
@@ -1538,12 +1465,11 @@
                                 if (data.client) {
                                     const title = document.querySelector('#downloads-content h1');
                                     if (title && data.client.name) {
-                                        title.textContent = `Downloads de Notas Fiscais - ${sanitizeHTML(data.client.name)}`;
+                                        title.textContent = `Downloads de Notas Fiscais - ${data.client.name}`;
                                     }
-                                    
                                     const subtitle = document.querySelector('#downloads-content p');
                                     if (subtitle && data.client.company) {
-                                        subtitle.textContent = `Cliente: ${sanitizeHTML(data.client.company)}. Selecione a empresa, ano e mês desejado para baixar todas as notas fiscais de determinado período.`;
+                                        subtitle.textContent = `Cliente: ${data.client.company}. Selecione a empresa, ano e mês desejado para baixar todas as notas fiscais de determinado período.`;
                                     }
                                 }
                             }
@@ -1551,11 +1477,11 @@
                             if (emptyState) emptyState.classList.remove('hidden');
                         }
                     } catch (error) {
-                        console.error('Erro ao carregar pastas:', {
+                        console.error('ERRO DETALHADO ao carregar pastas:', {
                             message: error.message,
-                            url: 'API endpoint'
+                            stack: error.stack
                         });
-                        showToast('Erro ao carregar estrutura de pastas. Tente novamente.', 'error');
+                        showToast('Erro ao carregar estrutura de pastas. Verifique o console.', 'error');
                         if (emptyState) emptyState.classList.remove('hidden');
                     } finally {
                         if (loadingIndicator) loadingIndicator.classList.add('hidden');
@@ -1563,7 +1489,7 @@
                     }
                 });
             }
-            
+
             // Buscar pastas
             const searchBtn = document.getElementById('search-btn');
             if (searchBtn) {
@@ -1571,7 +1497,7 @@
                     handleSearch();
                 });
             }
-            
+
             // Permitir busca ao pressionar Enter
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
@@ -1581,7 +1507,7 @@
                     }
                 });
             }
-            
+
             // Função principal de busca
             async function handleSearch() {
                 const searchTerm = document.getElementById('search-input').value.trim();
@@ -1597,12 +1523,7 @@
                 if (dateMatch) {
                     const month = parseInt(dateMatch[1]);
                     const year = parseInt(dateMatch[2]);
-                    
-                    if (isValidMonth(month) && isValidYear(year)) {
-                        await searchByDate(month, year, selectedCompany);
-                    } else {
-                        showToast('Mês ou ano inválido na busca.', 'error');
-                    }
+                    await searchByDate(month, year, selectedCompany);
                     return;
                 }
                 
@@ -1610,18 +1531,14 @@
                 const yearMatch = searchTerm.match(/^(\d{4})$/);
                 if (yearMatch) {
                     const year = parseInt(yearMatch[1]);
-                    if (isValidYear(year)) {
-                        await searchByYear(year, selectedCompany);
-                    } else {
-                        showToast('Ano inválido na busca.', 'error');
-                    }
+                    await searchByYear(year, selectedCompany);
                     return;
                 }
                 
                 // Se não for uma data, fazer busca textual normal
                 searchFoldersByText(searchTerm, selectedCompany);
             }
-            
+
             // Buscar por data específica (MM/AAAA)
             async function searchByDate(month, year, selectedCompany) {
                 // Primeiro carrega todas as pastas
@@ -1630,7 +1547,6 @@
                 // Aguardar um pouco para o DOM ser atualizado
                 setTimeout(() => {
                     let companyElements;
-                    
                     // Determinar quais empresas considerar na busca
                     if (selectedCompany === "all") {
                         companyElements = document.querySelectorAll('.company-item');
@@ -1661,7 +1577,6 @@
                                 const folderYear = parseInt(folderName.replace('Notas Fiscais ', ''));
                                 if (folderYear === year) {
                                     yearFound = true;
-                                    
                                     // Expandir a pasta do ano
                                     const folderContents = folder.querySelector('.folder-contents');
                                     const folderIcon = folder.querySelector('.folder-icon');
@@ -1669,7 +1584,6 @@
                                         folderContents.classList.add('folder-content-open');
                                         folderIcon.classList.add('rotate-180');
                                     }
-                                    
                                     // Destacar o ano
                                     folder.classList.add('year-highlight');
                                     
@@ -1679,8 +1593,8 @@
                                         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
                                         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
                                     ];
-                                    
                                     const monthName = monthNames[month - 1];
+                                    
                                     monthElements.forEach(monthElement => {
                                         const monthText = monthElement.querySelector('.text-sm.block').textContent;
                                         if (monthText === monthName) {
@@ -1703,7 +1617,7 @@
                     }
                 }, 300);
             }
-            
+
             // Buscar apenas por ano (AAAA)
             async function searchByYear(year, selectedCompany) {
                 // Primeiro carrega todas as pastas
@@ -1712,7 +1626,6 @@
                 // Aguardar um pouco para o DOM ser atualizado
                 setTimeout(() => {
                     let companyElements;
-                    
                     // Determinar quais empresas considerar na busca
                     if (selectedCompany === "all") {
                         companyElements = document.querySelectorAll('.company-item');
@@ -1742,7 +1655,6 @@
                                 const folderYear = parseInt(folderName.replace('Notas Fiscais ', ''));
                                 if (folderYear === year) {
                                     found = true;
-                                    
                                     // Expandir a pasta do ano
                                     const folderContents = folder.querySelector('.folder-contents');
                                     const folderIcon = folder.querySelector('.folder-icon');
@@ -1750,7 +1662,6 @@
                                         folderContents.classList.add('folder-content-open');
                                         folderIcon.classList.add('rotate-180');
                                     }
-                                    
                                     // Destacar o ano
                                     folder.classList.add('year-highlight');
                                     // Rolar até a pasta
@@ -1765,7 +1676,7 @@
                     }
                 }, 300);
             }
-            
+
             // Busca textual
             function searchFoldersByText(searchTerm, selectedCompany) {
                 const searchTermLower = searchTerm.toLowerCase();
@@ -1791,12 +1702,10 @@
                 
                 companiesToSearch.forEach(companyItem => {
                     const companyName = companyItem.querySelector('.company-header .font-medium').textContent.toLowerCase();
-                    
                     // Verificar se o nome da empresa corresponde à busca
                     if (companyName.includes(searchTermLower)) {
                         companyItem.classList.remove('hidden');
                         found = true;
-                        
                         // Expandir a empresa
                         const companyContents = companyItem.querySelector('.company-contents');
                         const companyIcon = companyItem.querySelector('.company-icon');
@@ -1804,7 +1713,6 @@
                             companyContents.classList.add('company-content-open');
                             companyIcon.classList.add('rotate-180');
                         }
-                        
                         // Expandir todas as pastas da empresa
                         const folderItems = companyItem.querySelectorAll('.folder-item');
                         folderItems.forEach(item => {
@@ -1815,7 +1723,6 @@
                                 folderIcon.classList.add('rotate-180');
                             }
                         });
-                        
                         // Destacar a empresa
                         companyItem.style.border = '2px solid #3b82f6';
                         companyItem.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.3)';
@@ -1825,14 +1732,12 @@
                         // Verificar se alguma pasta dentro desta empresa corresponde à busca
                         const folderItems = companyItem.querySelectorAll('.folder-item');
                         let folderFound = false;
-                        
                         folderItems.forEach(item => {
                             const folderName = item.querySelector('.font-medium').textContent.toLowerCase();
                             if (folderName.includes(searchTermLower)) {
                                 folderFound = true;
                                 found = true;
                                 companyItem.classList.remove('hidden');
-                                
                                 // Expandir a empresa
                                 const companyContents = companyItem.querySelector('.company-contents');
                                 const companyIcon = companyItem.querySelector('.company-icon');
@@ -1840,7 +1745,6 @@
                                     companyContents.classList.add('company-content-open');
                                     companyIcon.classList.add('rotate-180');
                                 }
-                                
                                 // Expandir a pasta
                                 const folderContents = item.querySelector('.folder-contents');
                                 const folderIcon = item.querySelector('.folder-icon');
@@ -1848,7 +1752,6 @@
                                     folderContents.classList.add('folder-content-open');
                                     folderIcon.classList.add('rotate-180');
                                 }
-                                
                                 // Destacar a pasta
                                 item.classList.add('year-highlight');
                                 // Rolar até a pasta
@@ -1857,7 +1760,6 @@
                                 // Verificar se algum mês dentro desta pasta corresponde à busca
                                 const monthElements = item.querySelectorAll('.folder-contents > div > div');
                                 let monthFound = false;
-                                
                                 monthElements.forEach(monthElement => {
                                     const monthText = monthElement.querySelector('.text-sm.block').textContent.toLowerCase();
                                     if (monthText.includes(searchTermLower)) {
@@ -1865,7 +1767,6 @@
                                         folderFound = true;
                                         found = true;
                                         companyItem.classList.remove('hidden');
-                                        
                                         // Expandir a empresa
                                         const companyContents = companyItem.querySelector('.company-contents');
                                         const companyIcon = companyItem.querySelector('.company-icon');
@@ -1873,7 +1774,6 @@
                                             companyContents.classList.add('company-content-open');
                                             companyIcon.classList.add('rotate-180');
                                         }
-                                        
                                         // Expandir a pasta
                                         const folderContents = item.querySelector('.folder-contents');
                                         const folderIcon = item.querySelector('.folder-icon');
@@ -1881,21 +1781,18 @@
                                             folderContents.classList.add('folder-content-open');
                                             folderIcon.classList.add('rotate-180');
                                         }
-                                        
                                         // Destacar o mês
                                         monthElement.classList.add('month-highlight');
                                         // Rolar até o mês
                                         monthElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                     }
                                 });
-                                
                                 if (!monthFound) {
                                     // Se nenhum mês foi encontrado, ocultar a pasta
                                     item.classList.add('hidden');
                                 }
                             }
                         });
-                        
                         if (folderFound) {
                             companyItem.classList.remove('hidden');
                         } else {
@@ -1908,10 +1805,11 @@
                     showToast('Nenhuma empresa ou pasta encontrada para a busca realizada.', 'info');
                 }
             }
-            
+
             // Inicializar a aba ativa
             switchTab('home');
         });
     </script>
+
 </body>
 </html>
