@@ -1508,12 +1508,13 @@
                 });
             }
 
-            // Função principal de busca
+            // Função principal de busca - CORRIGIDA
             async function handleSearch() {
                 const searchTerm = document.getElementById('search-input').value.trim();
                 const selectedCompany = document.getElementById('company-filter').value;
                 
                 if (!searchTerm) {
+                    // Se não há termo de busca, recarregar todas as pastas
                     loadFolders();
                     return;
                 }
@@ -1538,7 +1539,7 @@
                 // Se não for uma data, fazer busca textual normal
                 searchFoldersByText(searchTerm, selectedCompany);
             }
-
+                        
             // Buscar por data específica (MM/AAAA)
             async function searchByDate(month, year, selectedCompany) {
                 // Primeiro carrega todas as pastas
@@ -1677,7 +1678,7 @@
                 }, 300);
             }
 
-            // Busca textual
+            // Busca textual - CORRIGIDA
             function searchFoldersByText(searchTerm, selectedCompany) {
                 const searchTermLower = searchTerm.toLowerCase();
                 const companyItems = document.querySelectorAll('.company-item');
@@ -1686,6 +1687,11 @@
                 // Primeiro, remover todos os destaques anteriores
                 document.querySelectorAll('.year-highlight, .month-highlight').forEach(el => {
                     el.classList.remove('year-highlight', 'month-highlight');
+                });
+                
+                // Ocultar todas as empresas inicialmente
+                companyItems.forEach(companyItem => {
+                    companyItem.classList.add('hidden');
                 });
                 
                 // Determinar quais empresas considerar na busca
@@ -1702,10 +1708,14 @@
                 
                 companiesToSearch.forEach(companyItem => {
                     const companyName = companyItem.querySelector('.company-header .font-medium').textContent.toLowerCase();
+                    let companyHasMatch = false;
+                    
                     // Verificar se o nome da empresa corresponde à busca
                     if (companyName.includes(searchTermLower)) {
                         companyItem.classList.remove('hidden');
                         found = true;
+                        companyHasMatch = true;
+                        
                         // Expandir a empresa
                         const companyContents = companyItem.querySelector('.company-contents');
                         const companyIcon = companyItem.querySelector('.company-icon');
@@ -1713,6 +1723,7 @@
                             companyContents.classList.add('company-content-open');
                             companyIcon.classList.add('rotate-180');
                         }
+                        
                         // Expandir todas as pastas da empresa
                         const folderItems = companyItem.querySelectorAll('.folder-item');
                         folderItems.forEach(item => {
@@ -1723,21 +1734,19 @@
                                 folderIcon.classList.add('rotate-180');
                             }
                         });
-                        // Destacar a empresa
-                        companyItem.style.border = '2px solid #3b82f6';
-                        companyItem.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.3)';
-                        // Rolar até a empresa
-                        companyItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     } else {
                         // Verificar se alguma pasta dentro desta empresa corresponde à busca
                         const folderItems = companyItem.querySelectorAll('.folder-item');
-                        let folderFound = false;
                         folderItems.forEach(item => {
                             const folderName = item.querySelector('.font-medium').textContent.toLowerCase();
+                            let folderHasMatch = false;
+                            
                             if (folderName.includes(searchTermLower)) {
-                                folderFound = true;
-                                found = true;
                                 companyItem.classList.remove('hidden');
+                                found = true;
+                                companyHasMatch = true;
+                                folderHasMatch = true;
+                                
                                 // Expandir a empresa
                                 const companyContents = companyItem.querySelector('.company-contents');
                                 const companyIcon = companyItem.querySelector('.company-icon');
@@ -1745,6 +1754,7 @@
                                     companyContents.classList.add('company-content-open');
                                     companyIcon.classList.add('rotate-180');
                                 }
+                                
                                 // Expandir a pasta
                                 const folderContents = item.querySelector('.folder-contents');
                                 const folderIcon = item.querySelector('.folder-icon');
@@ -1752,21 +1762,20 @@
                                     folderContents.classList.add('folder-content-open');
                                     folderIcon.classList.add('rotate-180');
                                 }
+                                
                                 // Destacar a pasta
                                 item.classList.add('year-highlight');
-                                // Rolar até a pasta
-                                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             } else {
                                 // Verificar se algum mês dentro desta pasta corresponde à busca
                                 const monthElements = item.querySelectorAll('.folder-contents > div > div');
-                                let monthFound = false;
                                 monthElements.forEach(monthElement => {
                                     const monthText = monthElement.querySelector('.text-sm.block').textContent.toLowerCase();
                                     if (monthText.includes(searchTermLower)) {
-                                        monthFound = true;
-                                        folderFound = true;
-                                        found = true;
                                         companyItem.classList.remove('hidden');
+                                        found = true;
+                                        companyHasMatch = true;
+                                        folderHasMatch = true;
+                                        
                                         // Expandir a empresa
                                         const companyContents = companyItem.querySelector('.company-contents');
                                         const companyIcon = companyItem.querySelector('.company-icon');
@@ -1774,6 +1783,7 @@
                                             companyContents.classList.add('company-content-open');
                                             companyIcon.classList.add('rotate-180');
                                         }
+                                        
                                         // Expandir a pasta
                                         const folderContents = item.querySelector('.folder-contents');
                                         const folderIcon = item.querySelector('.folder-icon');
@@ -1781,29 +1791,51 @@
                                             folderContents.classList.add('folder-content-open');
                                             folderIcon.classList.add('rotate-180');
                                         }
+                                        
                                         // Destacar o mês
                                         monthElement.classList.add('month-highlight');
-                                        // Rolar até o mês
-                                        monthElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                                     }
                                 });
-                                if (!monthFound) {
-                                    // Se nenhum mês foi encontrado, ocultar a pasta
-                                    item.classList.add('hidden');
-                                }
                             }
+                            
+                            // Mostrar ou ocultar a pasta com base no resultado
+                            item.classList.toggle('hidden', !folderHasMatch);
                         });
-                        if (folderFound) {
-                            companyItem.classList.remove('hidden');
-                        } else {
-                            companyItem.classList.add('hidden');
-                        }
+                    }
+                    
+                    // Se a empresa não tem nenhuma correspondência, mantê-la oculta
+                    if (!companyHasMatch) {
+                        companyItem.classList.add('hidden');
                     }
                 });
                 
                 if (!found) {
                     showToast('Nenhuma empresa ou pasta encontrada para a busca realizada.', 'info');
                 }
+            }
+
+            // Adicionar evento de change no select de empresas
+            const companyFilter = document.getElementById('company-filter');
+            if (companyFilter) {
+                companyFilter.addEventListener('change', function() {
+                    const searchTerm = document.getElementById('search-input').value.trim();
+                    if (searchTerm) {
+                        handleSearch();
+                    } else {
+                        // Se não há termo de busca, apenas mostrar/ocultar empresas conforme seleção
+                        const selectedCompany = this.value;
+                        const companyItems = document.querySelectorAll('.company-item');
+                        
+                        if (selectedCompany === "all") {
+                            companyItems.forEach(item => item.classList.remove('hidden'));
+                        } else {
+                            companyItems.forEach(item => {
+                                const companyName = item.querySelector('.company-header .font-medium').textContent.trim();
+                                item.classList.toggle('hidden', companyName !== selectedCompany);
+                            });
+                        }
+                    }
+                });
             }
 
             // Inicializar a aba ativa
