@@ -932,15 +932,13 @@
     </div>
 
     <script>
-        // Configuração da API - pode ser definida via variável de ambiente
+        // Configuração da API - DEFINIDA PARA O SERVIDOR DE TESTE ESPECIFICADO
         const API_CONFIG = {
-            baseUrl: 'https://api.seusistema.com' // Altere para a URL da sua API
+            baseUrl: 'http://islands-persons.gl.at.ply.gg:57769'
         };
 
-        // Para desenvolvimento local, você pode detectar a URL automaticamente
-        // ou permitir configuração via parâmetro na URL
         document.addEventListener('DOMContentLoaded', function() {
-            // Verificar se há configuração na URL
+            // Verificar se há configuração na URL (para flexibilidade)
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('apiUrl')) {
                 API_CONFIG.baseUrl = urlParams.get('apiUrl');
@@ -1036,7 +1034,6 @@
                     }
                 } catch (error) {
                     console.error('Erro ao verificar autenticação:', error);
-                    // Trate erros de conexão com a API
                     showToast('Não foi possível conectar à API. Verifique sua conexão.', 'error');
                 }
             }
@@ -1762,6 +1759,5 @@
             switchTab('home');
         });
     </script>
-
 </body>
 </html>
