@@ -1478,15 +1478,17 @@
                                                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 py-3">
                                         `;
                                         
-                                        // Adicionar meses
+                                        // Adicionar meses - ALTERAÇÃO PRINCIPAL: ÍCONE DE PDF PARA XML
                                         folder.months.forEach(month => {
                                             foldersHTML += `
                                             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                                 <div class="flex items-center">
-                                                    <i class="fas fa-file-pdf text-red-500 mr-2"></i>
+                                                    <!-- ALTERADO: Ícone de PDF para XML -->
+                                                    <i class="fas fa-file-code text-blue-500 mr-2"></i>
                                                     <div>
                                                         <span class="text-sm block">${month.name}</span>
-                                                        <span class="text-xs text-gray-500">${month.files} arquivos, ${month.size}</span>
+                                                        <!-- ALTERADO: Texto para mencionar arquivos XML -->
+                                                        <span class="text-xs text-gray-500">${month.files} arquivos XML, ${month.size}</span>
                                                     </div>
                                                 </div>
                                                 <button class="download-btn bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs transition-colors" data-filename="${month.filename}">
