@@ -982,26 +982,46 @@
     </div>
 
     <script>
-        // Configuração da API - DEFINIDA PARA O SERVIDOR DE TESTE ESPECIFICADO
-        const API_CONFIG = {
-            baseUrl: 'https://24c573e044914165ef96cf6681f6298d.loophole.site'
-        };
 
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Página carregada. Configuração da API:', API_CONFIG);
-            
-            // Verificar se há configuração na URL (para flexibilidade)
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('apiUrl')) {
-                API_CONFIG.baseUrl = urlParams.get('apiUrl');
-                console.log('URL da API sobrescrita:', API_CONFIG.baseUrl);
-            }
-            
-            // Variável para controlar a aba que o usuário tentou acessar
-            let targetTabAfterLogin = null;
-            
-            // Verificar autenticação ao carregar a página
-            checkAuth();
+        let API_CONFIG = { baseUrl: "" };
+    
+        // Carregar URL da API a partir do api.json
+        fetch("api.json")
+            .then(response => response.json())
+            .then(config => {
+                API_CONFIG.baseUrl = config.url;
+                console.log("URL da API carregada do api.json:", API_CONFIG.baseUrl);
+    
+                // Agora que temos a URL, disparamos evento para inicializar o app
+                document.dispatchEvent(new Event("apiConfigLoaded"));
+            })
+            .catch(error => {
+                console.error("Erro ao carregar api.json:", error);
+                // Fallback caso api.json falhe
+                API_CONFIG.baseUrl = "http://localhost:5000";
+                document.dispatchEvent(new Event("apiConfigLoaded"));
+            });
+    
+        // Inicializar o app depois de carregar a URL
+        document.addEventListener("apiConfigLoaded", () => {
+            console.log("API pronta para uso:", API_CONFIG.baseUrl);
+    
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('Página carregada. Configuração da API:', API_CONFIG);
+    
+                // Verificar se há configuração na URL (para flexibilidade)
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('apiUrl')) {
+                    API_CONFIG.baseUrl = urlParams.get('apiUrl');
+                    console.log('URL da API sobrescrita:', API_CONFIG.baseUrl);
+                }
+    
+                // Variável para controlar a aba que o usuário tentou acessar
+                let targetTabAfterLogin = null;
+    
+                // Verificar autenticação ao carregar a página
+                checkAuth();
+        
             
             // Toggle password visibility
             const passwordToggle = document.getElementById('password-toggle-modal');
