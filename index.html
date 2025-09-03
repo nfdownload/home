@@ -989,7 +989,7 @@
         fetch("api.json")
             .then(response => response.json())
             .then(config => {
-                API_CONFIG.baseUrl = config.url;
+                API_CONFIG.baseUrl = config.url.trim();
                 console.log("URL da API carregada do api.json:", API_CONFIG.baseUrl);
     
                 // Agora que temos a URL, disparamos evento para inicializar o app
