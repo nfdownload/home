@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFDownload - Portal de Notas Fiscais</title>
+    <title>NFDownload</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -983,9 +983,25 @@
 
 
     <script>
-        // Configuração da API
+        // Configuração da API - ALTERE PARA SUA URL
         const API_CONFIG = {
-            baseUrl: 'https://6f3644fca1b14b6b904f2a0286e148e8.loophole.site'
+            baseUrl: 'https://6f3644fca1b14b6b904f2a0286e148e8.loophole.site'  // Substitua pela URL da sua API
+        };
+
+        // Sobrescrever fetch globalmente para incluir credentials
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            const [url, options = {}] = args;
+            const newOptions = {
+                ...options,
+                credentials: 'include',
+                headers: {
+                    ...options.headers,
+                    'Content-Type': 'application/json'
+                }
+            };
+            console.log('Fetch para:', url, newOptions);
+            return originalFetch(url, newOptions);
         };
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1028,13 +1044,13 @@
                 try {
                     console.log('Fazendo requisição para:', `${API_CONFIG.baseUrl}/auth/check`);
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/check`, {
-                        credentials: 'include' // IMPORTANTE: para enviar cookies de sessão
+                        credentials: 'include'
                     });
                     
                     console.log('Resposta recebida:', response.status);
                     
                     if (response.status === 401) {
-                        // Não autenticado - isso é esperado para usuários não logados
+                        // Não autenticado
                         console.log('Usuário não autenticado');
                         updateUIForUnauthenticated();
                         return;
@@ -1103,9 +1119,9 @@
                 document.getElementById('mobile-user-greeting').textContent = 'Olá, Visitante';
                 
                 // Resetar avatar
-                //document.querySelectorAll('.user-avatar').forEach(avatar => {
-                //    avatar.innerHTML = '<i class="fas fa-user text-sm'></i>';
-                //});
+                document.querySelectorAll('.user-avatar').forEach(avatar => {
+                    avatar.innerHTML = '<i class="fas fa-user text-sm"></i>';
+                });
                 
                 // Mostrar/ocultar botões
                 document.getElementById('login-btn').classList.remove('hidden');
@@ -1491,16 +1507,14 @@
                                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 py-3">
                                     `;
                                     
-                                    // Adicionar meses - ALTERAÇÃO PRINCIPAL: ÍCONE DE PDF PARA XML
+                                    // Adicionar meses
                                     folder.months.forEach(month => {
                                         foldersHTML += `
                                         <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                                             <div class="flex items-center">
-                                                <!-- ALTERADO: Ícone de PDF para XML -->
                                                 <i class="fas fa-file-code text-blue-500 mr-2"></i>
                                                 <div>
                                                     <span class="text-sm block">${month.name}</span>
-                                                    <!-- ALTERADO: Texto para mencionar arquivos XML -->
                                                     <span class="text-xs text-gray-500">${month.files} arquivos XML, ${month.size}</span>
                                                 </div>
                                             </div>
@@ -1908,6 +1922,7 @@
             switchTab('home');
         });
     </script>
+
     
 </body>
 </html>
