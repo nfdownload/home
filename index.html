@@ -605,17 +605,14 @@
             overflow: hidden;
             max-height: 0;
         }
-        
         .company-content-open {
             max-height: 2000px;
             padding-top: 8px;
         }
-        
         .company-header {
             border-bottom: 1px solid #e2e8f0;
             margin-bottom: 8px;
         }
-        
         /* Remover estilos antigos da seção de empresa */
         .company-section {
             display: contents;
@@ -624,22 +621,18 @@
         .search-box {
             max-width: 100% !important;
         }
-        
         #search-input {
             padding: 14px 16px;
             font-size: 16px; /* Tamanho de fonte aumentado para melhor legibilidade */
         }
-        
         #search-btn {
             padding: 14px 20px;
             white-space: nowrap;
         }
-        
         #company-filter {
             padding: 14px 16px;
             min-width: 180px;
         }
-
         @media (max-width: 768px) {
             #company-filter {
                 width: 100%;
@@ -653,20 +646,59 @@
                 width: 30%;
             }
         }
-        
         @media (max-width: 480px) {
             #search-btn span {
                 display: none;
             }
-            
             #search-btn {
                 width: 20%;
                 padding: 14px;
             }
-            
             #search-input {
                 width: 80%;
             }
+        }
+
+        /* ============ ESTILOS PARA O CHAT DE SUPORTE ============ */
+        /* Estilos para o Chat */
+        .chat-message {
+            display: flex;
+            margin-bottom: 12px;
+        }
+        .chat-message .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
+        .chat-message.client .avatar {
+            background-color: #3b82f6;
+        }
+        .chat-message.support .avatar {
+            background-color: #10b981;
+        }
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            margin-left: 10px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .chat-message.client .chat-bubble {
+            background-color: #3b82f6;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .chat-message.support .chat-bubble {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            border-bottom-left-radius: 4px;
         }
     </style>
 </head>
@@ -849,7 +881,7 @@
                                     Acessar Downloads
                                 </button>
                                 <button id="contact-btn" class="bg-transparent border-2 border-white text-white hover:bg-white hover:text-blue-900 px-5 py-2 rounded-lg font-medium transition-colors text-sm">
-                                    Fale Conosco
+                                    <i class="fas fa-comments mr-1"></i> Fale Conosco
                                 </button>
                             </div>
                         </div>
@@ -981,13 +1013,40 @@
         </main>
     </div>
 
+    <!-- Support Chat Modal -->
+    <div id="chat-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-end justify-end z-50 p-4 hidden">
+        <div class="bg-white rounded-t-xl shadow-2xl w-full max-w-md h-96 flex flex-col">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-t-xl flex justify-between items-center">
+                <h3 class="font-bold text-lg">Suporte ao Cliente</h3>
+                <button id="close-chat" class="text-white hover:text-blue-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- Messages Area -->
+            <div id="chat-messages" class="flex-grow p-4 overflow-y-auto bg-gray-50 space-y-3">
+                <!-- As mensagens serão inseridas aqui dinamicamente -->
+                <div class="text-center text-gray-500 text-sm py-4">
+                    Iniciando chat...
+                </div>
+            </div>
+            <!-- Input Area -->
+            <div class="p-3 border-t bg-white">
+                <form id="chat-form" class="flex space-x-2">
+                    <input type="text" id="chat-input" class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Digite sua mensagem..." required>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Configuração da API - ALTERE PARA SUA URL
         const API_CONFIG = {
             baseUrl: 'https://7e3e4ef322f322dc57131efe972d121b.loophole.site'  // Substitua pela URL da sua API
         };
-
         // Sobrescrever fetch globalmente para incluir credentials
         const originalFetch = window.fetch;
         window.fetch = function(...args) {
@@ -1003,23 +1062,18 @@
             console.log('Fetch para:', url, newOptions);
             return originalFetch(url, newOptions);
         };
-
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Página carregada. Configuração da API:', API_CONFIG);
-            
             // Verificar se há configuração na URL (para flexibilidade)
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('apiUrl')) {
                 API_CONFIG.baseUrl = urlParams.get('apiUrl');
                 console.log('URL da API sobrescrita:', API_CONFIG.baseUrl);
             }
-            
             // Variável para controlar a aba que o usuário tentou acessar
             let targetTabAfterLogin = null;
-            
             // Verificar autenticação ao carregar a página
             checkAuth();
-            
             // Toggle password visibility
             const passwordToggle = document.getElementById('password-toggle-modal');
             if (passwordToggle) {
@@ -1037,7 +1091,6 @@
                     }
                 });
             }
-
             // Função para verificar autenticação
             async function checkAuth() {
                 console.log('Verificando autenticação...');
@@ -1046,34 +1099,27 @@
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/check`, {
                         credentials: 'include'
                     });
-                    
                     console.log('Resposta recebida:', response.status);
-                    
                     if (response.status === 401) {
                         // Não autenticado
                         console.log('Usuário não autenticado');
                         updateUIForUnauthenticated();
                         return;
                     }
-                    
                     if (!response.ok) {
                         throw new Error(`Erro HTTP: ${response.status}`);
                     }
-                    
                     const data = await response.json();
                     console.log('Dados de autenticação:', data);
-                    
                     if (data.authenticated) {
                         // Usuário está autenticado
                         updateUIForAuthenticated(data.user_name);
-                        
                         // Se estava tentando acessar downloads, carregar as pastas
                         if (targetTabAfterLogin === 'downloads') {
                             switchTab('downloads');
                             loadFolders();
                             targetTabAfterLogin = null;
                         }
-                        
                         // Se já está na aba de downloads, carregar as pastas
                         if (document.getElementById('downloads-content') && 
                             document.getElementById('downloads-content').classList.contains('active')) {
@@ -1089,53 +1135,44 @@
                     updateUIForUnauthenticated();
                 }
             }
-
             // Atualizar UI para usuário autenticado
             function updateUIForAuthenticated(userName) {
                 document.getElementById('user-greeting').textContent = `Olá, ${userName}`;
                 document.getElementById('mobile-user-greeting').textContent = `Olá, ${userName}`;
-                
                 // Atualizar avatar com iniciais
                 const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase();
                 document.querySelectorAll('.user-avatar').forEach(avatar => {
                     avatar.innerHTML = `<span class="text-xs">${initials}</span>`;
                 });
-                
                 // Mostrar/ocultar botões
                 document.getElementById('login-btn').classList.add('hidden');
                 document.getElementById('logout-btn').classList.remove('hidden');
                 document.getElementById('mobile-login-btn').classList.add('hidden');
                 document.getElementById('mobile-logout-btn').classList.remove('hidden');
-                
                 // Mostrar info do usuário
                 document.querySelectorAll('.user-info').forEach(info => {
                     info.classList.remove('hidden');
                 });
             }
-
             // Atualizar UI para usuário não autenticado
             function updateUIForUnauthenticated() {
                 document.getElementById('user-greeting').textContent = 'Olá, Visitante';
                 document.getElementById('mobile-user-greeting').textContent = 'Olá, Visitante';
-                
                 // Resetar avatar
                 document.querySelectorAll('.user-avatar').forEach(avatar => {
                     avatar.innerHTML = '<i class="fas fa-user text-sm"></i>';
                 });
-                
                 // Mostrar/ocultar botões
                 document.getElementById('login-btn').classList.remove('hidden');
                 document.getElementById('logout-btn').classList.add('hidden');
                 document.getElementById('mobile-login-btn').classList.remove('hidden');
                 document.getElementById('mobile-logout-btn').classList.add('hidden');
-                
                 // Esconder info do usuário no desktop, mostrar no mobile
                 document.querySelector('.user-info').classList.add('hidden');
                 if (document.querySelectorAll('.user-info')[1]) {
                     document.querySelectorAll('.user-info')[1].classList.remove('hidden');
                 }
             }
-
             // Login form submission
             const loginForm = document.getElementById('login-form-modal');
             if (loginForm) {
@@ -1146,14 +1183,11 @@
                     const loginButton = document.getElementById('login-button-modal');
                     const loginButtonText = document.getElementById('login-button-text-modal');
                     const loginSpinner = document.getElementById('login-spinner-modal');
-                    
                     // Mostrar spinner e desativar botão
                     loginButton.disabled = true;
                     loginButtonText.textContent = 'Autenticando...';
                     loginSpinner.classList.remove('hidden');
-                    
                     console.log('Tentando login com:', { email: email });
-                    
                     try {
                         console.log('Enviando credenciais para:', `${API_CONFIG.baseUrl}/auth/login`);
                         const response = await fetch(`${API_CONFIG.baseUrl}/auth/login`, {
@@ -1164,11 +1198,9 @@
                             body: JSON.stringify({ email, password }),
                             credentials: 'include'
                         });
-                        
                         console.log('Resposta do login:', response.status);
                         const data = await response.json();
                         console.log('Resposta do login:', data);
-                        
                         if (data.success) {
                             // Login bem-sucedido
                             showToast('Login realizado com sucesso!', 'success');
@@ -1190,7 +1222,6 @@
                     }
                 });
             }
-
             // Logout function
             async function logout() {
                 try {
@@ -1212,14 +1243,11 @@
                     showToast('Erro ao fazer logout.', 'error');
                 }
             }
-
             // Adicionar event listeners para logout
             const logoutBtn = document.getElementById('logout-btn');
             const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
-            
             if (logoutBtn) logoutBtn.addEventListener('click', logout);
             if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', logout);
-
             // Fechar modal de login
             const closeLogin = document.getElementById('close-login');
             if (closeLogin) {
@@ -1227,7 +1255,6 @@
                     document.getElementById('login-modal').classList.add('hidden');
                 });
             }
-            
             const loginModal = document.getElementById('login-modal');
             if (loginModal) {
                 loginModal.addEventListener('click', function(e) {
@@ -1236,7 +1263,6 @@
                     }
                 });
             }
-
             // Alternar entre abas
             function switchTab(tabName) {
                 // Esconder todos os conteúdos de abas
@@ -1250,7 +1276,6 @@
                     tabContent.classList.remove('hidden');
                     tabContent.classList.add('active');
                 }
-                
                 // Atualizar estado dos botões de aba
                 document.querySelectorAll('.tab-underline').forEach(button => {
                     button.classList.remove('active');
@@ -1259,7 +1284,6 @@
                     button.classList.add('active');
                 });
             }
-
             // Função para verificar autenticação antes de trocar de aba
             async function checkAuthAndSwitchTab(tabName) {
                 try {
@@ -1267,20 +1291,16 @@
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/check`, {
                         credentials: 'include'
                     });
-                    
                     if (response.status === 401) {
                         targetTabAfterLogin = tabName;
                         document.getElementById('login-modal').classList.remove('hidden');
                         return;
                     }
-                    
                     if (!response.ok) {
                         throw new Error(`Erro HTTP: ${response.status}`);
                     }
-                    
                     const authData = await response.json();
                     console.log('Resultado da verificação:', authData);
-                    
                     if (authData.authenticated) {
                         switchTab(tabName);
                         if (tabName === 'downloads') {
@@ -1295,7 +1315,6 @@
                     showToast('Não foi possível verificar autenticação. Tente novamente.', 'error');
                 }
             }
-
             // Adicionar event listeners para as abas
             document.querySelectorAll('.tab-underline').forEach(button => {
                 button.addEventListener('click', function() {
@@ -1307,7 +1326,6 @@
                     }
                 });
             });
-
             // Botão "Acessar Downloads" na home
             const accessDownloadsBtn = document.getElementById('access-downloads-btn');
             if (accessDownloadsBtn) {
@@ -1315,7 +1333,6 @@
                     checkAuthAndSwitchTab('downloads');
                 });
             }
-
             // Alternar menu mobile
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -1323,7 +1340,6 @@
                 mobileMenuButton.addEventListener('click', function() {
                     mobileMenu.classList.toggle('hidden');
                 });
-                
                 // Fechar o menu móvel automaticamente ao clicar em um link
                 document.querySelectorAll('#mobile-menu .tab-underline').forEach(button => {
                     button.addEventListener('click', function() {
@@ -1331,7 +1347,6 @@
                     });
                 });
             }
-
             // Alternar visibilidade de pastas e empresas
             document.addEventListener('click', function(e) {
                 // Para empresas
@@ -1355,7 +1370,6 @@
                     }
                 }
             });
-
             // Adicionar evento de clique para o botão de login (desktop)
             const loginBtn = document.getElementById('login-btn');
             if (loginBtn) {
@@ -1363,7 +1377,6 @@
                     document.getElementById('login-modal').classList.remove('hidden');
                 });
             }
-
             // Adicionar evento de clique para o botão de login (mobile)
             const mobileLoginBtn = document.getElementById('mobile-login-btn');
             if (mobileLoginBtn) {
@@ -1374,22 +1387,164 @@
                 });
             }
 
-            // Botão de contato
-            const contactBtn = document.getElementById('contact-btn');
-            if (contactBtn) {
-                contactBtn.addEventListener('click', function() {
-                    showToast('Entre em contato pelo email: contato@nfdownload.com.br', 'info');
-                });
+            // ============ Funções de Chat de Suporte ============
+
+            let chatPollingInterval = null;
+            let lastMessageId = null;
+
+            // Função para inicializar o chat
+            async function initChat() {
+                try {
+                    const response = await fetch(`${API_CONFIG.baseUrl}/chat/init`, {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Erro ao iniciar chat: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    if (data.success) {
+                        // Limpa o container de mensagens
+                        const messagesContainer = document.getElementById('chat-messages');
+                        messagesContainer.innerHTML = '';
+                        // Exibe as mensagens do histórico
+                        displayMessages(data.messages);
+                        // Define o ID da última mensagem para polling
+                        if (data.messages.length > 0) {
+                            lastMessageId = data.messages[data.messages.length - 1].id;
+                        }
+                        // Inicia o polling para novas mensagens
+                        startPolling();
+                    } else {
+                        throw new Error(data.message || 'Erro desconhecido');
+                    }
+                } catch (error) {
+                    console.error('Erro ao inicializar chat:', error);
+                    showToast('Erro ao conectar com o suporte. Tente novamente.', 'error');
+                    document.getElementById('chat-messages').innerHTML = '<div class="text-center text-red-500 p-4">Erro ao carregar o chat.</div>';
+                }
             }
+
+            // Função para exibir mensagens no DOM
+            function displayMessages(messages) {
+                const messagesContainer = document.getElementById('chat-messages');
+                messages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `chat-message ${msg.sender}`;
+                    messageDiv.innerHTML = `
+                        <div class="avatar">${msg.sender === 'client' ? 'C' : 'S'}</div>
+                        <div class="chat-bubble">
+                            ${msg.text}
+                            <div class="text-xs text-right mt-1 opacity-70">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+                        </div>
+                    `;
+                    messagesContainer.appendChild(messageDiv);
+                });
+                // Rola para o final
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+
+            // Função para enviar uma mensagem
+            async function sendMessage(text) {
+                try {
+                    const response = await fetch(`${API_CONFIG.baseUrl}/chat/send`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: text }),
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Erro ao enviar mensagem: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    if (data.success) {
+                        document.getElementById('chat-input').value = '';
+                    } else {
+                        throw new Error(data.message || 'Erro ao enviar');
+                    }
+                } catch (error) {
+                    console.error('Erro ao enviar mensagem:', error);
+                    showToast('Erro ao enviar mensagem.', 'error');
+                }
+            }
+
+            // Função para fazer polling de novas mensagens
+            async function pollNewMessages() {
+                try {
+                    const url = `${API_CONFIG.baseUrl}/chat/poll` + (lastMessageId ? `?last_id=${lastMessageId}` : '');
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Erro ao buscar mensagens: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    if (data.success && data.messages.length > 0) {
+                        // Exibe as novas mensagens
+                        displayMessages(data.messages);
+                        // Atualiza o ID da última mensagem
+                        lastMessageId = data.messages[data.messages.length - 1].id;
+                    }
+                } catch (error) {
+                    console.error('Erro no polling:', error);
+                    // Não mostra toast aqui para não spam, apenas loga o erro.
+                }
+            }
+
+            // Função para iniciar o polling
+            function startPolling() {
+                if (chatPollingInterval) {
+                    clearInterval(chatPollingInterval);
+                }
+                chatPollingInterval = setInterval(pollNewMessages, 2000); // Verifica a cada 2 segundos
+            }
+
+            // Função para parar o polling
+            function stopPolling() {
+                if (chatPollingInterval) {
+                    clearInterval(chatPollingInterval);
+                    chatPollingInterval = null;
+                }
+            }
+
+            // Evento: Abrir o modal de chat
+            document.getElementById('contact-btn').addEventListener('click', function() {
+                document.getElementById('chat-modal').classList.remove('hidden');
+                // Inicializa o chat quando o modal é aberto
+                initChat();
+            });
+
+            // Evento: Fechar o modal de chat
+            document.getElementById('close-chat').addEventListener('click', function() {
+                document.getElementById('chat-modal').classList.add('hidden');
+                stopPolling(); // Para o polling quando o chat é fechado
+            });
+
+            // Evento: Enviar mensagem via formulário
+            document.getElementById('chat-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const input = document.getElementById('chat-input');
+                const text = input.value.trim();
+                if (text) {
+                    sendMessage(text);
+                }
+            });
 
             // Função para mostrar notificações toast
             window.showToast = function(message, type = 'info') {
                 const toast = document.getElementById('toast');
                 if (!toast) return;
-                
                 const toastIcon = document.getElementById('toast-icon');
                 const toastMessage = document.getElementById('toast-message');
-                
                 // Configurar ícone e cor baseado no tipo
                 toast.className = 'toast';
                 switch(type) {
@@ -1405,12 +1560,10 @@
                         toast.classList.add('info');
                         toastIcon.className = 'fas fa-info-circle mr-2';
                 }
-                
                 // Definir mensagem e mostrar
                 toastMessage.textContent = message;
                 toast.classList.remove('hidden');
                 toast.classList.add('show');
-                
                 // Esconder após 5 segundos
                 setTimeout(() => {
                     toast.classList.remove('show');
@@ -1419,26 +1572,21 @@
                     }, 300);
                 }, 5000);
             };
-
             // Carregar estrutura de pastas
             async function loadFolders() {
                 const foldersContainer = document.getElementById('folders-container');
                 const loadingIndicator = document.getElementById('loading-indicator');
                 const emptyState = document.getElementById('empty-state');
-                
                 // Mostrar indicador de carregamento
                 if (loadingIndicator) loadingIndicator.classList.remove('hidden');
                 if (foldersContainer) foldersContainer.innerHTML = '';
-                
                 console.log('Carregando estrutura de pastas...');
                 try {
                     console.log('Requisitando pastas de:', `${API_CONFIG.baseUrl}/auth/folders`);
                     const response = await fetch(`${API_CONFIG.baseUrl}/auth/folders`, {
                         credentials: 'include'
                     });
-                    
                     console.log('Resposta das pastas:', response.status);
-                    
                     if (response.status === 401) {
                         // Não autenticado
                         console.log('Sessão não autenticada');
@@ -1447,21 +1595,17 @@
                         if (loadingIndicator) loadingIndicator.classList.add('hidden');
                         return;
                     }
-                    
                     if (!response.ok) {
                         throw new Error(`Erro HTTP: ${response.status}`);
                     }
-                    
                     const data = await response.json();
                     console.log('Estrutura de pastas recebida:', data);
-                    
                     // Processar os dados recebidos da API
                     if (data.companies && data.companies.length > 0) {
                         // Preencher o seletor de empresas
                         const companyFilter = document.getElementById('company-filter');
                         if (companyFilter) {
                             companyFilter.innerHTML = '<option value="all"><i class="fas fa-building mr-2"></i><span class="hidden md:inline">Todas as empresas</span></option>';
-                            
                             data.companies.forEach(company => {
                                 const option = document.createElement('option');
                                 option.value = company.name;
@@ -1470,10 +1614,8 @@
                             });
                             companyFilter.disabled = false;
                         }
-                        
                         // Construir HTML das pastas
                         let foldersHTML = '';
-                        
                         // Para cada empresa
                         data.companies.forEach(company => {
                             foldersHTML += `
@@ -1488,7 +1630,6 @@
                                     </div>
                                     <div class="company-contents pl-6">
                             `;
-                            
                             // Verificar se a empresa tem pastas
                             if (company.folders && company.folders.length > 0) {
                                 company.folders.forEach(folder => {
@@ -1506,7 +1647,6 @@
                                             <div class="folder-contents pl-9 pr-4">
                                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 py-3">
                                     `;
-                                    
                                     // Adicionar meses
                                     folder.months.forEach(month => {
                                         foldersHTML += `
@@ -1524,7 +1664,6 @@
                                         </div>
                                         `;
                                     });
-                                    
                                     foldersHTML += `
                                                 </div>
                                             </div>
@@ -1535,17 +1674,14 @@
                             } else {
                                 foldersHTML += `<p class="text-gray-500 text-center py-4 pl-9">Nenhuma pasta encontrada para esta empresa.</p>`;
                             }
-                            
                             foldersHTML += `
                                     </div>
                                 </div>
                             `;
                         });
-                        
                         // Inserir no DOM
                         if (foldersContainer) {
                             foldersContainer.innerHTML = foldersHTML;
-                            
                             // Adicionar informações do cliente se disponíveis
                             if (data.client) {
                                 const title = document.querySelector('#downloads-content h1');
@@ -1569,7 +1705,6 @@
                     if (loadingIndicator) loadingIndicator.classList.add('hidden');
                 }
             }
-
             // Buscar pastas
             const searchBtn = document.getElementById('search-btn');
             if (searchBtn) {
@@ -1577,7 +1712,6 @@
                     handleSearch();
                 });
             }
-
             // Permitir busca ao pressionar Enter
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
@@ -1587,18 +1721,15 @@
                     }
                 });
             }
-
             // Função principal de busca
             async function handleSearch() {
                 const searchTerm = document.getElementById('search-input').value.trim();
                 const selectedCompany = document.getElementById('company-filter').value;
-                
                 if (!searchTerm) {
                     // Se não há termo de busca, recarregar todas as pastas
                     loadFolders();
                     return;
                 }
-                
                 // Verificar se é uma data no formato MM/AAAA ou MM-AAAA
                 const dateMatch = searchTerm.match(/^(\d{1,2})[\/\-](\d{4})$/);
                 if (dateMatch) {
@@ -1607,7 +1738,6 @@
                     await searchByDate(month, year, selectedCompany);
                     return;
                 }
-                
                 // Verificar se é apenas um ano (AAAA)
                 const yearMatch = searchTerm.match(/^(\d{4})$/);
                 if (yearMatch) {
@@ -1615,16 +1745,13 @@
                     await searchByYear(year, selectedCompany);
                     return;
                 }
-                
                 // Se não for uma data, fazer busca textual normal
                 searchFoldersByText(searchTerm, selectedCompany);
             }
-                        
             // Buscar por data específica (MM/AAAA)
             async function searchByDate(month, year, selectedCompany) {
                 // Primeiro carrega todas as pastas
                 await loadFolders();
-                
                 // Aguardar um pouco para o DOM ser atualizado
                 setTimeout(() => {
                     let companyElements;
@@ -1638,10 +1765,8 @@
                             return companyName === selectedCompany;
                         });
                     }
-                    
                     let yearFound = false;
                     let monthFound = false;
-                    
                     // Para cada empresa relevante
                     companyElements.forEach(companyItem => {
                         // Expandir a empresa para que possamos buscar dentro dela
@@ -1650,7 +1775,6 @@
                         if (companyContents && companyIcon) {
                             companyContents.classList.add('company-content-open');
                             companyIcon.classList.add('rotate-180');
-                            
                             // Encontrar as pastas do ano dentro desta empresa
                             const yearFolders = companyItem.querySelectorAll('.folder-item');
                             yearFolders.forEach(folder => {
@@ -1667,7 +1791,6 @@
                                     }
                                     // Destacar o ano
                                     folder.classList.add('year-highlight');
-                                    
                                     // Buscar o mês específico
                                     const monthElements = folder.querySelectorAll('.folder-contents > div > div');
                                     const monthNames = [
@@ -1675,7 +1798,6 @@
                                         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
                                     ];
                                     const monthName = monthNames[month - 1];
-                                    
                                     monthElements.forEach(monthElement => {
                                         const monthText = monthElement.querySelector('.text-sm.block').textContent;
                                         if (monthText === monthName) {
@@ -1690,7 +1812,6 @@
                             });
                         }
                     });
-                    
                     if (!yearFound) {
                         showToast(`Nenhuma pasta encontrada para o ano ${year}`, 'info');
                     } else if (!monthFound) {
@@ -1698,12 +1819,10 @@
                     }
                 }, 300);
             }
-
             // Buscar apenas por ano (AAAA)
             async function searchByYear(year, selectedCompany) {
                 // Primeiro carrega todas as pastas
                 await loadFolders();
-                
                 // Aguardar um pouco para the DOM to be updated
                 setTimeout(() => {
                     let companyElements;
@@ -1717,9 +1836,7 @@
                             return companyName === selectedCompany;
                         });
                     }
-                    
                     let found = false;
-                    
                     // Para cada empresa relevante
                     companyElements.forEach(companyItem => {
                         // Expandir a empresa para que possamos buscar dentro dela
@@ -1728,7 +1845,6 @@
                         if (companyContents && companyIcon) {
                             companyContents.classList.add('company-content-open');
                             companyIcon.classList.add('rotate-180');
-                            
                             // Encontrar as pastas do ano dentro desta empresa
                             const yearFolders = companyItem.querySelectorAll('.folder-item');
                             yearFolders.forEach(folder => {
@@ -1751,29 +1867,24 @@
                             });
                         }
                     });
-                    
                     if (!found) {
                         showToast(`Nenhuma pasta encontrada para o ano ${year}`, 'info');
                     }
                 }, 300);
             }
-
             // Busca textual
             function searchFoldersByText(searchTerm, selectedCompany) {
                 const searchTermLower = searchTerm.toLowerCase();
                 const companyItems = document.querySelectorAll('.company-item');
                 let found = false;
-                
                 // Primeiro, remover todos os destaques anteriores
                 document.querySelectorAll('.year-highlight, .month-highlight').forEach(el => {
                     el.classList.remove('year-highlight', 'month-highlight');
                 });
-                
                 // Ocultar todas as empresas inicialmente
                 companyItems.forEach(companyItem => {
                     companyItem.classList.add('hidden');
                 });
-                
                 // Determinar quais empresas considerar na busca
                 let companiesToSearch;
                 if (selectedCompany === "all") {
@@ -1785,17 +1896,14 @@
                         return companyName === selectedCompany;
                     });
                 }
-                
                 companiesToSearch.forEach(companyItem => {
                     const companyName = companyItem.querySelector('.company-header .font-medium').textContent.toLowerCase();
                     let companyHasMatch = false;
-                    
                     // Verificar se o nome da empresa corresponde à busca
                     if (companyName.includes(searchTermLower)) {
                         companyItem.classList.remove('hidden');
                         found = true;
                         companyHasMatch = true;
-                        
                         // Expandir a empresa
                         const companyContents = companyItem.querySelector('.company-contents');
                         const companyIcon = companyItem.querySelector('.company-icon');
@@ -1803,7 +1911,6 @@
                             companyContents.classList.add('company-content-open');
                             companyIcon.classList.add('rotate-180');
                         }
-                        
                         // Expandir todas as pastas da empresa
                         const folderItems = companyItem.querySelectorAll('.folder-item');
                         folderItems.forEach(item => {
@@ -1820,13 +1927,11 @@
                         folderItems.forEach(item => {
                             const folderName = item.querySelector('.font-medium').textContent.toLowerCase();
                             let folderHasMatch = false;
-                            
                             if (folderName.includes(searchTermLower)) {
                                 companyItem.classList.remove('hidden');
                                 found = true;
                                 companyHasMatch = true;
                                 folderHasMatch = true;
-                                
                                 // Expandir a empresa
                                 const companyContents = companyItem.querySelector('.company-contents');
                                 const companyIcon = companyItem.querySelector('.company-icon');
@@ -1834,7 +1939,6 @@
                                     companyContents.classList.add('company-content-open');
                                     companyIcon.classList.add('rotate-180');
                                 }
-                                
                                 // Expandir a pasta
                                 const folderContents = item.querySelector('.folder-contents');
                                 const folderIcon = item.querySelector('.folder-icon');
@@ -1842,7 +1946,6 @@
                                     folderContents.classList.add('folder-content-open');
                                     folderIcon.classList.add('rotate-180');
                                 }
-                                
                                 // Destacar a pasta
                                 item.classList.add('year-highlight');
                             } else {
@@ -1855,7 +1958,6 @@
                                         found = true;
                                         companyHasMatch = true;
                                         folderHasMatch = true;
-                                        
                                         // Expandir a empresa
                                         const companyContents = companyItem.querySelector('.company-contents');
                                         const companyIcon = companyItem.querySelector('.company-icon');
@@ -1863,7 +1965,6 @@
                                             companyContents.classList.add('company-content-open');
                                             companyIcon.classList.add('rotate-180');
                                         }
-                                        
                                         // Expandir a pasta
                                         const folderContents = item.querySelector('.folder-contents');
                                         const folderIcon = item.querySelector('.folder-icon');
@@ -1871,29 +1972,24 @@
                                             folderContents.classList.add('folder-content-open');
                                             folderIcon.classList.add('rotate-180');
                                         }
-                                        
                                         // Destacar o mês
                                         monthElement.classList.add('month-highlight');
                                     }
                                 });
                             }
-                            
                             // Mostrar ou ocultar a pasta com base no resultado
                             item.classList.toggle('hidden', !folderHasMatch);
                         });
                     }
-                    
                     // Se a empresa não tem nenhuma correspondência, mantê-la oculta
                     if (!companyHasMatch) {
                         companyItem.classList.add('hidden');
                     }
                 });
-                
                 if (!found) {
                     showToast('Nenhuma empresa ou pasta encontrada para a busca realizada.', 'info');
                 }
             }
-
             // Adicionar evento de change no select de empresas
             const companyFilter = document.getElementById('company-filter');
             if (companyFilter) {
@@ -1905,7 +2001,6 @@
                         // Se não há termo de busca, apenas mostrar/ocultar empresas conforme seleção
                         const selectedCompany = this.value;
                         const companyItems = document.querySelectorAll('.company-item');
-                        
                         if (selectedCompany === "all") {
                             companyItems.forEach(item => item.classList.remove('hidden'));
                         } else {
@@ -1917,12 +2012,9 @@
                     }
                 });
             }
-
             // Inicializar a aba ativa
             switchTab('home');
         });
     </script>
-
-    
 </body>
 </html>
