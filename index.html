@@ -7,6 +7,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Chat mobile styles */
+        @media (max-width: 767px) {
+            #chat-modal {
+                padding: 0;
+            }
+            #chat-modal > div {
+                border-radius: 0;
+                height: 100vh;
+            }
+            #chat-messages {
+                padding-bottom: 80px;
+            }
+        }
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         body {
@@ -700,6 +713,18 @@
             color: #1e293b;
             border-bottom-left-radius: 4px;
         }
+
+        /* Auto focus input on mobile */
+        @media (max-width: 767px) {
+            #chat-modal:not(.hidden) #chat-input {
+                animation: focusInput 0.3s forwards;
+            }
+            @keyframes focusInput {
+                to {
+                    transform: translateY(0);
+                }
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col bg-gray-50">
@@ -1014,27 +1039,27 @@
     </div>
 
     <!-- Support Chat Modal -->
-    <div id="chat-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-end justify-end z-50 p-4 hidden">
-        <div class="bg-white rounded-t-xl shadow-2xl w-full max-w-md h-96 flex flex-col">
+    <div id="chat-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-end justify-end z-50 p-0 md:p-4 hidden">
+        <div class="bg-white rounded-t-xl md:rounded-xl shadow-2xl w-full md:max-w-md h-screen md:h-[80vh] md:max-h-[700px] flex flex-col">
             <!-- Header -->
-            <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-t-xl flex justify-between items-center">
+            <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-t-xl md:rounded-t-xl flex justify-between items-center">
                 <h3 class="font-bold text-lg">Suporte ao Cliente</h3>
                 <button id="close-chat" class="text-white hover:text-blue-200">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <!-- Messages Area -->
-            <div id="chat-messages" class="flex-grow p-4 overflow-y-auto bg-gray-50 space-y-3">
+            <div id="chat-messages" class="flex-grow p-4 overflow-y-auto bg-gray-50 space-y-3 pb-20 md:pb-4">
                 <!-- As mensagens serão inseridas aqui dinamicamente -->
                 <div class="text-center text-gray-500 text-sm py-4">
                     Iniciando chat...
                 </div>
             </div>
             <!-- Input Area -->
-            <div class="p-3 border-t bg-white">
+            <div class="p-3 border-t bg-white fixed md:relative bottom-0 left-0 right-0">
                 <form id="chat-form" class="flex space-x-2">
-                    <input type="text" id="chat-input" class="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Digite sua mensagem..." required>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors">
+                    <input type="text" id="chat-input" class="flex-grow p-3 md:p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Digite sua mensagem..." required>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white p-3 md:p-2 rounded-lg transition-colors">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </form>
