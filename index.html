@@ -627,6 +627,24 @@
             color: #1e293b;
             border-bottom-left-radius: 4px;
         }
+
+
+        /* Ajusta a largura do container do login */
+        .glass-container {
+            max-width: 440px; /* Largura máxima mais estreita */
+            width: 90%; /* Largura fluida para telas menores */
+            margin: 0 auto; /* Centraliza o modal */
+        }
+        
+        /* Opcional: Ajusta o padding para telas muito pequenas */
+        @media (max-width: 480px) {
+            .glass-container {
+                padding: 1.5rem;
+                width: 95%;
+            }
+        }
+        
+        
         /* Auto focus input on mobile */
         @media (max-width: 767px) {
             #chat-modal:not(.hidden) #chat-input {
@@ -1033,54 +1051,43 @@
                 });
             }
             
-            // Função para verificar autenticação - CORRIGIDA
-            async function checkAuth() {
-                console.log('Verificando autenticação...');
+            // Função para verificar autenticação antes de trocar de aba - ATUALIZADA
+            async function checkAuthAndSwitchTab(tabName) {
                 try {
+                    console.log('Verificando autenticação antes de trocar para aba:', tabName);
                     const response = await fetch('/auth/check', {
                         credentials: 'include'
                     });
-                    
-                    console.log('Resposta recebida:', response.status);
-                    
+            
                     if (response.status === 401) {
-                        // Não autenticado
-                        console.log('Usuário não autenticado');
-                        updateUIForUnauthenticated();
+                        // Guarda a aba que o usuário queria acessar
+                        targetTabAfterLogin = tabName;
+                        // Mostra o modal de login
+                        document.getElementById('login-modal').classList.remove('hidden');
                         return;
                     }
-                    
+            
                     if (!response.ok) {
                         throw new Error(`Erro HTTP: ${response.status}`);
                     }
-                    
-                    const data = await response.json();
-                    console.log('Dados de autenticação:', data);
-                    
-                    if (data.authenticated) {
-                        // Usuário está autenticado
-                        updateUIForAuthenticated(data.user_name);
-                        
-                        // Se estava tentando acessar downloads, carregar as pastas
-                        if (targetTabAfterLogin === 'downloads') {
-                            switchTab('downloads');
-                            loadFolders();
-                            targetTabAfterLogin = null;
-                        }
-                        
-                        // Se já está na aba de downloads, carregar as pastas
-                        if (document.getElementById('downloads-content') && 
-                            document.getElementById('downloads-content').classList.contains('active')) {
+            
+                    const authData = await response.json();
+                    console.log('Resultado da verificação:', authData);
+            
+                    if (authData.authenticated) {
+                        // Se estiver autenticado, simplesmente muda para a aba
+                        switchTab(tabName);
+                        if (tabName === 'downloads') {
                             loadFolders();
                         }
                     } else {
-                        // Usuário não está autenticado
-                        updateUIForUnauthenticated();
+                        // Se não estiver autenticado, guarda o destino e mostra o login
+                        targetTabAfterLogin = tabName;
+                        document.getElementById('login-modal').classList.remove('hidden');
                     }
                 } catch (error) {
                     console.error('Erro ao verificar autenticação:', error);
-                    showToast('Não foi possível conectar à API. Verifique o console para detalhes.', 'error');
-                    updateUIForUnauthenticated();
+                    showToast('Não foi possível verificar autenticação. Tente novamente.', 'error');
                 }
             }
             
