@@ -228,9 +228,31 @@
             measurementId: "G-Z21SZ5XF50"
         };
 
-        // Inicializar Firebase de forma segura e assíncrona
+        // Função para aguardar o Firebase carregar
+        const waitForFirebase = () => {
+            return new Promise((resolve, reject) => {
+                const maxWaitTime = 10000; // 10 segundos
+                const startTime = Date.now();
+                
+                const checkFirebase = () => {
+                    if (typeof firebase !== 'undefined' && firebase.app) {
+                        resolve();
+                    } else if (Date.now() - startTime > maxWaitTime) {
+                        reject(new Error('Firebase não carregou dentro do tempo limite'));
+                    } else {
+                        setTimeout(checkFirebase, 100);
+                    }
+                };
+                checkFirebase();
+            });
+        };
+
+        // Inicializar Firebase de forma segura e assíncrona - CORRIGIDA
         const initializeFirebase = async () => {
             try {
+                // Aguardar o Firebase estar disponível
+                await waitForFirebase();
+                
                 // Verificar se o Firebase já foi inicializado
                 if (!firebase.apps.length) {
                     console.log("Inicializando Firebase...");
@@ -241,14 +263,18 @@
                     const auth = firebase.auth(app);
                     
                     // Configurar persistência offline para Firestore
-                    await db.enablePersistence({ synchronizeTabs: true })
-                        .catch((err) => {
-                            if (err.code === 'failed-precondition') {
-                                console.log('Múltiplas abas abertas - usando persistência única');
-                            } else if (err.code === 'unimplemented') {
-                                console.log('Navegador não suporta persistência offline');
-                            }
-                        });
+                    try {
+                        await db.enablePersistence({ synchronizeTabs: true })
+                            .catch((err) => {
+                                if (err.code === 'failed-precondition') {
+                                    console.log('Múltiplas abas abertas - usando persistência única');
+                                } else if (err.code === 'unimplemented') {
+                                    console.log('Navegador não suporta persistência offline');
+                                }
+                            });
+                    } catch (persistenceError) {
+                        console.warn('Persistência não suportada:', persistenceError);
+                    }
                     
                     console.log("Firebase inicializado com sucesso!");
                     return { app, db, auth };
@@ -274,18 +300,18 @@
             ]
         };
 
-        // API para Firestore com inicialização segura
+        // API para Firestore com inicialização segura - CORRIGIDA
         const FirestoreTasksAPI = {
             db: null,
             auth: null,
             
-            // Método para configurar a instância do Firestore
-            setFirebaseInstance: (firebaseInstance) => {
+            // Método para configurar a instância do Firestore - CORRIGIDO
+            setFirebaseInstance: function(firebaseInstance) {
                 this.db = firebaseInstance.db;
                 this.auth = firebaseInstance.auth;
             },
             
-            getTasksCollection: () => {
+            getTasksCollection: function() {
                 if (!this.db) {
                     console.error("Firestore não está inicializado");
                     throw new Error("Firestore não inicializado");
@@ -293,7 +319,7 @@
                 return this.db.collection('tasks');
             },
             
-            getPhrasesCollection: () => {
+            getPhrasesCollection: function() {
                 if (!this.db) {
                     console.error("Firestore não está inicializado");
                     throw new Error("Firestore não inicializado");
@@ -301,7 +327,7 @@
                 return this.db.collection('phrases');
             },
             
-            getCurrentUserId: async () => {
+            getCurrentUserId: async function() {
                 try {
                     if (!this.auth) {
                         throw new Error("Firebase Auth não inicializado");
@@ -345,7 +371,7 @@
             },
             
             // Testar conexão com o Firestore
-            testConnection: async () => {
+            testConnection: async function() {
                 try {
                     const testRef = this.getPhrasesCollection().doc('connection_test');
                     await testRef.get();
@@ -356,7 +382,7 @@
                 }
             },
             
-            getTasks: async () => {
+            getTasks: async function() {
                 try {
                     const userId = await this.getCurrentUserId();
                     const snapshot = await this.getTasksCollection()
@@ -381,7 +407,7 @@
                 }
             },
             
-            getPhrases: async () => {
+            getPhrases: async function() {
                 try {
                     const phrasesDoc = await this.getPhrasesCollection().doc('default').get();
                     if (phrasesDoc.exists) {
@@ -394,7 +420,7 @@
                 }
             },
             
-            addTask: async (task) => {
+            addTask: async function(task) {
                 try {
                     const userId = await this.getCurrentUserId();
                     const tasksSnapshot = await this.getTasksCollection()
@@ -423,7 +449,7 @@
                 }
             },
             
-            updateTask: async (id, updates) => {
+            updateTask: async function(id, updates) {
                 try {
                     const taskRef = this.getTasksCollection().doc(id);
                     await taskRef.update({
@@ -448,7 +474,7 @@
                 }
             },
             
-            deleteTask: async (id) => {
+            deleteTask: async function(id) {
                 try {
                     const taskRef = this.getTasksCollection().doc(id);
                     await taskRef.delete();
@@ -459,7 +485,7 @@
                 }
             },
             
-            clearCompleted: async () => {
+            clearCompleted: async function() {
                 try {
                     const userId = await this.getCurrentUserId();
                     const snapshot = await this.getTasksCollection()
@@ -480,7 +506,7 @@
                 }
             },
             
-            reorderTasks: async (reorderedTasks) => {
+            reorderTasks: async function(reorderedTasks) {
                 try {
                     const batch = this.db.batch();
                     
@@ -500,7 +526,7 @@
                 }
             },
             
-            initializeDefaultData: async () => {
+            initializeDefaultData: async function() {
                 try {
                     const phrasesRef = this.getPhrasesCollection().doc('default');
                     const phrasesDoc = await phrasesRef.get();
@@ -568,7 +594,7 @@
                 };
             }, []);
             
-            // Inicializar Firebase e dados - AGORA ASSÍNCRONO
+            // Inicializar Firebase e dados - AGORA CORRIGIDO
             useEffect(() => {
                 let isInitialized = false;
                 
@@ -715,9 +741,6 @@
                 }
             };
             
-            // Demais funções permanecem as mesmas (createDate, addOrUpdateTask, toggleDone, etc.)
-            // Vou incluir apenas as funções que foram modificadas
-            
             const createDate = (dateString, timeString = null) => {
                 if (!dateString) return null;
                 const [year, month, day] = dateString.split('-').map(Number);
@@ -776,10 +799,6 @@
                 }
             }, [title, dueDate, dueTime, editingId, isConnected]);
             
-            // As demais funções (toggleDone, startEdit, removeTask, etc.) permanecem as mesmas
-            // do código original, pois o problema principal era a inicialização do Firestore
-            
-            // Funções mantidas idênticas (toggleDone, startEdit, removeTask, clearCompleted, refreshTasks, etc.)
             const toggleDone = useCallback(async (id) => {
                 if (!isConnected) return;
                 
@@ -1135,7 +1154,6 @@
                                     </div>
                                 </div>
                             </div>
-                            {/* Restante do componente mantido idêntico ao original */}
                             <div className="p-5 border-b border-gray-700">
                                 <form onSubmit={addOrUpdateTask} className="relative">
                                     <div className="flex flex-col gap-3">
