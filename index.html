@@ -1,232 +1,195 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROTINA DA ESPOSA DE IGOR</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Lista de Tarefas Compartilhada</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
         
         body {
-            background: #000 url('https://4kwallpapers.com/images/walls/thumbs_3t/14811.jpg') no-repeat center center fixed;
-            background-size: cover;
-            margin: 0;
-            padding: 1rem;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            color: #e2e8f0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            -webkit-text-size-adjust: 100%;
-            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: -1;
+            max-width: 600px;
+            padding: 30px;
+            text-align: center;
         }
-
-        @media (max-width: 640px) {
-            body {
-                padding: 0.5rem;
-            }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.2em;
         }
-
-        .task-item {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform, box-shadow;
-            cursor: grab;
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
         }
-
-        .task-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
         }
-
-        .task-item:active {
-            cursor: grabbing;
+        
+        #taskInput {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
-
-        .task-item.dragging {
-            opacity: 0.6;
-            transform: rotate(5deg) scale(1.02);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        
+        #taskInput:focus {
+            border-color: #667eea;
+            outline: none;
         }
-
-        .task-item.drag-over {
-            border: 2px dashed #9333ea;
-            background: rgba(147, 51, 234, 0.1);
+        
+        #addTask {
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
         }
-
-        .task-item.completed {
-            animation: taskComplete 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        
+        #addTask:hover {
+            background: #5a6fd8;
         }
-
-        @keyframes taskComplete {
-            0% { opacity: 1; transform: translateX(0); }
-            50% { opacity: 0.7; transform: translateX(-10px); }
-            100% { opacity: 0.5; transform: translateX(0); }
+        
+        .tasks-container {
+            text-align: left;
+            margin-top: 20px;
         }
-
-        .glass-card {
-            background: rgba(17, 24, 39, 0.85);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(55, 65, 81, 0.5);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        
+        .task {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s;
         }
-
-        @media (max-width: 640px) {
-            .glass-card {
-                border-radius: 0.75rem !important;
-            }
+        
+        .task:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        .btn-primary {
-            background-color: #9333ea;
-            transition: all 0.3s ease;
+        
+        .task.completed {
+            border-left-color: #28a745;
+            opacity: 0.8;
         }
-
-        .btn-primary:hover {
-            background-color: #7e22ce;
-        }
-
-        .btn-glow::after {
-            display: none;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in-up {
-            animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-        }
-
-        .progress-ring {
-            transition: stroke-dashoffset 0.35s;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
-
-        input[type="time"]::-webkit-calendar-picker-indicator,
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            filter: invert(1);
+        
+        .task-checkbox {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
             cursor: pointer;
         }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 1rem;
+        
+        .task-text {
+            flex: 1;
+            font-size: 16px;
+            color: #333;
         }
-
-        .modal-content {
-            background: rgba(17, 24, 39, 0.95);
-            border-radius: 1rem;
-            border: 1px solid rgba(55, 65, 81, 0.5);
-            max-width: 500px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
+        
+        .task.completed .task-text {
+            text-decoration: line-through;
+            color: #6c757d;
         }
-
-        .sync-indicator {
-            animation: pulse 2s infinite;
+        
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
         }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+        
+        .delete-btn:hover {
+            background: #c82333;
         }
-
-        .drag-handle {
-            cursor: grab;
-            transition: color 0.2s ease;
+        
+        .status {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #6c757d;
         }
-
-        .drag-handle:active {
-            cursor: grabbing;
+        
+        .user-count {
+            background: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            margin-top: 10px;
         }
-
-        .drag-handle:hover {
-            color: #9333ea;
-        }
-
-        .filters-container {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            flex-wrap: nowrap;
-            overflow-x: auto;
-            padding-bottom: 0.5rem;
-            scrollbar-width: thin;
-            scrollbar-color: #4b5563 #1f2937;
-        }
-
-        .filters-container::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .filters-container::-webkit-scrollbar-track {
-            background: #1f2937;
-            border-radius: 3px;
-        }
-
-        .filters-container::-webkit-scrollbar-thumb {
-            background: #4b5563;
-            border-radius: 3px;
-        }
-
-        .filters-container::-webkit-scrollbar-thumb:hover {
-            background: #6b7280;
-        }
-
-        .online-indicator {
-            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
-        }
-
-        @keyframes ping {
-            75%, 100% {
-                transform: scale(1.5);
-                opacity: 0;
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .input-container {
+                flex-direction: column;
+            }
+            
+            #addTask {
+                width: 100%;
             }
         }
     </style>
 </head>
 <body>
-    <div id="root"></div>
-
-    <script type="text/babel">
-        const { useState, useEffect, useCallback } = React;
+    <div class="container">
+        <h1>📝 Lista de Tarefas Compartilhada</h1>
+        <p class="subtitle">Todos os usuários veem e editam a mesma lista em tempo real</p>
         
+        <div class="input-container">
+            <input type="text" id="taskInput" placeholder="Digite uma nova tarefa..." autocomplete="off">
+            <button id="addTask">Adicionar</button>
+        </div>
+        
+        <div class="tasks-container" id="tasksContainer">
+            <!-- As tarefas serão adicionadas aqui dinamicamente -->
+        </div>
+        
+        <div class="status" id="status">Conectado ao Firebase ✅</div>
+        <div class="user-count" id="userCount">Usuários online: 1</div>
+    </div>
+
+    <script>
         // Configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBMlMkubD980K5ynN5Ud3XEYNWK3Q8RklU",
@@ -239,926 +202,220 @@
         };
 
         // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        // JSON padrão para frases de elogio
-        const defaultPhrases = {
-            "completionTexts": [
-                "Bom progresso! 3x mais gostosaaa 🔥",
-                "Ainn continue assim bb! ❣️🔥",
-                "Sem muito mimi mofi 💪",
-                "Rum se eu te pegar motivada desse jeito... AIAI 😈",
-                "Wiliss ficaria orgulhosa de vc mbm 🥰🥰",
-                "Sem negocio de preguiça xuxuzinho ❤️",
-                "Isso mesmo namolada, isso mesmo ❣️❤️",
-            ]
-        };
-
-        // API para Firebase Firestore
-        const FirebaseAPI = {
-            // Buscar todas as tarefas em tempo real
-            getTasksRealtime: (callback) => {
-                return db.collection('tasks')
-                    .orderBy('order', 'asc')
-                    .onSnapshot((snapshot) => {
-                        const tasks = snapshot.docs.map(doc => ({
-                            id: doc.id,
-                            ...doc.data()
-                        }));
-                        callback(tasks);
-                    }, (error) => {
-                        console.error("Erro ao buscar tarefas:", error);
-                    });
-            },
-            
-            // Adicionar uma nova tarefa
-            addTask: async (task) => {
-                try {
-                    // Primeiro buscar a última ordem para adicionar no final
-                    const lastTaskSnapshot = await db.collection('tasks')
-                        .orderBy('order', 'desc')
-                        .limit(1)
-                        .get();
-                    
-                    const lastOrder = lastTaskSnapshot.empty ? 0 : lastTaskSnapshot.docs[0].data().order + 1;
-                    
-                    const newTask = {
-                        ...task,
-                        order: lastOrder,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    };
-                    
-                    const docRef = await db.collection('tasks').add(newTask);
-                    return { id: docRef.id, ...newTask };
-                } catch (error) {
-                    console.error("Erro ao adicionar tarefa:", error);
-                    throw error;
-                }
-            },
-            
-            // Atualizar uma tarefa existente
-            updateTask: async (id, updates) => {
-                try {
-                    await db.collection('tasks').doc(id).update({
-                        ...updates,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    return true;
-                } catch (error) {
-                    console.error("Erro ao atualizar tarefa:", error);
-                    throw error;
-                }
-            },
-            
-            // Remover uma tarefa
-            deleteTask: async (id) => {
-                try {
-                    await db.collection('tasks').doc(id).delete();
-                    return true;
-                } catch (error) {
-                    console.error("Erro ao excluir tarefa:", error);
-                    throw error;
-                }
-            },
-            
-            // Limpar tarefas concluídas
-            clearCompleted: async () => {
-                try {
-                    const snapshot = await db.collection('tasks')
-                        .where('done', '==', true)
-                        .get();
-                    
-                    const batch = db.batch();
-                    snapshot.docs.forEach(doc => {
-                        batch.delete(doc.ref);
-                    });
-                    
-                    await batch.commit();
-                    return true;
-                } catch (error) {
-                    console.error("Erro ao limpar tarefas concluídas:", error);
-                    throw error;
-                }
-            },
-
-            // Reordenar tarefas
-            reorderTasks: async (tasks) => {
-                try {
-                    const batch = db.batch();
-                    
-                    tasks.forEach((task, index) => {
-                        const taskRef = db.collection('tasks').doc(task.id);
-                        batch.update(taskRef, {
-                            order: index,
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
-                    });
-                    
-                    await batch.commit();
-                    return true;
-                } catch (error) {
-                    console.error("Erro ao reordenar tarefas:", error);
-                    throw error;
-                }
-            }
-        };
-
-        function DailyTasksApp() {
-            const [showWelcome, setShowWelcome] = useState(() => {
-                const welcomeShown = localStorage.getItem("dailyTasks_welcomeShown");
-                return welcomeShown !== "true";
-            });
-
-            const [tasks, setTasks] = useState([]);
-            const [isLoading, setIsLoading] = useState(true);
-            const [lastSync, setLastSync] = useState(null);
-            const [isOnline, setIsOnline] = useState(true);
-
-            const [phrases] = useState(defaultPhrases);
-            
-            const [title, setTitle] = useState("");
-            const [dueDate, setDueDate] = useState("");
-            const [dueTime, setDueTime] = useState("");
-            const [editingId, setEditingId] = useState(null);
-            const [filter, setFilter] = useState("all");
-            const [search, setSearch] = useState("");
-            const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0 });
-            
-            // Estados para drag and drop
-            const [draggedTask, setDraggedTask] = useState(null);
-            const [dragOverTask, setDragOverTask] = useState(null);
-
-            // Carregar tarefas em tempo real do Firebase
-            useEffect(() => {
-                const unsubscribe = FirebaseAPI.getTasksRealtime((tasks) => {
-                    // Converter timestamps do Firebase para Date objects
-                    const processedTasks = tasks.map(task => ({
-                        ...task,
-                        createdAt: task.createdAt ? task.createdAt.toDate() : new Date(),
-                        updatedAt: task.updatedAt ? task.updatedAt.toDate() : new Date()
-                    }));
-                    
-                    setTasks(processedTasks);
-                    setLastSync(new Date());
-                    setIsLoading(false);
-                    setIsOnline(true);
-                });
-
-                // Cleanup subscription
-                return () => unsubscribe();
-            }, []);
-
-            // Função auxiliar para criar data sem problemas de fuso horário
-            const createDate = (dateString, timeString = null) => {
-                if (!dateString) return null;
-                
-                const [year, month, day] = dateString.split('-').map(Number);
-                let date = new Date(year, month - 1, day);
-                
-                if (timeString) {
-                    const [hours, minutes] = timeString.split(':').map(Number);
-                    date.setHours(hours, minutes, 0, 0);
-                } else {
-                    // Se não tem horário, considera o final do dia (23:59)
-                    date.setHours(23, 59, 0, 0);
-                }
-                
-                return date;
-            };
-
-            // Calcular estatísticas
-            useEffect(() => {
-                const calculateStats = () => {
-                    const now = new Date();
-                    
-                    const completed = tasks.filter(t => t.done).length;
-                    const pending = tasks.filter(t => {
-                        if (t.done) return false;
-                        
-                        // Verificar se a tarefa está atrasada
-                        if (t.dueDate) {
-                            const taskDate = createDate(t.dueDate, t.dueTime);
-                            return taskDate && taskDate < now;
-                        }
-                        
-                        return false;
-                    }).length;
-                    
-                    setStats({
-                        total: tasks.length,
-                        completed,
-                        pending,
-                        completionRate: tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0
-                    });
-                };
-
-                calculateStats();
-            }, [tasks]);
-
-            useEffect(() => {
-                if (tasks.length > 0) {
-                    setShowWelcome(false);
-                }
-            }, [tasks]);
-            
-            const addOrUpdateTask = useCallback(async (e) => {
-                e.preventDefault();
-                if (!title.trim()) return;
-
-                setIsLoading(true);
-                
-                try {
-                    if (editingId) {
-                        // Atualizar tarefa existente
-                        await FirebaseAPI.updateTask(editingId, {
-                            title: title.trim(),
-                            dueDate: dueDate || null,
-                            dueTime: dueTime || null
-                        });
-                        
-                        setEditingId(null);
-                    } else {
-                        // Adicionar nova tarefa
-                        const newTask = {
-                            title: title.trim(),
-                            dueDate: dueDate || null,
-                            dueTime: dueTime || null,
-                            done: false,
-                        };
-                        
-                        await FirebaseAPI.addTask(newTask);
-                    }
-
-                    setTitle("");
-                    setDueDate("");
-                    setDueTime("");
-                } catch (error) {
-                    console.error("Erro ao salvar tarefa:", error);
-                    setIsOnline(false);
-                    alert("Erro ao salvar tarefa. Verifique sua conexão.");
-                } finally {
-                    setIsLoading(false);
-                }
-            }, [title, dueDate, dueTime, editingId]);
-
-            const handleStart = useCallback(() => {
-                setShowWelcome(false);
-                localStorage.setItem("dailyTasks_welcomeShown", "true");
-            }, []);
-            
-            const toggleDone = useCallback(async (id) => {
-                setIsLoading(true);
-                const task = tasks.find(t => t.id === id);
-                if (task) {
-                    try {
-                        await FirebaseAPI.updateTask(id, { done: !task.done });
-                    } catch (error) {
-                        console.error("Erro ao atualizar tarefa:", error);
-                        setIsOnline(false);
-                        alert("Erro ao atualizar tarefa. Verifique sua conexão.");
-                    } finally {
-                        setIsLoading(false);
-                    }
-                }
-            }, [tasks]);
-
-            const startEdit = useCallback((t) => {
-                setEditingId(t.id);
-                setTitle(t.title);
-                setDueDate(t.dueDate || "");
-                setDueTime(t.dueTime || "");
-            }, []);
-
-            const removeTask = useCallback(async (id) => {
-                if (!confirm("Tem certeza que deseja excluir esta tarefa?")) return;
-                
-                setIsLoading(true);
-                try {
-                    await FirebaseAPI.deleteTask(id);
-                } catch (error) {
-                    console.error("Erro ao excluir tarefa:", error);
-                    setIsOnline(false);
-                    alert("Erro ao excluir tarefa. Verifique sua conexão.");
-                } finally {
-                    setIsLoading(false);
-                }
-            }, []);
-
-            const clearCompleted = useCallback(async () => {
-                if (!confirm("Remover todas as tarefas concluídas?")) return;
-                
-                setIsLoading(true);
-                try {
-                    await FirebaseAPI.clearCompleted();
-                } catch (error) {
-                    console.error("Erro ao limpar tarefas:", error);
-                    setIsOnline(false);
-                    alert("Erro ao limpar tarefas. Verifique sua conexão.");
-                } finally {
-                    setIsLoading(false);
-                }
-            }, []);
-
-            // Funções para Drag and Drop
-            const handleDragStart = useCallback((e, task) => {
-                setDraggedTask(task);
-                e.dataTransfer.effectAllowed = 'move';
-                setTimeout(() => {
-                    e.target.classList.add('dragging');
-                }, 0);
-            }, []);
-
-            const handleDragOver = useCallback((e, task) => {
-                e.preventDefault();
-                if (draggedTask && draggedTask.id !== task.id) {
-                    setDragOverTask(task);
-                }
-            }, [draggedTask]);
-
-            const handleDragLeave = useCallback((e) => {
-                e.preventDefault();
-                setDragOverTask(null);
-            }, []);
-
-            const handleDrop = useCallback(async (e, targetTask) => {
-                e.preventDefault();
-                if (!draggedTask || draggedTask.id === targetTask.id) {
-                    setDraggedTask(null);
-                    setDragOverTask(null);
-                    return;
-                }
-
-                // Reordenar as tarefas
-                const taskList = [...tasks];
-                const draggedIndex = taskList.findIndex(t => t.id === draggedTask.id);
-                const targetIndex = taskList.findIndex(t => t.id === targetTask.id);
-
-                if (draggedIndex !== -1 && targetIndex !== -1) {
-                    // Remover a tarefa arrastada
-                    const [movedTask] = taskList.splice(draggedIndex, 1);
-                    // Inserir na nova posição
-                    taskList.splice(targetIndex, 0, movedTask);
-
-                    // Atualizar estado local
-                    setTasks(taskList);
-                    
-                    // Salvar no Firebase
-                    setIsLoading(true);
-                    try {
-                        await FirebaseAPI.reorderTasks(taskList);
-                        setLastSync(new Date());
-                    } catch (error) {
-                        console.error("Erro ao reordenar tarefas:", error);
-                        setIsOnline(false);
-                    } finally {
-                        setIsLoading(false);
-                    }
-                }
-
-                setDraggedTask(null);
-                setDragOverTask(null);
-            }, [draggedTask, tasks]);
-
-            const handleDragEnd = useCallback((e) => {
-                e.target.classList.remove('dragging');
-                setDraggedTask(null);
-                setDragOverTask(null);
-            }, []);
-
-            const getTaskPriority = (task) => {
-                if (task.done) return "none";
-                if (!task.dueDate) return "none";
-                
-                const now = new Date();
-                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                const tomorrow = new Date(today);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                
-                const taskDate = createDate(task.dueDate);
-                if (!taskDate) return "none";
-                
-                // Ajustar para comparar apenas a data (sem hora)
-                const taskDateOnly = new Date(taskDate.getFullYear(), taskDate.getMonth(), taskDate.getDate());
-                
-                // Se a tarefa é para hoje
-                if (taskDateOnly.getTime() === today.getTime()) {
-                    // Se tem horário definido, verificar se está atrasada
-                    if (task.dueTime) {
-                        return taskDate < now ? "urgent" : "high";
-                    }
-                    return "high";
-                }
-                
-                // Se a tarefa é para antes de hoje (atrasada)
-                if (taskDateOnly < today) return "urgent";
-                
-                // Se a tarefa é para amanhã
-                if (taskDateOnly.getTime() === tomorrow.getTime()) return "medium";
-                
-                // Se a tarefa é para os próximos dias (2-3 dias)
-                const dayAfterTomorrow = new Date(tomorrow);
-                dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
-                const inThreeDays = new Date(tomorrow);
-                inThreeDays.setDate(inThreeDays.getDate() + 2);
-                
-                if (taskDateOnly >= dayAfterTomorrow && taskDateOnly <= inThreeDays) return "medium";
-                
-                // Tarefas para mais de 3 dias
-                return "low";
-            };
-
-            const getPriorityBadge = (priority) => {
-                const badges = {
-                    urgent: { text: "Atrasado", color: "bg-red-900 text-red-300 border-red-700" },
-                    high: { text: "Hoje", color: "bg-purple-900 text-purple-200 border-purple-700" },
-                    medium: { text: "Em breve", color: "bg-amber-900 text-amber-200 border-amber-700" },
-                    low: { text: "Futuro", color: "bg-emerald-900 text-emerald-200 border-emerald-700" },
-                    none: { text: "Sem data", color: "bg-gray-800 text-gray-300 border-gray-700" }
-                };
-                return badges[priority];
-            };
-
-            const formatDate = (dateString) => {
-                if (!dateString) return '';
-                
-                const date = createDate(dateString);
-                const today = new Date();
-                const tomorrow = new Date(today);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                
-                const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-                const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-                const tomorrowOnly = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
-                
-                if (dateOnly.getTime() === todayOnly.getTime()) {
-                    return 'Hoje';
-                } else if (dateOnly.getTime() === tomorrowOnly.getTime()) {
-                    return 'Amanhã';
-                } else {
-                    return date.toLocaleDateString('pt-BR');
-                }
-            };
-
-            const getCompletionText = () => {
-                if (stats.completionRate === 100 && phrases.completionTexts.length > 0) {
-                    return phrases.completionTexts[0];
-                }
-                if (stats.completionRate >= 80 && phrases.completionTexts.length > 1) {
-                    return phrases.completionTexts[1];
-                }
-                if (stats.completionRate >= 60 && phrases.completionTexts.length > 2) {
-                    return phrases.completionTexts[2];
-                }
-                if (stats.completionRate >= 40 && phrases.completionTexts.length > 3) {
-                    return phrases.completionTexts[3];
-                }
-                if (phrases.completionTexts.length > 4) {
-                    return phrases.completionTexts[4];
-                }
-                return "Continue assim!";
-            };
-
-            const visibleTasks = tasks.filter((t) => {
-                if (search && !t.title.toLowerCase().includes(search.toLowerCase())) return false;
-
-                if (filter === "all") return true;
-                if (filter === "completed") return t.done;
-                if (filter === "pending") return !t.done;
-                if (filter === "overdue") {
-                    if (t.done || !t.dueDate) return false;
-                    
-                    const now = new Date();
-                    const taskDate = createDate(t.dueDate, t.dueTime);
-                    
-                    return taskDate && taskDate < now;
-                }
-                if (filter === "today") {
-                    if (t.done || !t.dueDate) return false;
-                    
-                    const today = new Date();
-                    const taskDate = createDate(t.dueDate);
-                    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-                    const taskDateOnly = new Date(taskDate.getFullYear(), taskDate.getMonth(), taskDate.getDate());
-                    
-                    return taskDateOnly.getTime() === todayOnly.getTime();
-                }
-                return true;
-            });
-
-            return (
-                <div className="min-h-screen flex flex-col items-center justify-center p-4">
-                    {showWelcome && (
-                        <div className="glass-card rounded-2xl p-6 mb-6 text-center animate-fade-in-up border border-gray-700 w-full max-w-md">
-                            <div className="flex justify-center mb-4">
-                                <div className="w-14 h-14 rounded-lg bg-purple-600 flex items-center justify-center">
-                                    <i className="fas fa-tasks text-white text-xl"></i>
-                                </div>
-                            </div>
-                            <h2 className="text-xl md:text-2xl font-bold mb-3 text-gray-200">
-                                Bem-vindo delicia, vamo querer se organizar?
-                            </h2>
-                            <p className="text-gray-400 mb-5 max-w-md mx-auto text-sm">
-                                Organize sua rotina ai, acompanhe seu progresso e conquiste seus objetivos diários com facilidade. hehehe.
-                            </p>
-                            <button 
-                                onClick={handleStart}
-                                className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-all duration-300 shadow-md"
-                            >
-                                Começar Agora
-                            </button>
-                        </div>
-                    )}
-                    
-                    <div className="w-full max-w-4xl">
-                        <div className={`glass-card rounded-2xl shadow-lg overflow-hidden border border-gray-700 ${showWelcome ? 'hidden' : 'block'}`}>
-                            <div className="p-5 border-b border-gray-700">
-                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                                    <div className="flex items-center gap-3">
-                                        <div className="flex items-center gap-1">
-                                            <i className="fas fa-check-circle text-green-400"></i>
-                                            <span className="font-medium text-gray-200">{stats.completed}/{stats.total}</span>
-                                        </div>
-                                        <div className="w-1 h-1 rounded-full bg-gray-600"></div>
-                                        <div className="flex items-center gap-1">
-                                            <i className="fas fa-exclamation-circle text-red-400"></i>
-                                            <span className="font-medium text-red-300">{stats.pending}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            {isLoading && (
-                                                <div className="flex items-center gap-1 text-purple-400 sync-indicator">
-                                                    <i className="fas fa-sync-alt fa-spin"></i>
-                                                    <span className="text-xs">Sincronizando...</span>
-                                                </div>
-                                            )}
-                                            <div className={`flex items-center gap-1 ${isOnline ? 'text-green-400' : 'text-red-400'}`}>
-                                                <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400 online-indicator' : 'bg-red-400'}`}></div>
-                                                <span className="text-xs">{isOnline ? 'Online' : 'Offline'}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="p-5 border-b border-gray-700">
-                                <form onSubmit={addOrUpdateTask} className="relative">
-                                    <div className="flex flex-col gap-3">
-                                        <div className="flex flex-col sm:flex-row gap-3">
-                                            <div className="flex-1">
-                                                <div className="relative">
-                                                    <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-purple-400">
-                                                        <i className={editingId ? "fas fa-edit" : "fas fa-plus"}></i>
-                                                    </div>
-                                                    <input
-                                                        value={title}
-                                                        onChange={(e) => setTitle(e.target.value)}
-                                                        placeholder={editingId ? "Editar tarefa..." : "O que você precisa fazer hoje?"}
-                                                        className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all duration-300 text-white placeholder-gray-500"
-                                                        disabled={isLoading}
-                                                    />
-                                                </div>
-                                            </div>
-                                            
-                                            <div className="flex flex-col sm:flex-row gap-3">
-                                                <button
-                                                    type="submit"
-                                                    disabled={isLoading}
-                                                    className="px-4 py-3 rounded-lg bg-purple-600 hover:bg-purple-700 text-white font-medium shadow-md transition-all duration-300 flex items-center justify-center min-w-[110px] disabled:opacity-50 disabled:cursor-not-allowed"
-                                                >
-                                                    <span className="flex items-center gap-1.5">
-                                                        {isLoading ? (
-                                                            <i className="fas fa-spinner fa-spin"></i>
-                                                        ) : editingId ? (
-                                                            <>
-                                                                <i className="fas fa-save"></i>
-                                                                <span className="hidden sm:inline text-sm">Salvar</span>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <i className="fas fa-plus"></i>
-                                                                <span className="hidden sm:inline text-sm">Adicionar</span>
-                                                            </>
-                                                        )}
-                                                    </span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="flex flex-col sm:flex-row gap-3">
-                                            <div className="relative flex-1">
-                                                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
-                                                    <i className="far fa-calendar"></i>
-                                                </div>
-                                                <input
-                                                    type="date"
-                                                    value={dueDate}
-                                                    onChange={(e) => setDueDate(e.target.value)}
-                                                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all duration-300"
-                                                    disabled={isLoading}
-                                                />
-                                            </div>
-                                            
-                                            <div className="relative flex-1">
-                                                <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
-                                                    <i className="far fa-clock"></i>
-                                                </div>
-                                                <input
-                                                    type="time"
-                                                    value={dueTime}
-                                                    onChange={(e) => setDueTime(e.target.value)}
-                                                    className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all duration-300"
-                                                    disabled={isLoading}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <div className="p-5 border-b border-gray-700">
-                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                                    <div className="filters-container">
-                                        {[
-                                            { label: "Todas", value: "all", icon: "fas fa-list" },
-                                            { label: "Pendentes", value: "pending", icon: "fas fa-hourglass-half" },
-                                            { label: "Hoje", value: "today", icon: "fas fa-calendar-day" },
-                                            { label: "Atrasadas", value: "overdue", icon: "fas fa-exclamation-triangle" },
-                                            { label: "", value: "completed", icon: "fas fa-check-circle" }
-                                        ].map(({ label, value, icon }) => (
-                                            <button
-                                                key={value}
-                                                onClick={() => setFilter(value)}
-                                                disabled={isLoading}
-                                                className={`flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-lg font-medium transition-all duration-300 text-sm whitespace-nowrap min-w-[4.5rem] ${
-                                                    filter === value
-                                                        ? "bg-purple-600 text-white"
-                                                        : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
-                                                } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                                title={value === "completed" ? "Concluídas" : ""}
-                                            >
-                                                <i className={icon} style={{fontSize: '0.85em'}}></i>
-                                                <span>{label}</span>
-                                            </button>
-                                        ))}
-                                    </div>
-
-                                    <div className="flex gap-2 mt-3 md:mt-0">
-                                        <div className="relative">
-                                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                                                <i className="fas fa-search"></i>
-                                            </div>
-                                            <input
-                                                value={search}
-                                                onChange={(e) => setSearch(e.target.value)}
-                                                placeholder="Pesquisar tarefas..."
-                                                className="pl-9 pr-3.5 py-1.5 w-full md:w-56 rounded-lg bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all duration-300 text-white placeholder-gray-500 text-sm"
-                                                disabled={isLoading}
-                                            />
-                                        </div>
-
-                                        <button
-                                            onClick={clearCompleted}
-                                            disabled={isLoading}
-                                            className="px-3 py-1.5 rounded-lg text-gray-300 hover:text-red-300 hover:bg-red-900/30 border border-red-700/50 transition-all duration-300 flex items-center gap-1.5 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            <i className="fas fa-trash-alt" style={{fontSize: '0.85em'}}></i>
-                                            <span className="hidden sm:inline">Limpar</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <main className="p-5">
-                                {isLoading && tasks.length === 0 ? (
-                                    <div className="text-center py-12">
-                                        <div className="max-w-md mx-auto">
-                                            <div className="text-5xl mb-3 text-purple-500">
-                                                <i className="fas fa-spinner fa-spin"></i>
-                                            </div>
-                                            <h3 className="text-xl font-bold mb-1 text-gray-200">
-                                                Carregando tarefas...
-                                            </h3>
-                                            <p className="text-gray-400 text-sm">
-                                                Conectando ao Firebase...
-                                            </p>
-                                        </div>
-                                    </div>
-                                ) : visibleTasks.length === 0 ? (
-                                    <div className="text-center py-12">
-                                        {filter === "completed" ? (
-                                            <div className="max-w-md mx-auto">
-                                                <div className="text-5xl mb-3 text-green-400">
-                                                    <i className="fas fa-check-circle"></i>
-                                                </div>
-                                                <h3 className="text-xl font-bold mb-1 text-green-300">
-                                                    Tudo Concluído!
-                                                </h3>
-                                                <p className="text-gray-400 text-sm">
-                                                    Aiii! Você está à frente de suas tarefas. Adicione novos objetivos para continuar seu progresso.
-                                                </p>
-                                            </div>
-                                        ) : (
-                                            <div className="max-w-md mx-auto">
-                                                <div className="text-5xl mb-3 text-purple-500">
-                                                    <i className="fas fa-clipboard-list"></i>
-                                                </div>
-                                                <h3 className="text-xl font-bold mb-1 text-gray-200">
-                                                    {search ? "Nenhuma tarefa encontrada" : "Nenhuma tarefa aqui"}
-                                                </h3>
-                                                <p className="text-gray-400 text-sm">
-                                                    {search 
-                                                        ? "Tente ajustar sua busca ou limpar o filtro."
-                                                        : "Adicione sua primeira tarefa e comece a organizar seu dia!"}
-                                                </p>
-                                            </div>
-                                        )}
-                                    </div>
-                                ) : (
-                                    <div className="space-y-2.5">
-                                        {visibleTasks.map((t, index) => {
-                                            const priority = getTaskPriority(t);
-                                            const badge = getPriorityBadge(priority);
-                                            const isOverdue = priority === "urgent" && !t.done;
-                                            const isDragging = draggedTask && draggedTask.id === t.id;
-                                            const isDragOver = dragOverTask && dragOverTask.id === t.id;
-                                            
-                                            return (
-                                                <div
-                                                    key={t.id}
-                                                    draggable={!isLoading}
-                                                    onDragStart={(e) => handleDragStart(e, t)}
-                                                    onDragOver={(e) => handleDragOver(e, t)}
-                                                    onDragLeave={handleDragLeave}
-                                                    onDrop={(e) => handleDrop(e, t)}
-                                                    onDragEnd={handleDragEnd}
-                                                    className={`task-item ${
-                                                        t.done ? 'completed' : ''
-                                                    } ${isDragging ? 'dragging' : ''} ${
-                                                        isDragOver ? 'drag-over' : ''
-                                                    } glass-card rounded-lg p-3.5 border ${
-                                                        isOverdue ? 'border-red-700/50' : 
-                                                        t.done ? 'border-green-700/30' : 
-                                                        'border-gray-700'
-                                                    } ${
-                                                        editingId === t.id ? 'ring-2 ring-purple-500/50' : ''
-                                                    } ${isLoading ? 'opacity-50' : ''}`}
-                                                >
-                                                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                                                        <div className="flex items-start gap-3 flex-1">
-                                                            <div className="mt-0.5">
-                                                                <input
-                                                                    type="checkbox"
-                                                                    checked={t.done}
-                                                                    onChange={() => toggleDone(t.id)}
-                                                                    disabled={isLoading}
-                                                                    className="w-4.5 h-4.5 rounded border-gray-600 bg-gray-800 text-purple-600 focus:ring-purple-600 focus:ring-offset-0 cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                                    aria-label={`Marcar ${t.title}`}
-                                                                />
-                                                            </div>
-                                                            
-                                                            <div className="flex-1 min-w-0">
-                                                                <div className={`text-sm font-medium transition-all duration-300 ${
-                                                                    t.done ? "line-through text-gray-500" : "text-red-400"
-                                                                }`}>
-                                                                    {t.title}
-                                                                </div>
-                                                                <div className="flex flex-wrap items-center gap-2 mt-1">
-                                                                    <span className={`text-xs px-2 py-0.5 rounded-full border ${badge.color}`}>
-                                                                        <i className="fas fa-clock mr-0.5 text-[0.75em]"></i>
-                                                                        {badge.text}
-                                                                    </span>
-                                                                    {t.dueDate && (
-                                                                        <span className="text-xs text-gray-500">
-                                                                            <i className="far fa-calendar mr-0.5 text-[0.75em]"></i>
-                                                                            {formatDate(t.dueDate)}
-                                                                        </span>
-                                                                    )}
-                                                                    {t.dueTime && (
-                                                                        <span className="text-xs text-gray-500">
-                                                                            <i className="far fa-clock mr-0.5 text-[0.75em]"></i>
-                                                                            {t.dueTime}
-                                                                        </span>
-                                                                    )}
-                                                                    {t.updatedAt && (
-                                                                        <span className="text-xs text-gray-600" title={`Atualizado em: ${t.updatedAt.toLocaleString('pt-BR')}`}>
-                                                                            <i className="fas fa-history mr-0.5 text-[0.75em]"></i>
-                                                                            {t.updatedAt.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <div className="flex flex-wrap gap-1.5 justify-end">
-                                                            <div className="drag-handle text-gray-400 p-1.5 cursor-grab" title="Arrastar para reordenar">
-                                                                <i className="fas fa-grip-vertical"></i>
-                                                            </div>
-                                                            <button 
-                                                                onClick={() => startEdit(t)} 
-                                                                disabled={isLoading}
-                                                                className="p-1.5 rounded-md text-gray-400 hover:text-purple-400 hover:bg-purple-900/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                                title="Editar"
-                                                            >
-                                                                <i className="fas fa-edit text-sm"></i>
-                                                            </button>
-                                                            <button 
-                                                                onClick={() => removeTask(t.id)} 
-                                                                disabled={isLoading}
-                                                                className="p-1.5 rounded-md text-gray-400 hover:text-red-400 hover:bg-red-900/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                                title="Excluir"
-                                                            >
-                                                                <i className="fas fa-trash-alt text-sm"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                            </main>
-
-                            <div className="p-5 bg-gray-900 border-t border-gray-700">
-                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-20 h-20 relative">
-                                            <svg className="w-full h-full" viewBox="0 0 36 36">
-                                                <circle
-                                                    className="text-gray-700"
-                                                    strokeWidth="2.5"
-                                                    strokeDasharray="100"
-                                                    strokeDashoffset="0"
-                                                    fill="none"
-                                                    cx="18"
-                                                    cy="18"
-                                                    r="16"
-                                                />
-                                                <circle
-                                                    className="progress-ring text-purple-600"
-                                                    strokeWidth="2.5"
-                                                    strokeDasharray="100"
-                                                    strokeDashoffset={`${100 - stats.completionRate}`}
-                                                    fill="none"
-                                                    cx="18"
-                                                    cy="18"
-                                                    r="16"
-                                                />
-                                                <text
-                                                    x="18"
-                                                    y="20"
-                                                    className="text-gray-200 text-sm font-bold text-center fill-current"
-                                                    textAnchor="middle"
-                                                >
-                                                    {stats.completionRate}%
-                                                </text>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <h3 className="text-base font-bold text-purple-400">
-                                                {getCompletionText()}
-                                            </h3>
-                                            <p className="text-gray-400 text-xs">
-                                                {stats.total > 0 
-                                                    ? `Você completou ${stats.completed} de ${stats.total} tarefas.`
-                                                    : 'Adicione sua primeira tarefa para começar!'}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="text-center md:text-right">
-                                        <p className="text-xs text-gray-400">
-                                            <i className="far fa-clock mr-1.5 text-[0.8em]"></i>
-                                            {lastSync ? `Última sincronização: ${lastSync.toLocaleTimeString('pt-BR')}` : 'Sincronizando...'}
-                                        </p>
-                                        <p className="text-xs text-green-400">
-                                            <i className="fas fa-users mr-1.5 text-[0.8em]"></i>
-                                            Lista Compartilhada em Tempo Real
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <footer className="mt-5 text-center text-xs text-gray-600">
-                            <p>
-                                <i className="fas fa-code mr-1"></i>
-                                Desenvolvido com ❤️ By D3xt4rz | 
-                                <i className="fas fa-fire ml-2 mr-1"></i>
-                                Firebase Firestore |
-                                <i className="fas fa-users ml-2 mr-1"></i>
-                                Lista Compartilhada |
-                                <i className="fas fa-arrows-alt ml-2 mr-1"></i>
-                                Arraste para reordenar
-                            </p>
-                        </footer>
-                    </div>
-                </div>
-            );
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
 
-        // Renderizar a aplicação
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<DailyTasksApp />);
+        // Inicializar Firestore
+        const db = firebase.firestore();
+        const tasksCollection = db.collection('tasks');
+        const usersCollection = db.collection('users');
+
+        // Referência para o usuário atual
+        const userId = 'user_' + generateUniqueId();
+        let currentUser = null;
+
+        // Função para gerar ID único
+        function generateUniqueId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        // Função para adicionar uma nova tarefa
+        async function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskText = taskInput.value.trim();
+            
+            if (taskText === '') return;
+            
+            try {
+                await tasksCollection.add({
+                    text: taskText,
+                    completed: false,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdBy: userId
+                });
+                
+                taskInput.value = '';
+                taskInput.focus();
+            } catch (error) {
+                console.error('Erro ao adicionar tarefa:', error);
+                alert('Erro ao adicionar tarefa. Tente novamente.');
+            }
+        }
+
+        // Função para alternar status de conclusão da tarefa
+        async function toggleTaskStatus(taskId, currentStatus) {
+            try {
+                const taskRef = tasksCollection.doc(taskId);
+                await taskRef.update({
+                    completed: !currentStatus
+                });
+            } catch (error) {
+                console.error('Erro ao atualizar tarefa:', error);
+            }
+        }
+
+        // Função para deletar uma tarefa
+        async function deleteTask(taskId) {
+            try {
+                await tasksCollection.doc(taskId).delete();
+            } catch (error) {
+                console.error('Erro ao deletar tarefa:', error);
+            }
+        }
+
+        // Função para renderizar as tarefas
+        function renderTasks(tasks) {
+            const tasksContainer = document.getElementById('tasksContainer');
+            tasksContainer.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                tasksContainer.innerHTML = '<p class="empty-list">Nenhuma tarefa ainda. Adicione a primeira! 😊</p>';
+                return;
+            }
+            
+            // Ordenar por data de criação (mais recente primeiro)
+            tasks.sort((a, b) => b.createdAt - a.createdAt);
+            
+            tasks.forEach(task => {
+                const taskElement = document.createElement('div');
+                taskElement.className = `task ${task.completed ? 'completed' : ''}`;
+                taskElement.dataset.id = task.id;
+                
+                taskElement.innerHTML = `
+                    <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+                    <span class="task-text">${escapeHtml(task.text)}</span>
+                    <button class="delete-btn">×</button>
+                `;
+                
+                tasksContainer.appendChild(taskElement);
+            });
+        }
+
+        // Função para escapar HTML (segurança)
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "<")
+                .replace(/>/g, ">")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Função para atualizar contagem de usuários online
+        async function updateUserCount() {
+            try {
+                // Adicionar/atualizar usuário online
+                await usersCollection.doc(userId).set({
+                    online: true,
+                    lastActive: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+                
+                // Limpar usuários inativos (offline por mais de 2 minutos)
+                const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
+                const inactiveUsers = await usersCollection
+                    .where('lastActive', '<', twoMinutesAgo)
+                    .get();
+                
+                inactiveUsers.forEach(doc => {
+                    usersCollection.doc(doc.id).delete();
+                });
+                
+                // Contar usuários online
+                const onlineUsers = await usersCollection
+                    .where('online', '==', true)
+                    .get();
+                
+                document.getElementById('userCount').textContent = `Usuários online: ${onlineUsers.size}`;
+                
+            } catch (error) {
+                console.error('Erro ao atualizar contagem de usuários:', error);
+            }
+        }
+
+        // Função para limpar usuários offline quando a página for fechada
+        function setupUserPresence() {
+            // Atualizar contagem a cada 30 segundos
+            setInterval(updateUserCount, 30000);
+            
+            // Atualizar quando a página ganhar foco
+            window.addEventListener('focus', updateUserCount);
+            
+            // Remover usuário quando sair da página
+            window.addEventListener('beforeunload', async () => {
+                if (currentUser) {
+                    await usersCollection.doc(userId).delete();
+                }
+            });
+        }
+
+        // Inicializar aplicativo
+        async function initApp() {
+            try {
+                // Configurar presença de usuário
+                setupUserPresence();
+                
+                // Ouvir mudanças em tempo real nas tarefas
+                tasksCollection.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                    const tasks = [];
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        tasks.push({
+                            id: doc.id,
+                            text: data.text || '',
+                            completed: data.completed || false,
+                            createdAt: data.createdAt?.toDate() || new Date()
+                        });
+                    });
+                    
+                    renderTasks(tasks);
+                });
+                
+                // Atualizar contagem inicial de usuários
+                await updateUserCount();
+                
+                // Event listeners
+                document.getElementById('addTask').addEventListener('click', addTask);
+                
+                document.getElementById('taskInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        addTask();
+                    }
+                });
+                
+                // Delegação de eventos para elementos dinâmicos
+                document.getElementById('tasksContainer').addEventListener('change', (e) => {
+                    if (e.target.classList.contains('task-checkbox')) {
+                        const taskElement = e.target.closest('.task');
+                        const taskId = taskElement.dataset.id;
+                        const currentStatus = e.target.checked;
+                        
+                        toggleTaskStatus(taskId, currentStatus);
+                    }
+                });
+                
+                document.getElementById('tasksContainer').addEventListener('click', (e) => {
+                    if (e.target.classList.contains('delete-btn')) {
+                        const taskElement = e.target.closest('.task');
+                        const taskId = taskElement.dataset.id;
+                        
+                        if (confirm('Tem certeza que deseja deletar esta tarefa?')) {
+                            deleteTask(taskId);
+                        }
+                    }
+                });
+                
+                document.getElementById('taskInput').focus();
+                
+            } catch (error) {
+                console.error('Erro na inicialização:', error);
+                document.getElementById('status').textContent = 'Erro de conexão ❌';
+                document.getElementById('status').style.color = '#dc3545';
+            }
+        }
+
+        // Iniciar aplicativo quando a página carregar
+        window.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
