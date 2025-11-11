@@ -8,12 +8,13 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
         body {
             background: #000 url('https://4kwallpapers.com/images/walls/thumbs_3t/14811.jpg') no-repeat center center fixed;
             background-size: cover;
@@ -25,6 +26,7 @@
             -webkit-text-size-adjust: 100%;
             position: relative;
         }
+
         body::before {
             content: '';
             position: fixed;
@@ -35,61 +37,75 @@
             background: rgba(0, 0, 0, 0.7);
             z-index: -1;
         }
+
         @media (max-width: 640px) {
             body {
                 padding: 0.5rem;
             }
         }
+
         .task-item {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             will-change: transform, box-shadow;
             cursor: grab;
         }
+
         .task-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+
         .task-item:active {
             cursor: grabbing;
         }
+
         .task-item.dragging {
             opacity: 0.6;
             transform: rotate(5deg) scale(1.02);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
+
         .task-item.drag-over {
             border: 2px dashed #9333ea;
             background: rgba(147, 51, 234, 0.1);
         }
+
         .task-item.completed {
             animation: taskComplete 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
+
         @keyframes taskComplete {
             0% { opacity: 1; transform: translateX(0); }
             50% { opacity: 0.7; transform: translateX(-10px); }
             100% { opacity: 0.5; transform: translateX(0); }
         }
+
         .glass-card {
             background: rgba(17, 24, 39, 0.85);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(55, 65, 81, 0.5);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
+
         @media (max-width: 640px) {
             .glass-card {
                 border-radius: 0.75rem !important;
             }
         }
+
         .btn-primary {
             background-color: #9333ea;
             transition: all 0.3s ease;
         }
+
         .btn-primary:hover {
             background-color: #7e22ce;
         }
+
         .btn-glow::after {
             display: none;
         }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -100,19 +116,23 @@
                 transform: translateY(0);
             }
         }
+
         .animate-fade-in-up {
             animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
+
         .progress-ring {
             transition: stroke-dashoffset 0.35s;
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
         }
+
         input[type="time"]::-webkit-calendar-picker-indicator,
         input[type="date"]::-webkit-calendar-picker-indicator {
             filter: invert(1);
             cursor: pointer;
         }
+
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -126,6 +146,7 @@
             z-index: 1000;
             padding: 1rem;
         }
+
         .modal-content {
             background: rgba(17, 24, 39, 0.95);
             border-radius: 1rem;
@@ -135,24 +156,30 @@
             max-height: 90vh;
             overflow-y: auto;
         }
+
         .sync-indicator {
             animation: pulse 2s infinite;
         }
+
         @keyframes pulse {
             0% { opacity: 1; }
             50% { opacity: 0.5; }
             100% { opacity: 1; }
         }
+
         .drag-handle {
             cursor: grab;
             transition: color 0.2s ease;
         }
+
         .drag-handle:active {
             cursor: grabbing;
         }
+
         .drag-handle:hover {
             color: #9333ea;
         }
+
         .filters-container {
             display: flex;
             gap: 0.5rem;
@@ -163,37 +190,42 @@
             scrollbar-width: thin;
             scrollbar-color: #4b5563 #1f2937;
         }
+
         .filters-container::-webkit-scrollbar {
             height: 6px;
         }
+
         .filters-container::-webkit-scrollbar-track {
             background: #1f2937;
             border-radius: 3px;
         }
+
         .filters-container::-webkit-scrollbar-thumb {
             background: #4b5563;
             border-radius: 3px;
         }
+
         .filters-container::-webkit-scrollbar-thumb:hover {
             background: #6b7280;
         }
-        .firebase-badge {
-            background: linear-gradient(45deg, #FFCA28, #FFD740);
-            color: #1a237e;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
+
+        .online-indicator {
+            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+
+        @keyframes ping {
+            75%, 100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
     <div id="root"></div>
+
     <script type="text/babel">
-        const { useState, useEffect, useCallback, useRef } = React;
+        const { useState, useEffect, useCallback } = React;
         
         // Configuração do Firebase
         const firebaseConfig = {
@@ -207,9 +239,7 @@
         };
 
         // Inicializar Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
         // JSON padrão para frases de elogio
@@ -225,51 +255,42 @@
             ]
         };
 
-        // API do Firebase para tarefas compartilhadas
-        const FirebaseTasksAPI = {
-            getTasksCollection: () => db.collection('tasks_shared'),
-            
-            // Buscar todas as tarefas com listener em tempo real
-            listenToTasks: (callback, errorCallback) => {
-                return this.getTasksCollection()
+        // API para Firebase Firestore
+        const FirebaseAPI = {
+            // Buscar todas as tarefas em tempo real
+            getTasksRealtime: (callback) => {
+                return db.collection('tasks')
                     .orderBy('order', 'asc')
-                    .onSnapshot(snapshot => {
-                        const tasks = [];
-                        snapshot.forEach(doc => {
-                            tasks.push({
-                                id: doc.id,
-                                ...doc.data(),
-                                createdAt: doc.data().createdAt?.toDate(),
-                                updatedAt: doc.data().updatedAt?.toDate(),
-                                dueDate: doc.data().dueDate || null,
-                                dueTime: doc.data().dueTime || null
-                            });
-                        });
+                    .onSnapshot((snapshot) => {
+                        const tasks = snapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }));
                         callback(tasks);
-                    }, error => {
+                    }, (error) => {
                         console.error("Erro ao buscar tarefas:", error);
-                        if (errorCallback) errorCallback(error);
                     });
             },
             
             // Adicionar uma nova tarefa
             addTask: async (task) => {
                 try {
-                    const tasksSnapshot = await this.getTasksCollection().get();
-                    const tasks = [];
-                    tasksSnapshot.forEach(doc => tasks.push(doc.data()));
+                    // Primeiro buscar a última ordem para adicionar no final
+                    const lastTaskSnapshot = await db.collection('tasks')
+                        .orderBy('order', 'desc')
+                        .limit(1)
+                        .get();
+                    
+                    const lastOrder = lastTaskSnapshot.empty ? 0 : lastTaskSnapshot.docs[0].data().order + 1;
                     
                     const newTask = {
-                        title: task.title.trim(),
-                        dueDate: task.dueDate || null,
-                        dueTime: task.dueTime || null,
-                        done: false,
-                        order: tasks.length > 0 ? Math.max(...tasks.map(t => t.order || 0)) + 1 : 0,
+                        ...task,
+                        order: lastOrder,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
                     };
                     
-                    const docRef = await this.getTasksCollection().add(newTask);
+                    const docRef = await db.collection('tasks').add(newTask);
                     return { id: docRef.id, ...newTask };
                 } catch (error) {
                     console.error("Erro ao adicionar tarefa:", error);
@@ -280,15 +301,11 @@
             // Atualizar uma tarefa existente
             updateTask: async (id, updates) => {
                 try {
-                    const taskRef = this.getTasksCollection().doc(id);
-                    const updateData = {
+                    await db.collection('tasks').doc(id).update({
                         ...updates,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-                    
-                    await taskRef.update(updateData);
-                    const doc = await taskRef.get();
-                    return { id: doc.id, ...doc.data(), updatedAt: new Date() };
+                    });
+                    return true;
                 } catch (error) {
                     console.error("Erro ao atualizar tarefa:", error);
                     throw error;
@@ -298,10 +315,10 @@
             // Remover uma tarefa
             deleteTask: async (id) => {
                 try {
-                    await this.getTasksCollection().doc(id).delete();
+                    await db.collection('tasks').doc(id).delete();
                     return true;
                 } catch (error) {
-                    console.error("Erro ao deletar tarefa:", error);
+                    console.error("Erro ao excluir tarefa:", error);
                     throw error;
                 }
             },
@@ -309,12 +326,12 @@
             // Limpar tarefas concluídas
             clearCompleted: async () => {
                 try {
-                    const completedTasks = await this.getTasksCollection()
+                    const snapshot = await db.collection('tasks')
                         .where('done', '==', true)
                         .get();
                     
                     const batch = db.batch();
-                    completedTasks.forEach(doc => {
+                    snapshot.docs.forEach(doc => {
                         batch.delete(doc.ref);
                     });
                     
@@ -325,13 +342,14 @@
                     throw error;
                 }
             },
-            
+
             // Reordenar tarefas
-            reorderTasks: async (reorderedTasks) => {
+            reorderTasks: async (tasks) => {
                 try {
                     const batch = db.batch();
-                    reorderedTasks.forEach((task, index) => {
-                        const taskRef = this.getTasksCollection().doc(task.id);
+                    
+                    tasks.forEach((task, index) => {
+                        const taskRef = db.collection('tasks').doc(task.id);
                         batch.update(taskRef, {
                             order: index,
                             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -352,63 +370,53 @@
                 const welcomeShown = localStorage.getItem("dailyTasks_welcomeShown");
                 return welcomeShown !== "true";
             });
+
             const [tasks, setTasks] = useState([]);
             const [isLoading, setIsLoading] = useState(true);
-            const [lastSync, setLastSync] = useState(new Date());
-            const [isConnected, setIsConnected] = useState(true);
+            const [lastSync, setLastSync] = useState(null);
+            const [isOnline, setIsOnline] = useState(true);
+
             const [phrases] = useState(defaultPhrases);
+            
             const [title, setTitle] = useState("");
             const [dueDate, setDueDate] = useState("");
             const [dueTime, setDueTime] = useState("");
             const [editingId, setEditingId] = useState(null);
             const [filter, setFilter] = useState("all");
             const [search, setSearch] = useState("");
-            const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0, completionRate: 0 });
+            const [stats, setStats] = useState({ total: 0, completed: 0, pending: 0 });
             
             // Estados para drag and drop
             const [draggedTask, setDraggedTask] = useState(null);
             const [dragOverTask, setDragOverTask] = useState(null);
-            const unsubscribeRef = useRef(null);
 
-            // Função para carregar tarefas
-            const loadTasks = useCallback(() => {
-                setIsLoading(true);
-                if (unsubscribeRef.current) {
-                    unsubscribeRef.current();
-                }
-                
-                unsubscribeRef.current = FirebaseTasksAPI.listenToTasks(
-                    (tasks) => {
-                        setTasks(tasks);
-                        setLastSync(new Date());
-                        setIsLoading(false);
-                        setIsConnected(true);
-                    },
-                    (error) => {
-                        console.error("Erro de conexão:", error);
-                        setIsLoading(false);
-                        setIsConnected(false);
-                    }
-                );
-            }, []);
-
-            // Carregar tarefas ao inicializar
+            // Carregar tarefas em tempo real do Firebase
             useEffect(() => {
-                loadTasks();
-                
-                // Cleanup function
-                return () => {
-                    if (unsubscribeRef.current) {
-                        unsubscribeRef.current();
-                    }
-                };
-            }, [loadTasks]);
+                const unsubscribe = FirebaseAPI.getTasksRealtime((tasks) => {
+                    // Converter timestamps do Firebase para Date objects
+                    const processedTasks = tasks.map(task => ({
+                        ...task,
+                        createdAt: task.createdAt ? task.createdAt.toDate() : new Date(),
+                        updatedAt: task.updatedAt ? task.updatedAt.toDate() : new Date()
+                    }));
+                    
+                    setTasks(processedTasks);
+                    setLastSync(new Date());
+                    setIsLoading(false);
+                    setIsOnline(true);
+                });
+
+                // Cleanup subscription
+                return () => unsubscribe();
+            }, []);
 
             // Função auxiliar para criar data sem problemas de fuso horário
             const createDate = (dateString, timeString = null) => {
                 if (!dateString) return null;
+                
                 const [year, month, day] = dateString.split('-').map(Number);
                 let date = new Date(year, month - 1, day);
+                
                 if (timeString) {
                     const [hours, minutes] = timeString.split(':').map(Number);
                     date.setHours(hours, minutes, 0, 0);
@@ -416,6 +424,7 @@
                     // Se não tem horário, considera o final do dia (23:59)
                     date.setHours(23, 59, 0, 0);
                 }
+                
                 return date;
             };
 
@@ -423,16 +432,20 @@
             useEffect(() => {
                 const calculateStats = () => {
                     const now = new Date();
+                    
                     const completed = tasks.filter(t => t.done).length;
                     const pending = tasks.filter(t => {
                         if (t.done) return false;
+                        
                         // Verificar se a tarefa está atrasada
                         if (t.dueDate) {
                             const taskDate = createDate(t.dueDate, t.dueTime);
                             return taskDate && taskDate < now;
                         }
+                        
                         return false;
                     }).length;
+                    
                     setStats({
                         total: tasks.length,
                         completed,
@@ -440,6 +453,7 @@
                         completionRate: tasks.length > 0 ? Math.round((completed / tasks.length) * 100) : 0
                     });
                 };
+
                 calculateStats();
             }, [tasks]);
 
@@ -448,36 +462,42 @@
                     setShowWelcome(false);
                 }
             }, [tasks]);
-
+            
             const addOrUpdateTask = useCallback(async (e) => {
                 e.preventDefault();
                 if (!title.trim()) return;
+
                 setIsLoading(true);
                 
                 try {
                     if (editingId) {
                         // Atualizar tarefa existente
-                        await FirebaseTasksAPI.updateTask(editingId, {
+                        await FirebaseAPI.updateTask(editingId, {
                             title: title.trim(),
                             dueDate: dueDate || null,
                             dueTime: dueTime || null
                         });
+                        
                         setEditingId(null);
                     } else {
                         // Adicionar nova tarefa
-                        await FirebaseTasksAPI.addTask({
+                        const newTask = {
                             title: title.trim(),
                             dueDate: dueDate || null,
-                            dueTime: dueTime || null
-                        });
+                            dueTime: dueTime || null,
+                            done: false,
+                        };
+                        
+                        await FirebaseAPI.addTask(newTask);
                     }
-                    
+
                     setTitle("");
                     setDueDate("");
                     setDueTime("");
                 } catch (error) {
                     console.error("Erro ao salvar tarefa:", error);
-                    alert("Erro ao salvar tarefa. Verifique sua conexão com a internet.");
+                    setIsOnline(false);
+                    alert("Erro ao salvar tarefa. Verifique sua conexão.");
                 } finally {
                     setIsLoading(false);
                 }
@@ -487,19 +507,20 @@
                 setShowWelcome(false);
                 localStorage.setItem("dailyTasks_welcomeShown", "true");
             }, []);
-
+            
             const toggleDone = useCallback(async (id) => {
-                const task = tasks.find(t => t.id === id);
-                if (!task) return;
-                
                 setIsLoading(true);
-                try {
-                    await FirebaseTasksAPI.updateTask(id, { done: !task.done });
-                } catch (error) {
-                    console.error("Erro ao atualizar tarefa:", error);
-                    alert("Erro ao atualizar tarefa. Tente novamente.");
-                } finally {
-                    setIsLoading(false);
+                const task = tasks.find(t => t.id === id);
+                if (task) {
+                    try {
+                        await FirebaseAPI.updateTask(id, { done: !task.done });
+                    } catch (error) {
+                        console.error("Erro ao atualizar tarefa:", error);
+                        setIsOnline(false);
+                        alert("Erro ao atualizar tarefa. Verifique sua conexão.");
+                    } finally {
+                        setIsLoading(false);
+                    }
                 }
             }, [tasks]);
 
@@ -512,13 +533,14 @@
 
             const removeTask = useCallback(async (id) => {
                 if (!confirm("Tem certeza que deseja excluir esta tarefa?")) return;
-                setIsLoading(true);
                 
+                setIsLoading(true);
                 try {
-                    await FirebaseTasksAPI.deleteTask(id);
+                    await FirebaseAPI.deleteTask(id);
                 } catch (error) {
                     console.error("Erro ao excluir tarefa:", error);
-                    alert("Erro ao excluir tarefa. Tente novamente.");
+                    setIsOnline(false);
+                    alert("Erro ao excluir tarefa. Verifique sua conexão.");
                 } finally {
                     setIsLoading(false);
                 }
@@ -526,13 +548,14 @@
 
             const clearCompleted = useCallback(async () => {
                 if (!confirm("Remover todas as tarefas concluídas?")) return;
-                setIsLoading(true);
                 
+                setIsLoading(true);
                 try {
-                    await FirebaseTasksAPI.clearCompleted();
+                    await FirebaseAPI.clearCompleted();
                 } catch (error) {
-                    console.error("Erro ao limpar tarefas concluídas:", error);
-                    alert("Erro ao limpar tarefas concluídas. Tente novamente.");
+                    console.error("Erro ao limpar tarefas:", error);
+                    setIsOnline(false);
+                    alert("Erro ao limpar tarefas. Verifique sua conexão.");
                 } finally {
                     setIsLoading(false);
                 }
@@ -542,7 +565,6 @@
             const handleDragStart = useCallback((e, task) => {
                 setDraggedTask(task);
                 e.dataTransfer.effectAllowed = 'move';
-                // Adicionar um pequeno delay para melhor experiência visual
                 setTimeout(() => {
                     e.target.classList.add('dragging');
                 }, 0);
@@ -567,32 +589,34 @@
                     setDragOverTask(null);
                     return;
                 }
-                
+
                 // Reordenar as tarefas
                 const taskList = [...tasks];
                 const draggedIndex = taskList.findIndex(t => t.id === draggedTask.id);
                 const targetIndex = taskList.findIndex(t => t.id === targetTask.id);
-                
+
                 if (draggedIndex !== -1 && targetIndex !== -1) {
                     // Remover a tarefa arrastada
                     const [movedTask] = taskList.splice(draggedIndex, 1);
                     // Inserir na nova posição
                     taskList.splice(targetIndex, 0, movedTask);
+
+                    // Atualizar estado local
+                    setTasks(taskList);
                     
-                    // Atualizar ordem
+                    // Salvar no Firebase
                     setIsLoading(true);
                     try {
-                        await FirebaseTasksAPI.reorderTasks(taskList);
+                        await FirebaseAPI.reorderTasks(taskList);
+                        setLastSync(new Date());
                     } catch (error) {
                         console.error("Erro ao reordenar tarefas:", error);
-                        alert("Erro ao reordenar tarefas. Tente novamente.");
-                        // Reverter visualmente
-                        setTasks([...tasks]);
+                        setIsOnline(false);
                     } finally {
                         setIsLoading(false);
                     }
                 }
-                
+
                 setDraggedTask(null);
                 setDragOverTask(null);
             }, [draggedTask, tasks]);
@@ -606,14 +630,18 @@
             const getTaskPriority = (task) => {
                 if (task.done) return "none";
                 if (!task.dueDate) return "none";
+                
                 const now = new Date();
                 const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 const tomorrow = new Date(today);
                 tomorrow.setDate(tomorrow.getDate() + 1);
+                
                 const taskDate = createDate(task.dueDate);
                 if (!taskDate) return "none";
+                
                 // Ajustar para comparar apenas a data (sem hora)
                 const taskDateOnly = new Date(taskDate.getFullYear(), taskDate.getMonth(), taskDate.getDate());
+                
                 // Se a tarefa é para hoje
                 if (taskDateOnly.getTime() === today.getTime()) {
                     // Se tem horário definido, verificar se está atrasada
@@ -622,16 +650,21 @@
                     }
                     return "high";
                 }
+                
                 // Se a tarefa é para antes de hoje (atrasada)
                 if (taskDateOnly < today) return "urgent";
+                
                 // Se a tarefa é para amanhã
                 if (taskDateOnly.getTime() === tomorrow.getTime()) return "medium";
+                
                 // Se a tarefa é para os próximos dias (2-3 dias)
                 const dayAfterTomorrow = new Date(tomorrow);
                 dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
                 const inThreeDays = new Date(tomorrow);
                 inThreeDays.setDate(inThreeDays.getDate() + 2);
+                
                 if (taskDateOnly >= dayAfterTomorrow && taskDateOnly <= inThreeDays) return "medium";
+                
                 // Tarefas para mais de 3 dias
                 return "low";
             };
@@ -649,13 +682,16 @@
 
             const formatDate = (dateString) => {
                 if (!dateString) return '';
+                
                 const date = createDate(dateString);
                 const today = new Date();
                 const tomorrow = new Date(today);
                 tomorrow.setDate(tomorrow.getDate() + 1);
+                
                 const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate());
                 const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
                 const tomorrowOnly = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
+                
                 if (dateOnly.getTime() === todayOnly.getTime()) {
                     return 'Hoje';
                 } else if (dateOnly.getTime() === tomorrowOnly.getTime()) {
@@ -681,27 +717,31 @@
                 if (phrases.completionTexts.length > 4) {
                     return phrases.completionTexts[4];
                 }
-                // Fallback se não houver frases suficientes
                 return "Continue assim!";
             };
 
             const visibleTasks = tasks.filter((t) => {
                 if (search && !t.title.toLowerCase().includes(search.toLowerCase())) return false;
+
                 if (filter === "all") return true;
                 if (filter === "completed") return t.done;
                 if (filter === "pending") return !t.done;
                 if (filter === "overdue") {
                     if (t.done || !t.dueDate) return false;
+                    
                     const now = new Date();
                     const taskDate = createDate(t.dueDate, t.dueTime);
+                    
                     return taskDate && taskDate < now;
                 }
                 if (filter === "today") {
                     if (t.done || !t.dueDate) return false;
+                    
                     const today = new Date();
                     const taskDate = createDate(t.dueDate);
                     const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
                     const taskDateOnly = new Date(taskDate.getFullYear(), taskDate.getMonth(), taskDate.getDate());
+                    
                     return taskDateOnly.getTime() === todayOnly.getTime();
                 }
                 return true;
@@ -733,7 +773,7 @@
                     
                     <div className="w-full max-w-4xl">
                         <div className={`glass-card rounded-2xl shadow-lg overflow-hidden border border-gray-700 ${showWelcome ? 'hidden' : 'block'}`}>
-                            <div className="p-5 border-b border-gray-700 bg-gray-900/50">
+                            <div className="p-5 border-b border-gray-700">
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                                     <div className="flex items-center gap-3">
                                         <div className="flex items-center gap-1">
@@ -745,27 +785,22 @@
                                             <i className="fas fa-exclamation-circle text-red-400"></i>
                                             <span className="font-medium text-red-300">{stats.pending}</span>
                                         </div>
-                                        <div className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full ${
-                                            isConnected ? 'bg-green-900/50 text-green-400 border border-green-800/50' : 'bg-red-900/50 text-red-400 border border-red-800/50'
-                                        }`}>
-                                            <i className={`fas ${isConnected ? 'fa-wifi' : 'fa-exclamation-triangle'}`}></i>
-                                            <span>{isConnected ? 'Online' : 'Offline'}</span>
-                                        </div>
-                                        {isLoading && (
-                                            <div className="flex items-center gap-1 text-purple-400 sync-indicator">
-                                                <i className="fas fa-sync-alt fa-spin"></i>
-                                                <span className="text-xs">Sincronizando...</span>
+                                        <div className="flex items-center gap-2">
+                                            {isLoading && (
+                                                <div className="flex items-center gap-1 text-purple-400 sync-indicator">
+                                                    <i className="fas fa-sync-alt fa-spin"></i>
+                                                    <span className="text-xs">Sincronizando...</span>
+                                                </div>
+                                            )}
+                                            <div className={`flex items-center gap-1 ${isOnline ? 'text-green-400' : 'text-red-400'}`}>
+                                                <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400 online-indicator' : 'bg-red-400'}`}></div>
+                                                <span className="text-xs">{isOnline ? 'Online' : 'Offline'}</span>
                                             </div>
-                                        )}
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-xs text-gray-400 firebase-badge">
-                                            <i className="fas fa-fire"></i> Firebase
-                                        </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="p-5 border-b border-gray-700">
                                 <form onSubmit={addOrUpdateTask} className="relative">
                                     <div className="flex flex-col gap-3">
@@ -781,10 +816,10 @@
                                                         placeholder={editingId ? "Editar tarefa..." : "O que você precisa fazer hoje?"}
                                                         className="w-full pl-10 pr-4 py-3 rounded-lg bg-gray-900 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent transition-all duration-300 text-white placeholder-gray-500"
                                                         disabled={isLoading}
-                                                        autoFocus
                                                     />
                                                 </div>
                                             </div>
+                                            
                                             <div className="flex flex-col sm:flex-row gap-3">
                                                 <button
                                                     type="submit"
@@ -809,6 +844,7 @@
                                                 </button>
                                             </div>
                                         </div>
+                                        
                                         <div className="flex flex-col sm:flex-row gap-3">
                                             <div className="relative flex-1">
                                                 <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
@@ -822,6 +858,7 @@
                                                     disabled={isLoading}
                                                 />
                                             </div>
+                                            
                                             <div className="relative flex-1">
                                                 <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400">
                                                     <i className="far fa-clock"></i>
@@ -838,7 +875,7 @@
                                     </div>
                                 </form>
                             </div>
-                            
+
                             <div className="p-5 border-b border-gray-700">
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                                     <div className="filters-container">
@@ -865,6 +902,7 @@
                                             </button>
                                         ))}
                                     </div>
+
                                     <div className="flex gap-2 mt-3 md:mt-0">
                                         <div className="relative">
                                             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
@@ -878,6 +916,7 @@
                                                 disabled={isLoading}
                                             />
                                         </div>
+
                                         <button
                                             onClick={clearCompleted}
                                             disabled={isLoading}
@@ -889,7 +928,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <main className="p-5">
                                 {isLoading && tasks.length === 0 ? (
                                     <div className="text-center py-12">
@@ -898,12 +937,10 @@
                                                 <i className="fas fa-spinner fa-spin"></i>
                                             </div>
                                             <h3 className="text-xl font-bold mb-1 text-gray-200">
-                                                {isConnected ? "Conectando ao Firebase..." : "Sem conexão com a internet"}
+                                                Carregando tarefas...
                                             </h3>
                                             <p className="text-gray-400 text-sm">
-                                                {isConnected 
-                                                    ? "Carregando tarefas compartilhadas..." 
-                                                    : "Verifique sua conexão e recarregue a página"}
+                                                Conectando ao Firebase...
                                             </p>
                                         </div>
                                     </div>
@@ -945,6 +982,7 @@
                                             const isOverdue = priority === "urgent" && !t.done;
                                             const isDragging = draggedTask && draggedTask.id === t.id;
                                             const isDragOver = dragOverTask && dragOverTask.id === t.id;
+                                            
                                             return (
                                                 <div
                                                     key={t.id}
@@ -978,9 +1016,10 @@
                                                                     aria-label={`Marcar ${t.title}`}
                                                                 />
                                                             </div>
+                                                            
                                                             <div className="flex-1 min-w-0">
                                                                 <div className={`text-sm font-medium transition-all duration-300 ${
-                                                                    t.done ? "line-through text-gray-500" : "text-gray-200"
+                                                                    t.done ? "line-through text-gray-500" : "text-red-400"
                                                                 }`}>
                                                                     {t.title}
                                                                 </div>
@@ -1002,14 +1041,15 @@
                                                                         </span>
                                                                     )}
                                                                     {t.updatedAt && (
-                                                                        <span className="text-xs text-gray-600" title={`Atualizado em: ${new Date(t.updatedAt).toLocaleString('pt-BR')}`}>
+                                                                        <span className="text-xs text-gray-600" title={`Atualizado em: ${t.updatedAt.toLocaleString('pt-BR')}`}>
                                                                             <i className="fas fa-history mr-0.5 text-[0.75em]"></i>
-                                                                            {new Date(t.updatedAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}
+                                                                            {t.updatedAt.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}
                                                                         </span>
                                                                     )}
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        
                                                         <div className="flex flex-wrap gap-1.5 justify-end">
                                                             <div className="drag-handle text-gray-400 p-1.5 cursor-grab" title="Arrastar para reordenar">
                                                                 <i className="fas fa-grip-vertical"></i>
@@ -1038,7 +1078,7 @@
                                     </div>
                                 )}
                             </main>
-                            
+
                             <div className="p-5 bg-gray-900 border-t border-gray-700">
                                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                     <div className="flex items-center gap-4">
@@ -1088,19 +1128,25 @@
                                     <div className="text-center md:text-right">
                                         <p className="text-xs text-gray-400">
                                             <i className="far fa-clock mr-1.5 text-[0.8em]"></i>
-                                            {lastSync ? `Última atualização: ${lastSync.toLocaleTimeString('pt-BR')}` : 'Carregando...'}
+                                            {lastSync ? `Última sincronização: ${lastSync.toLocaleTimeString('pt-BR')}` : 'Sincronizando...'}
+                                        </p>
+                                        <p className="text-xs text-green-400">
+                                            <i className="fas fa-users mr-1.5 text-[0.8em]"></i>
+                                            Lista Compartilhada em Tempo Real
                                         </p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        
+
                         <footer className="mt-5 text-center text-xs text-gray-600">
                             <p>
                                 <i className="fas fa-code mr-1"></i>
                                 Desenvolvido com ❤️ By D3xt4rz | 
-                                <i className="fas fa-cloud ml-2 mr-1 text-blue-400"></i>
-                                Sincronização em tempo real com Firebase |
+                                <i className="fas fa-fire ml-2 mr-1"></i>
+                                Firebase Firestore |
+                                <i className="fas fa-users ml-2 mr-1"></i>
+                                Lista Compartilhada |
                                 <i className="fas fa-arrows-alt ml-2 mr-1"></i>
                                 Arraste para reordenar
                             </p>
