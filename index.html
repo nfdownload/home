@@ -14,33 +14,34 @@
             --dark-color: #111111;
             --highlight-color: #444444;
             --text-color: #111;
-            --border-radius: 12px;
-            --box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-            --transition: all 0.3s ease;
+--border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.2s ease;
         }
-        * {
+* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        body {
+body {
             background-color: #f9fafb;
             color: var(--text-color);
             -webkit-font-smoothing: antialiased;
-            line-height: 1.7;
+line-height: 1.6;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 1.5rem;
         }
-        .slides-container {
-            max-width: 1200px;
+.slides-container {
+            max-width: 900px;
             width: 100%;
             position: relative;
         }
+
         .slide {
             display: none;
             background: white;
@@ -49,23 +50,25 @@
             overflow: hidden;
             animation: fadeIn 0.5s ease;
         }
+
         .slide.active {
             display: block;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .card-header {
             background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
-            color: white;
-            padding: 2.5rem;
+color: white;
+            padding: 1.5rem;
             text-align: center;
             position: relative;
             overflow: hidden;
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .card-header::before {
+.card-header::before {
             content: "";
             position: absolute;
             top: 0;
@@ -75,339 +78,308 @@
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
             background-size: cover;
         }
+
         .card-header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 0.8rem;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
             position: relative;
-            font-weight: 700;
         }
+
         .card-header p {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             opacity: 0.9;
             position: relative;
         }
+
         .card-body {
-            padding: 3.5rem;
+            padding: 2.5rem;
         }
+
         .topic-title {
             display: flex;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             color: var(--primary-color);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
         }
+
         .topic-title i {
-            margin-right: 16px;
+            margin-right: 12px;
             color: var(--secondary-color);
             background: rgba(52, 152, 219, 0.1);
-            width: 65px;
-            height: 65px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
         }
         .content-box {
-            background: rgba(0, 0, 0, 0.03);
-            border-left: 4px solid var(--secondary-color);
-            padding: 1.8rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-left: 3px solid var(--secondary-color);
+padding: 1.25rem;
             border-radius: 0 var(--border-radius) var(--border-radius) 0;
-            margin-bottom: 1.8rem;
+            margin-bottom: 1.25rem;
             position: relative;
-            font-size: 1.1rem;
         }
-        .content-box p {
-            margin-bottom: 1.2rem;
+.content-box p {
+            margin-bottom: 1rem;
         }
+
         .content-box p:last-child {
             margin-bottom: 0;
         }
+
         .examples-container {
             display: flex;
-            gap: 1.5rem;
-            margin: 2rem 0;
+            gap: 1rem;
+            margin: 1.5rem 0;
             flex-wrap: wrap;
         }
         .example-box {
             flex: 1;
-            min-width: 250px;
-            background: rgba(0, 0, 0, 0.03);
-            border-left: 5px solid var(--secondary-color);
-            padding: 1.5rem;
+            min-width: 200px;
+            background: rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--secondary-color);
+padding: 1rem;
             border-radius: 0 var(--border-radius) var(--border-radius) 0;
-            font-size: 1.05rem;
         }
+
         .example-title {
             font-weight: bold;
             color: var(--primary-color);
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
-            font-size: 1.2rem;
         }
+
         .example-title i {
-            margin-right: 10px;
+            margin-right: 8px;
             color: var(--highlight-color);
-            font-size: 1.1rem;
         }
         .purpose-section {
-            background: rgba(0, 0, 0, 0.03);
+            background: rgba(0, 0, 0, 0.05);
             border-radius: var(--border-radius);
-            padding: 2rem;
-            margin: 2rem 0;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
             border: 1px solid rgba(0, 0, 0, 0.1);
-            font-size: 1.1rem;
-        }
+}
+
         .purpose-title {
             font-weight: bold;
             color: var(--secondary-color);
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             display: flex;
             align-items: center;
-            font-size: 1.3rem;
         }
+
         .purpose-title i {
-            margin-right: 10px;
+            margin-right: 8px;
         }
         .characteristic-box {
-            background: rgba(0, 0, 0, 0.03);
-            border-left: 5px solid var(--accent-color);
-            padding: 2rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--accent-color);
+padding: 1.5rem;
             border-radius: 0 var(--border-radius) var(--border-radius) 0;
-            margin: 2rem 0;
-            font-size: 1.1rem;
+            margin: 1.5rem 0;
         }
+
         .characteristic-title {
             font-weight: bold;
             color: var(--accent-color);
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             display: flex;
             align-items: center;
-            font-size: 1.3rem;
         }
+
         .characteristic-title i {
-            margin-right: 10px;
+            margin-right: 8px;
         }
+
         .time-indicator {
             display: inline-flex;
             align-items: center;
             background: var(--primary-color);
             color: white;
-            padding: 0.8rem 1.5rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 30px;
-            font-size: 1rem;
-            margin-top: 1.5rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
+
         .time-indicator i {
-            margin-right: 10px;
+            margin-right: 8px;
         }
+
         .scripture-reference {
             display: inline-block;
             background: rgba(52, 152, 219, 0.1);
             color: var(--secondary-color);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            margin-top: 1.2rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-top: 1rem;
             font-weight: 500;
         }
+
         .navigation {
             display: flex;
             justify-content: space-between;
-            margin-top: 3rem;
+            margin-top: 2rem;
         }
         .nav-btn {
             background: var(--primary-color);
             color: white;
             border: none;
-            padding: 1rem 1.8rem;
+            padding: 0.75rem 1.25rem;
             border-radius: var(--border-radius);
             cursor: pointer;
             display: flex;
             align-items: center;
             transition: var(--transition);
-            font-weight: 600;
+            font-weight: 500;
             box-shadow: var(--box-shadow);
-            font-size: 1.1rem;
         }
+
         .nav-btn:hover {
             background: var(--accent-color);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
-        .nav-btn i {
-            margin: 0 8px;
+.nav-btn i {
+            margin: 0 5px;
         }
+
         .slide-indicators {
             display: flex;
             justify-content: center;
-            margin-top: 2rem;
-            gap: 12px;
+            margin-top: 1.5rem;
+            gap: 10px;
         }
+
         .indicator {
-            width: 14px;
-            height: 14px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             background: #ccc;
             cursor: pointer;
             transition: var(--transition);
         }
+
         .indicator.active {
             background: var(--secondary-color);
-            transform: scale(1.3);
+            transform: scale(1.2);
         }
+
         .footer-note {
             text-align: center;
             color: #666;
-            font-size: 1rem;
-            margin-top: 2rem;
+            font-size: 0.9rem;
+            margin-top: 1.5rem;
         }
+
         .analogy-container {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
-            margin: 2rem 0;
+            gap: 1rem;
+            margin: 1.5rem 0;
         }
         .analogy-box {
-            background: rgba(0, 0, 0, 0.03);
-            border-left: 5px solid var(--secondary-color);
-            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--secondary-color);
+padding: 1rem;
             border-radius: 0 var(--border-radius) var(--border-radius) 0;
-            font-size: 1.05rem;
         }
+
         .analogy-title {
             font-weight: bold;
             color: #27ae60;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
-            font-size: 1.2rem;
         }
+
         .analogy-title i {
-            margin-right: 10px;
+            margin-right: 8px;
         }
         .composition-box {
-            background: rgba(0, 0, 0, 0.03);
-            border-left: 5px solid var(--accent-color);
-            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--accent-color);
+padding: 1rem;
             border-radius: 0 var(--border-radius) var(--border-radius) 0;
-            margin: 1.5rem 0;
-            font-size: 1.05rem;
+            margin: 1rem 0;
         }
+
         .composition-title {
             font-weight: bold;
             color: #8e44ad;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             display: flex;
             align-items: center;
-            font-size: 1.2rem;
         }
+
         .composition-title i {
-            margin-right: 10px;
+            margin-right: 8px;
         }
         .connection-box {
-            background: rgba(0, 0, 0, 0.03);
-            border-left: 5px solid var(--secondary-color);
-            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--secondary-color);
+padding: 1rem;
             border-radius: 0 var(--border-radius) var(--border-radius) 0;
-            margin: 1.5rem 0;
-            font-size: 1.05rem;
+            margin: 1rem 0;
         }
+
         .connection-title {
             font-weight: bold;
             color: var(--secondary-color);
-            margin-bottom: 0.8rem;
-            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
         }
+
         .section-title {
             font-weight: bold;
             color: var(--primary-color);
-            margin: 2rem 0 1.2rem 0;
-            padding-bottom: 0.8rem;
-            border-bottom: 3px solid var(--secondary-color);
-            font-size: 1.4rem;
+            margin: 1.5rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
         }
         .scripture-highlight {
-            background: rgba(0, 0, 0, 0.03);
-            border-left: 5px solid var(--secondary-color);
-            padding: 1.8rem;
+            background: rgba(0, 0, 0, 0.05);
+            border-left: 4px solid var(--secondary-color);
+padding: 1rem;
             border-radius: 0 var(--border-radius) var(--border-radius) 0;
-            margin: 1.5rem 0;
+            margin: 1rem 0;
             font-style: italic;
-            font-size: 1.15rem;
-        }
-
-        @media (max-width: 1200px) {
-            .slides-container {
-                max-width: 1000px;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .slides-container {
-                max-width: 900px;
-            }
-            .card-body {
-                padding: 2.5rem;
-            }
         }
 
         @media (max-width: 768px) {
             body {
-                padding: 1.5rem;
-            }
-            .slides-container {
-                max-width: 100%;
-            }
-            .card-header {
-                padding: 2rem;
-            }
-            .card-header h1 {
-                font-size: 2.2rem;
-            }
-            .card-body {
-                padding: 2rem;
-            }
-            .topic-title {
-                font-size: 1.5rem;
-            }
-            .topic-title i {
-                width: 55px;
-                height: 55px;
-                font-size: 1.3rem;
-            }
-            .examples-container {
-                flex-direction: column;
-            }
-            .navigation {
-                flex-direction: column;
-                gap: 12px;
-            }
-            .nav-btn {
-                width: 100%;
-                justify-content: center;
-            }
-            .content-box, .example-box, .characteristic-box, .purpose-section {
-                font-size: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            body {
                 padding: 1rem;
             }
-            .card-header {
-                padding: 1.5rem;
-            }
+            
             .card-header h1 {
                 font-size: 1.8rem;
             }
+            
             .card-body {
                 padding: 1.5rem;
             }
+            
             .topic-title {
                 font-size: 1.3rem;
+            }
+            
+            .examples-container {
+                flex-direction: column;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -511,8 +483,868 @@
             </div>
         </div>
 
-        <!-- Continuação dos outros slides... -->
-        <!-- (Os demais slides seguem a mesma estrutura, apenas mostrei os primeiros como exemplo) -->
+        <!-- Slide 4 - Salmos 124:1 -->
+        <div class="slide" id="slide4">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Salmos 124:1</h1>
+                <p>Introdução ao Hino de Louvor</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-book-open"></i>
+                    <h2>Salmos 124:1</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>Bem sabemos que os Salmos são hinos que glorificam a Deus. No hebraico o livro de Salmos significa louvores, então o verso um é a introdução deste hino.</p>
+                </div>
+                
+                <div class="scripture-highlight">
+                    <p class="scripture-reference">Salmos 124:1 (NVI)</p>
+                    <p><strong>"Se não fora o Senhor, que esteve ao nosso lado, ora, diga Israel:"</strong></p>
+                </div>
+                
+                <div class="purpose-section">
+                    <div class="purpose-title">
+                        <i class="fas fa-music"></i>
+                        Observação sobre a Execução
+                    </div>
+                    <p>Se fóssemos louvar este Salmos hoje, certamente teriamos uma divisão entre solo e coro, o solo iniciaria com o verso 1, e o coro dando seguimento do verso 2 em diante.</p>
+                    
+                    <div class="composition-box">
+                        <div class="composition-title">
+                            <i class="fas fa-list"></i>
+                            Composição
+                        </div>
+                        <div class="examples-container">
+                            <div class="example-box">
+                                <div class="example-title">
+                                    <i class="fas fa-user"></i>
+                                    Solo (Pb)
+                                </div>
+                                <p>Salmos 124:1</p>
+                            </div>
+                            <div class="example-box">
+                                <div class="example-title">
+                                    <i class="fas fa-users"></i>
+                                    Coro (Igreja)
+                                </div>
+                                <p>Salmos 124:2</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 01:30 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5 - Salmos 124:2 | Êxodo 15:7 -->
+        <div class="slide" id="slide5">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Salmos 124:2 | Êxodo 15:7</h1>
+                <p>Quando os Homens se Levantam Contra Nós</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-book-open"></i>
+                    <h2>Salmos 124:2 | Êxodo 15:7</h2>
+                </div>
+                
+                <div class="scripture-highlight">
+                    <p class="scripture-reference">Salmos 124:2 (ARC)</p>
+                    <p><strong>"² Se não fora o Senhor, que esteve ao nosso lado, quando os homens se levantaram contra nós,"</strong></p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-link"></i>
+                        Observação das Conexões
+                    </div>
+                    <p>"Quando os homens se levantaram contra nós..."</p>
+                    <p>Em Salmos a narrativa é: Um povo se levanta contra o povo de Deus.</p>
+                </div>
+                
+                <div class="scripture-highlight">
+                    <p class="scripture-reference">Êxodo 15:7 (ARC)</p>
+                    <p><strong>"E, com a grandeza da tua excelência, derribas-te aos que se levantaram contra ti;..."</strong></p>
+                </div>
+                
+                <div class="purpose-section">
+                    <div class="purpose-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Conclusão da Conexão
+                    </div>
+                    <p>Em Salmos a narrativa é: Um povo se levanta contra o povo de Deus.</p>
+                    <p>Em Êxodo Deus deruba os egipcios que se levantaram contra Ele e o seu povo.</p>
+                    <p>Ao decorrer dos versos vamos ver que Davi vai reutilizar muitas figuras de linguagem que já está no cântico de Moisés.</p>
+                    <p><strong>Conjecturando o cenario em que Davi escreveu este salmos, é como se ele estivesse com o manuscristo do cântico de Moisés ao lado dele, enquanto ele escrevia o Salmos 124.</strong></p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 01:30 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6 - Observação Crítica da Narrativa -->
+        <div class="slide" id="slide6">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Observação Crítica</h1>
+                <p>Narrativa entre Salmos 124 e Êxodo 15</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-search"></i>
+                    <h2>Observação critica da narrativa entre os textos Salmos 124 | Êxodo 15</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>Algo a ser pontuado antes da leitura do verso 3, é que temos 2 narrativas interessantes em diferentes textos que se conectam.</p>
+                </div>
+                
+                <div class="examples-container">
+                    <div class="example-box">
+                        <div class="example-title">
+                            <i class="fas fa-book-open"></i>
+                            Salmos 124
+                        </div>
+                        <p>Em Salmos 124 a parti do verso 3 fala o que teria acontecido se não fosse o Senhor. (Salmos 124:1 NTLH)</p>
+                    </div>
+                    <div class="example-box">
+                        <div class="example-title">
+                            <i class="fas fa-book-open"></i>
+                            Êxodo 15
+                        </div>
+                        <p>Em Êxodo 15 vemos o que aconteceu mediante a ação de Deus. (Êxodo 15:1)</p>
+                    </div>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-balance-scale"></i>
+                        Comparação das Narrativas
+                    </div>
+                    <p><strong>Salmos:</strong> O que poderia ter acontecido.</p>
+                    <p><strong>Êxodo:</strong> O que aconteceu.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 00:40 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7 - Salmos 124:3 | Êxodo 15:7 - Primeira Metáfora -->
+        <div class="slide" id="slide7">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Salmos 124:3 | Êxodo 15:7</h1>
+                <p>A Primeira Metáfora</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-book-open"></i>
+                    <h2>Salmos 124:3 | Êxodo 15:7 - A primeira metáfora</h2>
+                </div>
+                
+                <div class="scripture-highlight">
+                    <p class="scripture-reference">Salmos 124:3 (ARC)</p>
+                    <p><strong>"³ eles, então, nos teriam engolido vivos..."</strong></p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-link"></i>
+                        Observação das Conexões
+                    </div>
+                    <p>No verso 3 o salmista Davi reutiliza duas metáforas que temos em Êxodo 15.</p>
+                    <p>A primeira metáfora é do povo de Deus ser engolido vivo, se não fora o Senhor.</p>
+                </div>
+                
+                <div class="purpose-section">
+                    <div class="purpose-title">
+                        <i class="fas fa-lightbulb"></i>
+                        1° C. da conexão S.Ê
+                    </div>
+                    <p><strong>- Salmos:</strong> O que teria acontecido? O povo teria sido engolidos vivos.</p>
+                    <p><strong>- Êxodo:</strong> O que aconteceu? Êxodo 15:4-5 e 12 Deus estendeu a sua mão direita e os abismos cobriram os soldados de faraó; afundaram nas profundezas como pedra, tragados.</p>
+                    <p>Esta é a primeira metáfora; do povo de Deus ser engolido vivos se não fora o Senhor.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 02:30 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8 - Salmos 124:3 | Êxodo 15:7 - Segunda Metáfora -->
+        <div class="slide" id="slide8">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Salmos 124:3 | Êxodo 15:7</h1>
+                <p>A Segunda Metáfora</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-book-open"></i>
+                    <h2>Salmos 124:3 | Êxodo 15:7 - A segunda metáfora</h2>
+                </div>
+                
+                <div class="scripture-highlight">
+                    <p class="scripture-reference">Salmos 124:3 (ARC)</p>
+                    <p><strong>"³ ...quando a sua ira se acendeu contra nós;"</strong></p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-link"></i>
+                        Observação das Conexões
+                    </div>
+                    <p>A segunda metáfora reutilizada por Davi é fogo, fazendo analogia à ira daqueles que se levantaram contra os filhos de Israel: ira e fogo.</p>
+                </div>
+                
+                <div class="scripture-highlight">
+                    <p class="scripture-reference">Êxodo 15:7 (ARC)</p>
+                    <p><strong>"enviaste o teu furor, que os consumiu como o rastolho."</strong></p>
+                </div>
+                
+                <div class="purpose-section">
+                    <div class="purpose-title">
+                        <i class="fas fa-lightbulb"></i>
+                        C. da conexão S.Ê
+                    </div>
+                    <p><strong>Salmos:</strong> A ira de um povo se acendeu como fogo contra os filhos de Isreal.</p>
+                    <p><strong>Êxodo:</strong> O furor de Deus é enviado e consumiu o exército de Faraó como rastolho.</p>
+                    <p><strong>Salmos:</strong> Ira e fogo.</p>
+                    <p><strong>Êxodo:</strong> O Furor consumidor de Deus desceu.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 01:30 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9 - Êxodo 15:7 | Êxodo 5 -->
+        <div class="slide" id="slide9">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Êxodo 15:7 | Êxodo 5</h1>
+                <p>O Mistério do Rastolho</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-book-open"></i>
+                    <h2>Êxodo 15:7 | Êxodo 5</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>Há um mistério muito tremendo na conclusão do verso 7, inspirado pelo Espírito Santo Moisés escreve que Deus consumiu os egipcios como rastolho.</p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-search"></i>
+                        O que é Rastolho?
+                    </div>
+                    <p><strong>Rastolho:</strong> é a parte dos cereais que permanece enraizada no solo após a ceifa das espigas e da palha.</p>
+                    <p>Ou seja, Moisés registra de forma poética que os egípcios foram consumidos como restos de raízes.</p>
+                </div>
+                
+                <div class="purpose-section">
+                    <div class="purpose-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Contexto Mais Profundo
+                    </div>
+                    <p>E tem algo mais profundo, pois não é apenas uma metáfora poética.</p>
+                    <p>Êxodo 5: Moisés e Arão vai até Faraó para dizer o que Deus mandou.</p>
+                    <p><strong>Moisés e Arão:</strong> Deus mandou dizer que libere o povo, pra um culto no deserto.</p>
+                    <p><strong>Faraó se nega:</strong> Quem é esse Deus? Eu não vou liberar ninguem pra culto nemhum, e tem mais, o povo não vai mais ter palha pra fazer tijolo. Êxodo 5:12 (ler)</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 02:30 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 10 - O Diálogo da Inspiração -->
+        <div class="slide" id="slide10">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> O Diálogo da Inspiração</h1>
+                <p>Como o Espírito Santo Inspirou Moisés</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-dove"></i>
+                    <h2>O Diálogo da Inspiração</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>Eu tenho minhas loucuras de conjecturar tudo que leio, e imagino assim:</p>
+                    <p>Cena: Moisés com um pergaminho e uma pena escrevendo o verso 7, e o Espírito Santo dizendo...</p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-comments"></i>
+                        Diálogo
+                    </div>
+                    <p><strong>Espírito Santo:</strong> Moisés, Faraó castigou o meu povo dando rastolho para fazer tijolos, escreva aí "Que consumidos como rastolhos eles foram"</p>
+                    <p>porque eu quero que o povo cante que Deus tratou os egípcios da mesma forma como Faraó castigou o povo.</p>
+                    <p>"Se com rastolho o meu povo foi castigado, então como rastolho eles foram consumidos sendo esse o juizo de Deus"</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 01:30 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 11 - Salmos 124:4-6 | Êxodo 14:22 -->
+        <div class="slide" id="slide11">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Salmos 124:4-6 | Êxodo 14:22</h1>
+                <p>Desenvolvimento e Conclusão</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-book-open"></i>
+                    <h2>Salmos 124:4-6 | Êxodo 14:22 - Desenvolvimento e conclusão. Versiculos 4-6</h2>
+                </div>
+                
+                <div class="scripture-highlight">
+                    <p class="scripture-reference">Salmos 124:4-5 (ARC)</p>
+                    <p><strong>"⁴ então, as águas teriam transbordado sobre nós, e a corrente teria passado sobre a nossa alma</strong></p>
+                    <p><strong>⁵ então, as águas altivas teriam passado sobre a nossa alma."</strong></p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-link"></i>
+                        Observação das Conexões
+                    </div>
+                    <p>"então, as águas altivas teriam passado sobre a nossa alma." teria "transbordado"</p>
+                    <p>essa figura de linguagem é perfeita "as águas altivas teria transbordado".</p>
+                </div>
+                
+                <div class="scripture-highlight">
+                    <p class="scripture-reference">Êxodo 14:22 (ARC)</p>
+                    <p><strong>"²² E as águas foram-lhes como muro à sua direita e à sua esquerda."</strong></p>
+                </div>
+                
+                <div class="purpose-section">
+                    <div class="purpose-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Conclusão da Conexão
+                    </div>
+                    <p>Bem sabemos que um muro; por mais que demore, sabemos que é possível pular uma hora ou outra.</p>
+                    <p>Se não fosse o Senhor, as águas teriam transbordado por cima dos muros.</p>
+                    <p>Mas muro que Deus levanta, ninguém derruba — e nem a água passa por cima.</p>
+                </div>
+                
+                <div class="scripture-highlight">
+                    <p class="scripture-reference">Salmos 124:6 (ARC)</p>
+                    <p><strong>"⁶ Bendito seja o Senhor, que não nos deu por presa aos seus dentes."</strong></p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 03:00 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12 - Salmos 124:7 -->
+        <div class="slide" id="slide12">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Salmos 124:7</h1>
+                <p>Como um Pássaro do Laço</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-book-open"></i>
+                    <h2>Salmos 124:7</h2>
+                </div>
+                
+                <div class="scripture-highlight">
+                    <p class="scripture-reference">Salmos 124:7 (ARC)</p>
+                    <p><strong>"⁷ A nossa alma escapou, como um pássaro do laço dos passarinheiros; o laço quebrou-se, e nós escapamos."</strong></p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-link"></i>
+                        Observação das Conexões
+                    </div>
+                    <p>O Salmista e rei Davi tem essa caracterista curiosa de sempre usar esta mesma analogia pássaro e o passageiro ou o caçador, então para entendermos com exatidão o que Davi quer dizer precisamos relembrar como é uma caça com laço manual para capturar passarinhos.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 01:00 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 13 - Narração Descritiva e Vivencial -->
+        <div class="slide" id="slide13">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Caça com Laço Manual</h1>
+                <p>Como Funciona a Armadilha</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-dove"></i>
+                    <h2>Narração descritiva e vivencial, de uma caça com laço manual para capturar ave ou passarinhos.</h2>
+                </div>
+                
+                <div class="analogy-container">
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-user-secret"></i>
+                            Caçador
+                        </div>
+                        <p>= Satanás.</p>
+                    </div>
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-dove"></i>
+                            Ave/Passarinho
+                        </div>
+                        <p>= O ser humano, o crente.</p>
+                    </div>
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-bait"></i>
+                            Engodos/Isca
+                        </div>
+                        <p>= Prazeres da carne, hábitos passados que são momentaneamente prazerosos, distrações mundanas, amizades corriqueiras.</p>
+                    </div>
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-knot"></i>
+                            Laço
+                        </div>
+                        <p>= A morte espiritual, amarras do pecado, a perda da intimidade com Deus, perda da identidade cristã, perda da liberdade em Cristo.</p>
+                    </div>
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-trap"></i>
+                            Armadilha
+                        </div>
+                        <p>= O prazer momentâneo que leva à decadência espiritual constante, ao afastamento de Deus.</p>
+                    </div>
+                </div>
+                
+                <div class="content-box">
+                    <div class="section-title">Introdução</div>
+                    <p>Primeiro, o caçador escolhe a ave que quer capturar; em seguida seleciona os engodos que atraem aquela espécie.</p>
+                    <p>"O caçador sempre conhece todos os alimentos que atraem o tipo de ave que ele quer capturar."</p>
+                </div>
+                
+                <div class="content-box">
+                    <div class="section-title">Desenvolvimento</div>
+                    <p>Após escolher esses engodos que atraem a atenção da ave escolhida, um laço é posto em volta daquela isca.</p>
+                    <p>A ave, vendo a isca, é da natureza dela desejar se alimentar daqueles engodos...</p>
+                    <p>1° A ave avista o alimento.</p>
+                    <p>2° Se aproxima, entrando dentro do laço sem perceber.</p>
+                    <p>3° Começa a se deliciar daquela isca.</p>
+                </div>
+                
+                <div class="content-box">
+                    <div class="section-title">Conclusão</div>
+                    <p>No aguardo paciente da caça está o caçador, que observou a ave vendo a isca, se aproximando, entrando no laço e se alimentando. Sem perder tempo, o caçador puxa a corda que aperta o laço, capturando a ave.</p>
+                    <p>Davi esta se referindo a isso quando fala de laços e passarinheiros.</p>
+                </div>
+
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-user-check"></i>
+                        Aplicação
+                    </div>
+                    <p>Aplicando em nossas vidas essa metáfora Satanás é esse caçador que, quando vai tentar o crente, seleciona os prazeres da carne daquele crente, seleciona as distrações mundanas que são aparentemente inocentes para aquele crente. E ao redor dos engodos que atrai o crente que vai ser tentado, tem o laço.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 03:00 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 14 - O que é Laço? -->
+        <div class="slide" id="slide14">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> O que é Laço?</h1>
+                <p>Significado Espiritual</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-question"></i>
+                    <h2>O que é laço? (Significado espiritual)</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>Laços são as amarras que prende o homem espiritualmente, resultando na perca de intimidade com Deus, perca da identidade cristã e perca da liberdade em Cristo. Levando ao declínio contínuo culminando na morte espiritual.</p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-list"></i>
+                        Tipos de laços (Provérbios)
+                    </div>
+                    <p><strong>Provérbios 5:</strong> O laço das mulheres estranha.</p>
+                    <p><strong>Provérbios 7:21–22:</strong> O laço da carnalidade.</p>
+                    <p><strong>Provérbios 16:18:</strong> O laço da vaidade.</p>
+                    <p><strong>Provérbios 19:11:</strong> O laço do rancor.</p>
+                    <p><strong>Provérbios 14:29:</strong> O laço da ira.</p>
+                    <p><strong>Provérbios 23:20–21:</strong> O laço da gula.</p>
+                    <p><strong>Provérbios 22:24-25:</strong> O laço das amizades mundanas, atrai para si laços para a alma. (Amizades corriqueiras.) (Ler da NTLH)</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 02:00 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 15 - Continuação Aplicação do Laço -->
+        <div class="slide" id="slide15">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Aplicação do Laço</h1>
+                <p>Na Vida do Crente</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-user-check"></i>
+                    <h2>Continuação Aplicação do laço na vida do crente</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>Satanás sabe escolher a isca e o laço. E o crente que nunca leu Dn 1:12 avista os manjares que Satanás oferece, se aproxima, senta à mesa para comer, e sem perceber, já entrou no laço do passarinheiro se alimentando do pecado. Perdendo a intimidade, a identidade e a liberdade em Cristo.</p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Continuação da aplicação
+                    </div>
+                    <p>Mas o crente que já leu Daniel 1:12 rejeita os manjares de Satanás e come dos legumes da Palavra de Deus.</p>
+                    <p>Satanás coloca carne gordurosa dentro do laço da gula, que é o prazer passageiro que destrói o corpo e a alma. Mas o crente come cebola; a cebola faz os olhos lacrimejarem e arde a boca.</p>
+                    <p>"A cebola do crente é Provérbios: Os olhos lacrimejam e o coração arde quando lemos."</p>
+                    <p>Satanás oferece vinho, que são as tentações do mundo, deixando a mente do crente embriagada e confusa. Mas o crente não bebe vinho: ele bebe da água viva, que é Jesus. João 4:14</p>
+                </div>
+                
+                <div class="purpose-section">
+                    <div class="purpose-title">
+                        <i class="fas fa-link"></i>
+                        Conexão com a Continuação
+                    </div>
+                    <p>E o mesmo Jesus que é a água viva é o pão da vida que desceu do céu. João 6:33</p>
+                    <p>E esse mesmo Jesus que é pão e água, Ele é o caminho. João 14:6</p>
+                    <p>Segue fielmente no caminho, e caminhando por Ele, vai se alimentando do pão e bebendo da água viva.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 03:00 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 16 - Provérbios é a Cebola, Salmos é o Óleo -->
+        <div class="slide" id="slide16">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Provérbios e Salmos</h1>
+                <p>Cebola e Óleo</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-utensils"></i>
+                    <h2>Provérbios é a cebola do crente, e Salmos é o óleo.</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>O Crente não como dos manjares ele se alimenta dos legumes da palavra, da cebola (Provérbios)</p>
+                    <p>Mas ninguem come apenas a cebola pura, mas para assar uma carne por exemplo : primeiro as irmã dona de casa, coloca a cebola no óleo pra dourar a cebola, e depois coloca a carne.</p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Aplicação Espiritual
+                    </div>
+                    <p>Em Provérbios Deus revela : Ta aqui o laço.</p>
+                    <p>Em Salmos Deus ensina : Coloque a cebola (Provérbios) pra dourar no óleo (Salmos).</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 01:00 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 17 - Como se Livrar dos Laços -->
+        <div class="slide" id="slide17">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Como se Livrar dos Laços</h1>
+                <p>Usando Salmos</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-unlock"></i>
+                    <h2>Como se livrar do laços (Salmos)</h2>
+                </div>
+                
+                <div class="analogy-container">
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-female"></i>
+                            Provérbios 5
+                        </div>
+                        <p>O laço das mulheres estranha.</p>
+                        <p class="scripture-reference">Salmos 119:37</p>
+                        <p>Que eu não ponha os meus olhos diante daquilo que não agrada a Deus. (Pacto dos olhos)</p>
+                    </div>
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-fire"></i>
+                            Provérbios 7:21–22
+                        </div>
+                        <p>O laço da carnalidade ou lacivia.</p>
+                        <p class="scripture-reference">Salmos 51:10</p>
+                        <p>"Cria em mim, ó Deus, um coração puro..."</p>
+                    </div>
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-crown"></i>
+                            Provérbios 16:18
+                        </div>
+                        <p>O laço da vaidade.</p>
+                        <p class="scripture-reference">Salmos 131:1</p>
+                        <p>Senhor, que o meu coração não se eleve, nem os meus olhos se levantem..." (Sugestão NTLH)</p>
+                    </div>
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-angry"></i>
+                            Provérbios 19:11
+                        </div>
+                        <p>O laço do rancor.</p>
+                        <p class="scripture-reference">Salmos 37:8</p>
+                        <p>"Deixa a ira e abandona o furor; não te indignes para fazer o mal."</p>
+                    </div>
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-poo"></i>
+                            Provérbios 14:29
+                        </div>
+                        <p>O laço da ira.</p>
+                        <p class="scripture-reference">Salmos 4:4</p>
+                        <p>Quando a ira vim diga para si mesmo, se calme.</p>
+                    </div>
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-utensils"></i>
+                            Provérbios 23:20–21
+                        </div>
+                        <p>O laço da gula.</p>
+                        <p class="scripture-reference">Salmos 35:13</p>
+                        <p>Jejum.</p>
+                    </div>
+                    <div class="analogy-box">
+                        <div class="analogy-title">
+                            <i class="fas fa-user-friends"></i>
+                            Provérbios 22:24
+                        </div>
+                        <p>O laço das amizades mundanas, atrai para si laços para a alma. (Amizades corriqueiras.)</p>
+                        <p class="scripture-reference">Salmos 119:63 (NTLH)</p>
+                        <p>"Eu sou amigo de todos os que te temem, de todos os que obedecem às tuas leis."</p>
+                    </div>
+                </div>
+                
+                <div class="content-box">
+                    <p>Se você ler Salmos e meditar você vai aprender a como se livrar dos laços, a como pular os laços.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 03:00 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 18 - Pular os Laços -->
+        <div class="slide" id="slide18">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Pular os Laços</h1>
+                <p>Na Caminhada Cristã</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-running"></i>
+                    <h2>Devemos pular os laços que Satanás coloca na caminhanda</h2>
+                </div>
+                
+                <div class="content-box">
+                    <div class="section-title">Introdução</div>
+                    <p>Permita-me lembrar você de uma experiencia que talvez você já tenha passado.</p>
+                    <p>Quando você está andando por um caminho onde tem um animal morto que alguem viu e você não.</p>
+                </div>
+                
+                <div class="content-box">
+                    <div class="section-title">Desenvolvimento</div>
+                    <p>Normalmente acontece assim : Você ta andando, ai alguém de longe grita: "Olha a cobra".</p>
+                    <p>E é comum do ser humano, olhar pro chão já pulando.</p>
+                </div>
+                
+                <div class="content-box">
+                    <div class="section-title">Conclusão</div>
+                    <p>Mas tem o medroso : Nem olha pro chão, tem tanto medo que já vai pulando sem nem saber se é cobra mesmo.</p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Aplicação
+                    </div>
+                    <p>Deus faz mesmo assim com o crente, do trono o Noivo brada "Olha o laço"... da terra a noiva que teme a palavra nem olha pra ver se é laço mesmo, apenas pula. "Não vá saber se laço, se Deus disse não pague pra ver. Pule."</p>
+                    <p>"Não volte para trás porque crente não pode parar a caminhada por conta dos laços, pule por cima."</p>
+                </div>
+                
+                <div class="purpose-section">
+                    <div class="purpose-title">
+                        <i class="fas fa-question"></i>
+                        Qual o laço da tua caminhada?
+                    </div>
+                    <p>- Se for a gula, pule... Pular o que? - O café hoje é jejum.</p>
+                    <p>- Se for as paixões, pule: Me perdoe irmã, desculpe meu irmão em Cristo.</p>
+                    <p>O Espirito Santo mandou Paulo escrever um misterio em 2 Timóteo 2:22 e parece que que foi pra mim mesmo</p>
+                    <p>Foje Timóteo... Fugir de quê Paulo? - "Das paixões da mocidade. Enquanto fores jovem, tua paixão é a palavra."</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 03:00 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 19 - Introdução ao Laço do Medo na Vida de Pedro -->
+        <div class="slide" id="slide19">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Laço do Medo</h1>
+                <p>Na Vida de Pedro</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-user"></i>
+                    <h2>Introdução ao laço do medo na vida de Pedro.</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>Mas tem crente que mesmo com Deus revelando que tem laço, ele teima com Deus pra ver se é laço mesmo.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 00:30 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 20 - Laço do Medo na Vida de Pedro (Continuação) -->
+        <div class="slide" id="slide20">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Laço do Medo</h1>
+                <p>Na Vida de Pedro</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-user"></i>
+                    <h2>Laço do medo na vida de Pedro.</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>Ultima santa ceia, Jesus sendo o mistrando... "O Corpo mistrando o Corpo, O Sangue ministrando o Sangue"</p>
+                    <p>Jesus diz pros discipulos : Hoje todos vocês vão se escandalizar em mim. Hoje é o dia que o pastor será ferido e as ovelhas se dispersarão</p>
+                    <p>Pedro, orgulhoso... Eu?? Eu não, Eu nunca vou te envergonhar Jesus, Eles eu não sei, mas eu?</p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Jesus Revela o Laço
+                    </div>
+                    <p>Jesus revela a Pedro que o laço ja tava feito : Pedro, Satanas pediu fazer contigo como se faz com o trigo, ele quer te peneirar....</p>
+                    <p>Tinha uma laço preparado pra tu, mas eu orei ao pai por ti para que esse laço não te pegue.</p>
+                </div>
+                
+                <div class="content-box">
+                    <p>Mesmo depois do que Jesus disse, pedro ainda teima : Eu to contigo pro que der e vinher, to contigo até a morte. eu não te nego. nunca.</p>
+                    <p>Jesus olhando pra Pedro diz : Ainda hoje me negaras 3 vezes.</p>
+                </div>
+                
+                <div class="purpose-section">
+                    <div class="purpose-title">
+                        <i class="fas fa-history"></i>
+                        Getsêmani e a Traição
+                    </div>
+                    <p>Getsêmani, traição de judas. Levam Jesus, joão passa pelo patio, consegue fazer pedro passar pra entrar tambem</p>
+                    <p>Pedro entra se assenta ao redor de uma fogueira com algumas pessoas.</p>
+                    <p>Vem uma Mulher e diz : Eu te conheço, tu es um dos discípulos desse Jesus ai. (Mulher quando diz que conhece é porque ela conhece)</p>
+                    <p>Pedro nega a primeira vez : Eu?? Eu não, eu não sou. Negou seu ministerio. (1° Laço)</p>
+                    <p>Pedro nega pela segunda vez... (2° Laço)</p>
+                    <p>Ai pela terceira vez alguem veio e disse, tua fala te denuncia, tu fala igual crente.</p>
+                    <p>Pedro nega pela terceira vez: Eu não sei nem o que tu ta dizendo. Negou sua identidade. (Por 3 vezes Pedro é pego no laço do medo)</p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-cross"></i>
+                        A Restauração
+                    </div>
+                    <p>Jesus é crucificado, morre pelos nossos pecados, pelos pecados de Pedro... Mas ao terceiro dia Ele ressuscitou, vivo vivo vivo Ele esta vivo.</p>
+                    <p>Jesus aparece a maria Madalena, aparece aos onzes e depois aparece no mar onde Pedro estava pescando com alguns dos discípulos.</p>
+                    <p>E ao redor de uma fogueira, num cenario parecido com o do laço Jesus vira pra pedro e agora vai quebrar os laços que ainda tava em pedro.</p>
+                    <p>Jesus : Simão, filhos de jonas tu amas-me mais do esses?</p>
+                    <p>Pedro : Eu te amo Senhor, e tu sabes disso. (Primeiro laço foi quebrado...)</p>
+                    <p>Jesus : Simão, filhos de jonas tu me ama?</p>
+                    <p>Pedro : Eu te amo Senhor, e tu sabes disso. (Segundo laço foi quebrado...)</p>
+                    <p>Jesus : Simão, filhos de jonas tu me ama ?</p>
+                </div>
+                
+                <div class="content-box">
+                    <p>Simão significa "aquele que ouve". Jonas Significa "pombo", passarinho.</p>
+                    <p>Jesus ta dizendo: Me ouve Pedro... Tu es meu passarinho e tu fosse pego pelo laço do medo...</p>
+                    <p>Mas eu quero resolver o que tenho contigo, tua aliança comigo rachou mas eu tou restaurando agora. Tu me ama pedro?</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 05:00 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 21 - Conclusão -->
+        <div class="slide" id="slide21">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Conclusão</h1>
+                <p>Deus Quebra Laços</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-dove"></i>
+                    <h2>Conclusão</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>Deus quebra laços na vida dos seus passarinhos que foram pego pelo caçador.</p>
+                    <p>Você é passarinho de Deus, laço pode até te pegar mas do jeito que ta não fica. Passarinho de Deus não fica preso em laço.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> Fim do Estudo
+                </div>
+                
+                <div class="scripture-reference">
+                    Salmos 124:7 - "A nossa alma escapou, como um pássaro do laço dos passarinheiros; o laço quebrou-se, e nós escapamos."
+                </div>
+            </div>
+        </div>
 
         <!-- Navegação -->
         <div class="navigation">
