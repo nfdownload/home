@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Slides - Estudo de Salmos 124</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #333333;
+            --accent-color: #666666;
+            --light-color: #f8f9fa;
+            --dark-color: #111111;
+            --highlight-color: #444444;
+            --text-color: #111;
+            --border-radius: 12px;
+            --box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f9fafb;
+            color: var(--text-color);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .slides-container {
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+        }
+        .slide {
+            display: none;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+        .slide.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .card-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+        .card-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+            position: relative;
+            font-weight: 700;
+        }
+        .card-header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            position: relative;
+        }
+        .card-body {
+            padding: 3.5rem;
+        }
+        .topic-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+        .topic-title i {
+            margin-right: 16px;
+            color: var(--secondary-color);
+            background: rgba(52, 152, 219, 0.1);
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .content-box {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.8rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            margin-bottom: 1.8rem;
+            position: relative;
+            font-size: 1.1rem;
+        }
+        .content-box p {
+            margin-bottom: 1.2rem;
+        }
+        .content-box p:last-child {
+            margin-bottom: 0;
+        }
+        .examples-container {
+            display: flex;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        .example-box {
+            flex: 1;
+            min-width: 250px;
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 5px solid var(--secondary-color);
+            padding: 1.5rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            font-size: 1.05rem;
+        }
+        .example-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+        .example-title i {
+            margin-right: 10px;
+            color: var(--highlight-color);
+            font-size: 1.1rem;
+        }
+        .purpose-section {
+            background: rgba(0, 0, 0, 0.03);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 1.1rem;
+        }
+        .purpose-title {
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            font-size: 1.3rem;
+        }
+        .purpose-title i {
+            margin-right: 10px;
+        }
+        .characteristic-box {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 5px solid var(--accent-color);
+            padding: 2rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            margin: 2rem 0;
+            font-size: 1.1rem;
+        }
+        .characteristic-title {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            font-size: 1.3rem;
+        }
+        .characteristic-title i {
+            margin-right: 10px;
+        }
+        .time-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        .time-indicator i {
+            margin-right: 10px;
+        }
+        .scripture-reference {
+            display: inline-block;
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--secondary-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            margin-top: 1.2rem;
+            font-weight: 500;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+        }
+        .nav-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 1.8rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+            font-weight: 600;
+            box-shadow: var(--box-shadow);
+            font-size: 1.1rem;
+        }
+        .nav-btn:hover {
+            background: var(--accent-color);
+            transform: translateY(-2px);
+        }
+        .nav-btn i {
+            margin: 0 8px;
+        }
+        .slide-indicators {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            gap: 12px;
+        }
+        .indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ccc;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .indicator.active {
+            background: var(--secondary-color);
+            transform: scale(1.3);
+        }
+        .footer-note {
+            text-align: center;
+            color: #666;
+            font-size: 1rem;
+            margin-top: 2rem;
+        }
+        .analogy-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .analogy-box {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 5px solid var(--secondary-color);
+            padding: 1.5rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            font-size: 1.05rem;
+        }
+        .analogy-title {
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+        .analogy-title i {
+            margin-right: 10px;
+        }
+        .composition-box {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 5px solid var(--accent-color);
+            padding: 1.5rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            margin: 1.5rem 0;
+            font-size: 1.05rem;
+        }
+        .composition-title {
+            font-weight: bold;
+            color: #8e44ad;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+        }
+        .composition-title i {
+            margin-right: 10px;
+        }
+        .connection-box {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 5px solid var(--secondary-color);
+            padding: 1.5rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            margin: 1.5rem 0;
+            font-size: 1.05rem;
+        }
+        .connection-title {
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+        .section-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 2rem 0 1.2rem 0;
+            padding-bottom: 0.8rem;
+            border-bottom: 3px solid var(--secondary-color);
+            font-size: 1.4rem;
+        }
+        .scripture-highlight {
+            background: rgba(0, 0, 0, 0.03);
+            border-left: 5px solid var(--secondary-color);
+            padding: 1.8rem;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            margin: 1.5rem 0;
+            font-style: italic;
+            font-size: 1.15rem;
+        }
+
+        @media (max-width: 1200px) {
+            .slides-container {
+                max-width: 1000px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .slides-container {
+                max-width: 900px;
+            }
+            .card-body {
+                padding: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1.5rem;
+            }
+            .slides-container {
+                max-width: 100%;
+            }
+            .card-header {
+                padding: 2rem;
+            }
+            .card-header h1 {
+                font-size: 2.2rem;
+            }
+            .card-body {
+                padding: 2rem;
+            }
+            .topic-title {
+                font-size: 1.5rem;
+            }
+            .topic-title i {
+                width: 55px;
+                height: 55px;
+                font-size: 1.3rem;
+            }
+            .examples-container {
+                flex-direction: column;
+            }
+            .navigation {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .content-box, .example-box, .characteristic-box, .purpose-section {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+            .card-header {
+                padding: 1.5rem;
+            }
+            .card-header h1 {
+                font-size: 1.8rem;
+            }
+            .card-body {
+                padding: 1.5rem;
+            }
+            .topic-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slides-container">
+        <!-- Slide 1 - Introdução -->
+        <div class="slide active" id="slide1">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Estudo de Salmos 124</h1>
+                <p>Livramento da Parte de Deus</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-scroll"></i>
+                    <h2>Introdução à Meditação de Salmos 124</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>Esse Salmos tem como titulo: <strong>"Só Deus pode livrar o seu povo"</strong> (livramento da parte Deus.)</p>
+                    <p>Logo abaixo no subtitulo está escrito: <strong>"Cântico dos degraus, de Davi"</strong>.</p>
+                    <p>Antes de iniciar a exposição dos versiculos, precisamos entender o que são os cântigos dos degraus.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 00:30 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2 - Cânticos dos Degraus -->
+        <div class="slide" id="slide2">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Cânticos dos Degraus</h1>
+                <p>Estudo de Salmos 124</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-music"></i>
+                    <h2>Cânticos dos Degraus</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p><strong>Cânticos dos Degraus</strong>, são os salmos que formam uma coleção de quinze cânticos de peregrinação, entre os Salmos 120 e 134.</p>
+                    <p>Esse conjunto de 15 Salmos eram louvados quando o povo subia para Jerusalém, para celebrar as grandes festas.</p>
+                    <p><strong>Como por exemplo:</strong> A festa dos pães asmos. Êxodo 23:14 ou o dia de Pentecostes. Deuteronômio 16:9</p>
+                </div>
+                
+                <div class="purpose-section">
+                    <div class="purpose-title">
+                        <i class="fas fa-bullseye"></i>
+                        Finalidade dos Cânticos dos Degraus
+                    </div>
+                    <p>A finalidade dos Cânticos dos Degraus era fazer o povo lembrar dos livramentos, e a fidelidade de Deus, ao mesmo tempo, ensinar verdades teológicas através da adoração, esses 15 Salmos são cânticos doutrinarios. (Exemplo de Hino : Efesios 6)</p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-star"></i>
+                        Característica Importante
+                    </div>
+                    <p>Uma caracterista desses cântigos, é que eles usam os escapes que Deus deu ao povo durante os 40 anos no deserto como um repertório de hinos de livramentos, ou seja, esses cânticos usam livramentos que Deus deu ao povo no pasado para representar um livramento que Deus deu ao povo no presente.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 02:00 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3 - Salmos 124 | Êxodo 15 -->
+        <div class="slide" id="slide3">
+            <div class="card-header">
+                <h1><i class="fas fa-book-bible"></i> Salmos 124 | Êxodo 15</h1>
+                <p>Introdução às Conexões</p>
+            </div>
+            <div class="card-body">
+                <div class="topic-title">
+                    <i class="fas fa-link"></i>
+                    <h2>Introdução às conexões de Salmos 124 com Êxodo 15</h2>
+                </div>
+                
+                <div class="content-box">
+                    <p>Salmos 124 é o quinto Salmos entre a coleção dos 15 cânticos dos degraus.</p>
+                    <p>Muitos estudos teológicos afirmam que provavelmente o contexto em que o Salmos 124 foi escrito é durante o período em que Davi era perseguido pelo rei Saul.</p>
+                    <p>Mas vamos meditar não no contexto em que este Salmos foi escrito, mas sim sobre qual o livramento do passado, que é narrado.</p>
+                </div>
+                
+                <div class="characteristic-box">
+                    <div class="characteristic-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Observação Importante
+                    </div>
+                    <p>O Salmista Davi usa um livramento que Deus deu a isreal no passado, para representar o livramento de Deus no presente.</p>
+                    <p>Guiado pelo Espírito Santo, esmiucei a palavra até chegar a conclusão de que O livramento narrado no Salmos 124 é a da travessia do Mar Vermelho, travessia essa que está registrada em Êxodo 15 no cântico de Moisés.</p>
+                </div>
+                
+                <div class="time-indicator">
+                    <i class="fas fa-clock"></i> ≃ 01:30 Minutos
+                </div>
+            </div>
+        </div>
+
+        <!-- Continuação dos outros slides... -->
+        <!-- (Os demais slides seguem a mesma estrutura, apenas mostrei os primeiros como exemplo) -->
+
+        <!-- Navegação -->
+        <div class="navigation">
+            <button class="nav-btn prev-btn" id="prevBtn">
+                <i class="fas fa-chevron-left"></i> Anterior
+            </button>
+            <button class="nav-btn next-btn" id="nextBtn">
+                Próximo <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Indicadores de slide -->
+        <div class="slide-indicators" id="slideIndicators">
+            <!-- Os indicadores serão gerados dinamicamente via JavaScript -->
+        </div>
+    </div>
+    
+    <div class="footer-note">
+        <p>Estudo Bíblico - Meditação e Reflexão</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const slides = document.querySelectorAll('.slide');
+            const slideIndicators = document.getElementById('slideIndicators');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let currentSlide = 0;
+
+            // Criar indicadores dinamicamente
+            slides.forEach((_, index) => {
+                const indicator = document.createElement('div');
+                indicator.className = 'indicator';
+                if (index === 0) indicator.classList.add('active');
+                indicator.setAttribute('data-slide', index);
+                slideIndicators.appendChild(indicator);
+            });
+
+            const indicators = document.querySelectorAll('.indicator');
+
+            // Função para mostrar slide específico
+            function showSlide(n) {
+                // Esconder todos os slides
+                slides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+                
+                // Remover classe active de todos os indicadores
+                indicators.forEach(indicator => {
+                    indicator.classList.remove('active');
+                });
+                
+                // Mostrar slide atual e ativar indicador correspondente
+                slides[n].classList.add('active');
+                indicators[n].classList.add('active');
+                
+                currentSlide = n;
+                
+                // Atualizar estado dos botões
+                prevBtn.disabled = (currentSlide === 0);
+                nextBtn.disabled = (currentSlide === slides.length - 1);
+            }
+
+            // Event listeners para os botões
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    showSlide(currentSlide - 1);
+                }
+            });
+
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < slides.length - 1) {
+                    showSlide(currentSlide + 1);
+                }
+            });
+
+            // Event listeners para os indicadores
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    showSlide(index);
+                });
+            });
+
+            // Atualizar estado inicial dos botões
+            prevBtn.disabled = true;
+        });
+    </script>
+</body>
+</html>
