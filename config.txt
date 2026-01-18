@@ -1,0 +1,3 @@
+server_url=https://chatty-facts-think.loca.lt
+server_port=4632
+auth_token=jWStTAIxfKIJwPaThjgOFsEnBajHglkr
